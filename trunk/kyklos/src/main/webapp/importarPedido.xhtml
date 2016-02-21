@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+   <ui:define name="corpo">
+      <div class="screenHeader"></div>
+      <div class="contentField">
+         <p:panelGrid id="importarPedido" style="width:100%;" styleClass="semBorda">
+            <p:row>
+               <p:column style="width:50%;">
+                  <p:panel header="Importar Pedido" id="form" style="width:100%;" styleClass="tabViewStyle">
+                     <p:fileUpload fileUploadListener="#{ImportarPedidoControl.upLoadArquivo}" label="Selecionar Arquivo" style="width:412px" mode="advanced" update="form, pedidoInfo" auto="true"
+                        sizeLimit="100000" allowTypes="/(\.|\/)(txt|TXT)$/" />
+
+                     <a:newLine />
+                     <p:commandButton value="Importar" id="btnImportar" update=":formCorpo:pedido" />
+                  </p:panel>
+               </p:column>
+               <p:column>
+                  <p:panelGrid id="pedidoInfo" styleClass="semBorda">
+                     <p:row>
+                        <p:column colspan="2">
+                           <h:outputText value="Informações do Pedido" />
+                        </p:column>
+                     </p:row>
+                     <p:row>
+                        <p:column style="width:30%;">
+                           <h:outputText value="Número:" />
+                        </p:column>
+                        <p:column>
+                           <h:outputText value="#{ImportarPedidoControl.pedido.numero }" />
+                        </p:column>
+                     </p:row>
+                     <p:row>
+                        <p:column>
+                           <h:outputText value="Cliente:" />
+                        </p:column>
+                        <p:column>
+                           <h:outputText value="#{ImportarPedidoControl.pedido.cliente.nome }" />
+                        </p:column>
+                     </p:row>
+                  </p:panelGrid>
+               </p:column>
+            </p:row>
+         </p:panelGrid>
+
+         <p:dataTable id="pedido" value="#{ImportarPedidoControl.pedido.itens }" var="item" width="100%" emptyMessage="Sem registros" rows="10" paginator="true">
+            <f:facet name="header">
+               <h:outputText value="Itens" />
+            </f:facet>
+
+            <p:column sortBy="#{item.numeroItem }" width="30" headerText="Item">
+               <h:outputText value="#{item.numeroItem }"></h:outputText>
+            </p:column>
+
+            <p:column width="90" headerText="Código">
+               <h:outputText value="#{item.produto.codigo }"></h:outputText>
+            </p:column>
+
+            <p:column headerText="Descrição">
+               <h:outputText value="#{item.produto.descricao }"></h:outputText>
+            </p:column>
+
+            <p:column width="90" headerText="Quantidade">
+               <h:outputText value="#{item.quantidade }"></h:outputText>
+            </p:column>
+
+            <p:column width="60" headerText="Unidade">
+               <h:outputText value="#{item.produto.unidadeMedida.sigla }"></h:outputText>
+            </p:column>
+
+            <p:column width="60" headerText="Preço">
+               <h:outputText value="#{item.valorUnitario }"></h:outputText>
+            </p:column>
+
+         </p:dataTable>
+
+         <h:form>
+            <a:newLine />
+            <p:growl id="growl" life="2000" />
+            <p:commandButton value="Salvar" id="btnSalvar" actionListener="#{ImportarPedidoControl.salvarPedido}" style="height: 30px; width: 100px; margin-bottom: 10px;" ajax="false" update="@all" />
+         </h:form>
+      </div>
+   </ui:define>
+</ui:composition>

@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
+
+   <ui:define name="cabecalho">
+      <style>
+         .ui-autocomplete-input {
+            width: 170px !important;
+         }
+      </style>
+   </ui:define>
+
+   <ui:define name="corpo">
+
+      <div class="screenHeader">
+         <a:field spaceLeft="1%">
+            <p:panelGrid id="gridTop" styleClass="semBorda">
+               <p:row>
+                  <p:column>
+                     <p:commandButton value="Cadastrar" actionListener="#{ProdutoControl.criarProduto}" update="formProduto" oncomplete="PF('formProduto').show();" icon="ui-icon-plusthick" />
+                  </p:column>
+               </p:row>
+            </p:panelGrid>
+         </a:field>
+      </div>
+
+      <div class="contentField">
+         <p:panel header="Buscar / Filtros" toggleable="true" id="filtrosjs" widgetVar="filtrosjs" toggleOrientation="vertical">
+
+            <p:panelGrid styleClass="semBorda" style="width:100%;">
+               <p:row>
+                  <p:column style="text-align: right; width:60%">
+                     <p:inputText id="textBox" class="searchBar" value="#{ProdutoControl.buscaText}" placeholder="Produto (Código/Descrição)" spaceLeft="10px">
+                        <f:ajax event="change" actionListener="#{ProdutoControl.listarProduto}" update="form" />
+                     </p:inputText>
+                  </p:column>
+                  <p:column style="text-align:left;">
+                     <p:commandButton class="listaButton" actionListener="#{ProdutoControl.listarProduto}" update="form, textBox" ajax="false" value="" icon="ui-icon-search" />
+                  </p:column>
+               </p:row>
+            </p:panelGrid>
+
+         </p:panel>
+
+         <p:dataTable id="listaProduto" value="#{ProdutoControl.produtos}" var="p">
+
+            <p:ajax event="rowToggle" listener="#{ProdutoControl.expanssionProduto(p)}" />
+
+            <p:column style="width:16px">
+               <p:rowToggler />
+            </p:column>
+
+            <p:column width="10%" sortBy="#{p.codigo}" headerText="Código">
+               <h:outputText value="#{p.codigo}" />
+            </p:column>
+
+            <p:column sortBy="#{p.descricao}" headerText="Descrição">
+               <h:outputText value="#{p.descricao}" />
+            </p:column>
+
+            <p:column width="8%" headerText="Medida">
+               <h:outputText value="#{p.unidadeMedida.sigla}" />
+            </p:column>
+
+            <p:column width="8%" headerText="Opções">
+
+               <p:commandButton id="editButton" class="tableButton" icon="ui-icon-pencil" actionListener="#{ProdutoControl.editarProduto(p)}" oncomplete="PF('formProduto').show();"
+                  update=":formCorpo:formProduto">
+                  <f:setPropertyActionListener value="#{p}" target="#{ProdutoControl.produto}"></f:setPropertyActionListener>
+               </p:commandButton>
+
+               <p:commandButton id="delButton" class="tableButton" icon="ui-icon-trash" onclick="PF('confirmDialogRemoverProduto').show();" type="button" ajax="false" />
+
+               <p:confirmDialog header="Confirmação" message="Deseja realmente excluir este cadastro?" severity="alert" widgetVar="confirmDialogRemoverProduto" resizable="false">
+
+                  <p:commandButton value="Sim" actionListener="#{ProdutoControl.excluir(p)}" onclick="PF('confirmDialogRemoverProduto').hide();" update=":formCorpo:listaProduto"
+                     styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+
+                  <p:commandButton value="Não" onclick="PF('confirmDialogRemoverProduto').hide()" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+
+               </p:confirmDialog>
+            </p:column>
+
+            <p:rowExpansion>
+
+               <p:dataTable id="listaEstoqueProduto" value="#{ProdutoControl.estoquesProdutos}" var="ep" emptyMessage="O produto '#{p.descricao}' não foi cadastrado em nenhum estoque.">
+
+                  <p:column sortBy="#{ep.estoque.descricao}">
+                     <f:facet name="header">
+                        <h:outputText value="Descrição" />
+                     </f:facet>
+                     <h:outputText value="#{ep.estoque.descricao}" />
+                  </p:column>
+
+                  <p:column sortBy="#{ep.quantidade}">
+                     <f:facet name="header">
+                        <h:outputText value="Quantidade" />
+                     </f:facet>
+                     <h:outputText value="#{ep.quantidade}" />
+                  </p:column>
+
+                  <p:column sortBy="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}">
+                     <f:facet name="header">
+                        <h:outputText value="Empresa" />
+                     </f:facet>
+                     <h:outputText value="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}" />
+                  </p:column>
+
+               </p:dataTable>
+
+            </p:rowExpansion>
+
+         </p:dataTable>
+
+      </div>
+
+      <p:dialog header="Cadastro de Produto" widgetVar="formProduto" id="formProduto" showEffect="puff" hideEffect="scale" height="45%" resizable="false">
+
+         <div id="topMenu" align="center">
+            <a:field spaceLeft="1%">
+               <p:panelGrid id="gridTopDialog" styleClass="semBorda">
+                  <p:row>
+                     <p:column>
+                        <p:commandButton value="Limpar" type="reset" icon="ui-icon-trash" />
+                     </p:column>
+                     <p:column>
+                        <p:commandButton value="Salvar" actionListener="#{ProdutoControl.salvar}" update="formProduto" icon="ui-icon-disk" />
+                     </p:column>
+                  </p:row>
+               </p:panelGrid>
+            </a:field>
+         </div>
+
+         <a:newLine />
+         <p:tabView id="produtoTabview" activeIndex="#{ProdutoControl.activeIndex}" class="semBorda" cache="true" style="width:624px; text-align: left;" onTabShow="#{ProdutoControl.limpar()}">
+            <p:tab id="produto" title="Produto">
+               <p:panelGrid id="produtoPanel" style="width: 100%;">
+                  <p:row>
+                     <p:column style="width: 275px !important">
+                        <h:outputLabel value="Código: " />
+                        <h:outputText value="#{ProdutoControl.produto.codigo}" />
+                     </p:column>
+                     <p:column>
+                        <h:outputLabel value="Descrição: " />
+                        <h:outputText value="#{ProdutoControl.produto.descricao}" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column colspan="10">
+                        <h:outputLabel for="descricaoProduto" value="Descrição" />
+                        <a:newLine />
+                        <p:inputText id="descricaoProduto" value="#{ProdutoControl.produto.descricao}" placeholder="Nome/Descrição do Produto" style="width: 495px;" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column style="width:200px !important;">
+                        <h:outputLabel for="codigoProduto" value="Código" />
+                        <a:newLine />
+                        <p:inputText id="codigoProduto" value="#{ProdutoControl.produto.codigo}" placeholder="Código do Produto" style="width: 200px;" />
+                     </p:column>
+                     <p:column>
+                        <h:outputLabel for="selecionarMedida" value="Unidade de Medida" />
+                        <a:newLine />
+                        <p:autoComplete id="selecionarMedida" dropdown="true" value="#{ProdutoControl.produto.unidadeMedida}" var="medida" completeMethod="#{ProdutoControl.listarUnidadeDeMedida()}"
+                           converter="objectConverter" itemLabel="#{medida.descricao}" itemValue="#{medida}" placeholder="Unidades de Medida" forceSelection="true">
+                           <p:column>
+                              <p:outputLabel value="#{medida.descricao} - #{medida.sigla}" />
+                           </p:column>
+                        </p:autoComplete>
+                        <a:newLine />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column>
+                        <h:outputText value="Valor Atual: " />
+                        <p:commandLink action="#{ProdutoControl.trocarTab(2)}" update=":formCorpo:produtoTabview">
+                           <h:outputText value="#{ProdutoControl.valorProdutoConsultado.valorVenda}">
+                              <f:convertNumber pattern="###,##0.00" />
+                           </h:outputText>
+                        </p:commandLink>
+                     </p:column>
+                     <p:column>
+                        <h:outputText value="Quantidade Total: " />
+                        <p:commandLink action="#{ProdutoControl.trocarTab(1)}" update=":formCorpo:produtoTabview">
+                           <h:outputText value="#{ProdutoControl.quantidadeTotal}" />
+                        </p:commandLink>
+                     </p:column>
+                  </p:row>
+               </p:panelGrid>
+            </p:tab>
+            <p:tab id="quantidade" title="Quantidade">
+               <p:panelGrid id="quantidadePanel">
+                  <p:row>
+                     <p:column style="width: 275px !important">
+                        <h:outputLabel for="codigoPdt" value="Código: " />
+                        <h:outputText id="codigoPdt" value="#{ProdutoControl.produto.codigo}" />
+                     </p:column>
+                     <p:column colspan="2">
+                        <h:outputLabel value="Descrição: " />
+                        <h:outputText value="#{ProdutoControl.produto.descricao}" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column colspan="10">
+                        <p:panel id="panelQtd" header="Alterar quantidade em estoque" style="border-radius: 0px;" styleClass="semBorda">
+                           <p:panelGrid id="panelQtdEstoqueAlteracao" style="width: 100% !important;">
+                              <p:row>
+                                 <p:column style="padding:0px;">
+                                    <h:outputLabel for="quantidadeProduto" value="Quantidade" />
+                                    <a:newLine />
+                                    <p:inputText id="quantidadeProduto" value="#{ProdutoControl.quantidade}" style="width: 200px;" />
+                                 </p:column>
+                                 <p:column>
+                                    <h:outputLabel for="completeEstoqueProduto" value="Estoque" />
+                                    <a:newLine />
+                                    <p:autoComplete id="completeEstoqueProduto" dropdown="true" scrollHeight="180" value="#{ProdutoControl.estoque}" var="e"
+                                       completeMethod="#{ProdutoControl.completeEstoqueProduto}" converter="objectConverter" itemLabel="#{e.descricao}" itemValue="#{e}" forceSelection="true">
+                                       <p:column>
+                                          <h:outputText value="#{e.descricao}" />
+                                       </p:column>
+                                    </p:autoComplete>
+                                 </p:column>
+                                 <p:column style="text-align: right !important; padding: 0px;">
+                                    <a:newLine />
+                                    <p:commandButton value="Alterar" action="#{ProdutoControl.alterarEstoqueProduto}" update="@all" />
+                                 </p:column>
+                              </p:row>
+                           </p:panelGrid>
+                        </p:panel>
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column colspan="2">
+                        <p:dataTable id="listaEstoqueProduto" value="#{ProdutoControl.estoquesProdutos}" var="ep" emptyMessage="O produto '#{p.descricao}' não foi cadastrado em nenhum estoque.">
+
+                           <p:column sortBy="#{ep.estoque.descricao}">
+                              <f:facet name="header">
+                                 <h:outputText value="Descrição" />
+                              </f:facet>
+                              <h:outputText value="#{ep.estoque.descricao}" />
+                           </p:column>
+
+                           <p:column sortBy="#{ep.quantidade}">
+                              <f:facet name="header">
+                                 <h:outputText value="Quantidade" />
+                              </f:facet>
+                              <h:outputText value="#{ep.quantidade}" />
+                           </p:column>
+
+                           <p:column sortBy="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}">
+                              <f:facet name="header">
+                                 <h:outputText value="Empresa" />
+                              </f:facet>
+                              <h:outputText value="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}" />
+                           </p:column>
+
+                        </p:dataTable>
+                     </p:column>
+                  </p:row>
+               </p:panelGrid>
+            </p:tab>
+
+            <p:tab id="preco" title="Preço">
+               <p:panelGrid id="precoPanel">
+                  <p:row>
+                     <p:column style="width: 275px !important">
+                        <h:outputLabel value="Código: " />
+                        <h:outputText value="#{ProdutoControl.produto.codigo}" />
+                     </p:column>
+                     <p:column>
+                        <h:outputLabel value="Descrição: " />
+                        <h:outputText value="#{ProdutoControl.produto.descricao}" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column>
+                        <h:outputLabel for="valorCompraProduto" value="Valor de Compra" />
+                        <a:newLine />
+                        <p:inputText id="valorCompraProduto" value="#{ProdutoControl.valorProdutoConsultado.valorCompra}" placeholder="Preço de Compra" style="width: 200px;">
+                           <f:convertNumber pattern="###,##0.00" />
+                        </p:inputText>
+                     </p:column>
+                     <p:column>
+                        <h:outputLabel for="valorVendaProduto" value="Valor de Venda" />
+                        <a:newLine />
+                        <p:inputText id="valorVendaProduto" value="#{ProdutoControl.valorProdutoConsultado.valorVenda}" placeholder="Preço de Venda" style="width: 200px;">
+                           <f:convertNumber pattern="###,##0.00" />
+                        </p:inputText>
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column colspan="2">
+                        <p:dataTable id="alteracoes" value="#{ProdutoControl.alteracoesValorProduto}" var="avp">
+                           <p:column headerText="Valor de Compra">
+                              <h:outputText value="#{avp.valorCompra}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column headerText="Valor de Venda">
+                              <h:outputText value="#{avp.valorVenda}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column headerText="Data da Alteração">
+                              <h:outputText value="#{avp.data}">
+                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column headerText="Alterado por">
+                              <h:outputText value="#{avp.usuario.login}" />
+                           </p:column>
+                        </p:dataTable>
+                     </p:column>
+                  </p:row>
+               </p:panelGrid>
+            </p:tab>
+         </p:tabView>
+      </p:dialog>
+
+   </ui:define>
+
+</ui:composition>

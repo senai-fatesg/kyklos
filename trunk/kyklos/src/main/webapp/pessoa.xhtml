@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+
+   <ui:define name="cabecalho">
+      <style>
+.ui-autocomplete-input {
+   width: 402px !important;
+}
+</style>
+   </ui:define>
+
+   <ui:define name="corpo">
+      <div class="screenHeader">
+         <a:field spaceLeft="1%">
+            <p:panelGrid id="gridTop" styleClass="semBorda">
+               <p:row>
+                  <p:column>
+                     <p:commandButton value="Salvar" actionListener="#{PessoaControl.salvar}" icon="ui-icon-disk" update="@all" />
+                  </p:column>
+                  <p:column>
+                     <p:commandButton value="Limpar" actionListener="#{PessoaControl.limpar}" icon="ui-icon-arrowrefresh-1-n" update="@all" />
+                  </p:column>
+               </p:row>
+            </p:panelGrid>
+         </a:field>
+      </div>
+
+
+      <div class="contentField">
+         <p:panel id="panelCpfCnpjGO" header="Consultar Pessoa">
+            <a:field label="CPF ou CNPJ" width="130px">
+               <p:inputText value="#{PessoaControl.cpfCnpj}" style="width:130px;" />
+            </a:field>
+            <a:field label="UF" spaceLeft="15px" width="170px">
+               <p:selectOneMenu value="#{PessoaControl.uf}" style="width:170px;">
+                  <f:selectItem itemLabel="" itemValue="" />
+                  <f:selectItems value="#{PessoaControl.ufs}" />
+               </p:selectOneMenu>
+            </a:field>
+            <a:field spaceLeft="15px" width="110px">
+               <p:commandButton id="btnConsultarPessoa" value="Consultar" icon="ui-icon-search" style="margin:0; width:110px" actionListener="#{PessoaControl.consultar}" update="@all" />
+            </a:field>
+            <a:newLine />
+         </p:panel>
+
+         <p:panel id="panelPessoaFisica" header="Pessoa Física" rendered="#{PessoaControl.pessoa.cpfCnpj.length() == 11}">
+            <a:field label="Nome Completo" width="431px">
+               <p:inputText value="#{PessoaControl.pessoa.nome}" style="width:431px;" />
+            </a:field>
+            <a:newLine />
+            <a:field label="Dt de Nascimento" width="100px">
+               <p:inputMask id="dataNascimento" value="#{PessoaControl.pessoa.dataNascimento}" style="width:100px" mask="99/99/9999">
+                  <f:convertDateTime pattern="dd/MM/yyyy" />
+               </p:inputMask>
+            </a:field>
+
+            <a:field label="Sexo" spaceLeft="15px" width="85px">
+               <p:selectOneMenu id="sexo" value="#{PessoaControl.pessoa.sexo}" converter="objectConverter" style="width:90px">
+                  <f:selectItem itemLabel="" itemValue="" />
+                  <f:selectItem itemLabel="Masculino" itemValue="MASCULINO" />
+                  <f:selectItem itemLabel="Feminino" itemValue="FEMININO" />
+               </p:selectOneMenu>
+            </a:field>
+            <a:field label="RG" spaceLeft="15px" width="108px">
+               <p:inputText id="rg" value="#{PessoaControl.pessoa.docIdentificacao}" style="width:108px;" />
+            </a:field>
+            <a:field label="Órgão Expedidor" spaceLeft="15px" width="93px">
+               <p:inputText id="orgaoExpedidor" value="#{PessoaControl.pessoa.orgaoExpedidor}" style="width:93px;" />
+            </a:field>
+            <a:newLine />
+         </p:panel>
+         <p:panel id="panelPessoaJuridica" header="Pessoa Jurídica" rendered="#{PessoaControl.pessoa.cpfCnpj.length() == 14}">
+            <a:field label="Razão Social" spaceLeft="15px" width="431px">
+               <p:inputText value="#{PessoaControl.pessoa.nome}" style="width:431px;" />
+            </a:field>
+            <a:newLine />
+            <a:field label="Nome Fantasia" spaceLeft="15px" width="431px">
+               <p:inputText value="#{PessoaControl.pessoa.nomeFantasia}" style="width:431px;" />
+            </a:field>
+            <a:newLine />
+            <a:field label="Inscrição Estadual" spaceLeft="15px" width="208px">
+               <p:inputText id="inscricaoEstadual" value="#{PessoaControl.pessoa.inscricaoEstadual}" style="width:208px;" />
+            </a:field>
+            <a:field label="Inscrição Municipal" spaceLeft="15px" width="208px">
+               <p:inputText id="inscricaoMunicipal" value="#{PessoaControl.pessoa.inscricaoMunicipal}" style="width:208px;" />
+            </a:field>
+            <a:newLine />
+         </p:panel>
+         <p:panel id="panelEndereco" header="Endereço">
+            <a:field label="CEP" width="108px">
+               <p:inputText id="cep" value="#{PessoaControl.pessoa.cep}" style="width:108px;" />
+            </a:field>
+            <a:field spaceLeft="15px">
+               <p:commandButton id="btnConsultarCep" value="Consultar" icon="ui-icon-search" style="margin:0;" actionListener="#{PessoaControl.consultarCep}" update=":formCorpo:panelEndereco" />
+            </a:field>
+            <a:newLine />
+            <a:field label="Logradouro" width="366px">
+               <p:inputText id="logradouro" value="#{PessoaControl.pessoa.logradouro}" style="width: 366px;" />
+            </a:field>
+            <a:field label="Número" spaceLeft="15px" width="50px">
+               <p:inputText id="numero" value="#{PessoaControl.pessoa.numero}" style="width:50px" />
+            </a:field>
+            <a:newLine />
+            <a:field label="Complemento" width="208px">
+               <p:inputText id="complemento" value="#{PessoaControl.pessoa.complemento}" style="width:208px;" />
+            </a:field>
+            <a:field label="Bairro" spaceLeft="15px" width="208">
+               <p:inputText id="bairro" value="#{PessoaControl.pessoa.bairro}" style="width:208px;" />
+            </a:field>
+            <a:newLine />
+            <a:field label="Municipio" for="consParceiro" width="431px">
+               <p:autoComplete id="dd" dropdown="true" scrollHeight="180" value="#{PessoaControl.pessoa.municipio}" var="m" completeMethod="#{PessoaControl.completeMunicipio}"
+                  converter="objectConverter" itemLabel="#{m.descricao}" itemValue="#{m}" placeholder="Goiânia, GO" forceSelection="true">
+                  <p:column>
+                     <h:outputText value="#{m.descricao}, #{m.uf}" />
+                  </p:column>
+               </p:autoComplete>
+            </a:field>
+            <a:newLine />
+         </p:panel>
+         <p:panel id="panelContato" header="Contato">
+            <a:field label="Telefone" width="134px">
+               <p:inputText id="telefone" value="#{PessoaControl.pessoa.telefone}" style="width:134px" />
+            </a:field>
+            <a:field label="Celular" spaceLeft="15px" width="134px">
+               <p:inputText id="celular" value="#{PessoaControl.pessoa.celular}" style="width:134px" />
+            </a:field>
+            <a:field label="Fax" spaceLeft="15px" width="133px">
+               <p:inputText id="fax" value="#{PessoaControl.pessoa.fax}" style="width:133px" />
+            </a:field>
+            <a:newLine />
+            <a:field label="Email" width="431px">
+               <p:inputText id="email" value="#{PessoaControl.pessoa.email}" style="width:431px;" />
+            </a:field>
+            <a:newLine />
+         </p:panel>
+      </div>
+
+   </ui:define>
+</ui:composition>

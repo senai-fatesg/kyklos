@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+   xmlns:a="http://www.ambientinformatica.com.br/jsf2">
+
+<h:head>
+   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
+   <link href="css/kyklos.css" rel="stylesheet" type="text/css" />
+</h:head>
+<h:body>
+   <h:form id="cadastroEmpresaUsuarioForm">
+      <p:panelGrid styleClass="cadastroStyle">
+         <p:row>
+            <p:column>
+               <a:newLine />
+            </p:column>
+         </p:row>
+         <p:row>
+            <p:column styleClass="usuarioCadastroInputColumn">
+            <p:outputLabel class="loginText" value="CPF / CNPJ" />
+               <a:newLine />
+               <p:inputText id="inputCpfCnpj" class="registerField" placeholder="Digite seu CPF ou CNPJ" value="#{CadastroUsuarioControl.empresaCliente.pessoa.cpfCnpj}" required="true" />
+            </p:column>
+         </p:row>
+
+         <p:row>
+            <p:column>
+            <p:outputLabel class="loginText" value="Nome / Razão Social" />
+               <a:newLine />
+               <p:inputText id="inputNome" class="registerField" placeholder="Nome / Razão Social" value="#{CadastroUsuarioControl.empresaCliente.pessoa.nome}" required="true" />
+            </p:column>
+         </p:row>
+
+         <p:row>
+            <p:column>
+            <p:outputLabel class="loginText" value="E-mail" />
+               <a:newLine />
+               <p:inputText id="inputEmail" class="registerField" placeholder="exemplo@email.com.br" value="#{CadastroUsuarioControl.empresaCliente.pessoa.email}" required="true" />
+            </p:column>
+         </p:row>
+
+         <p:row>
+            <p:column>
+               <p:outputLabel class="loginText" value="Senha" />
+               <a:newLine />
+               <p:password id="passwordInput" styleClass="registerField" value="#{CadastroUsuarioControl.senha}" required="true" placeholder="Digite a senha desejada." />
+            </p:column>
+         </p:row>
+
+         <p:row>
+            <p:column>
+               <p:outputLabel class="loginText" value="Confirmar Senha" />
+               <a:newLine />
+               <p:password id="passwordInputConfirm" styleClass="registerField" value="#{CadastroUsuarioControl.senhaConfirm}" required="true" placeholder="Confirme a senha digitada." />
+            </p:column>
+         </p:row>
+
+         <p:row>
+            <p:column style="text-align:center;">
+               <p:messages autoUpdate="true" style="width: 100% !important;" />
+               <a:newLine />
+               <p:commandButton id="concluirButton" value="Concluir" type="submit" action="#{CadastroUsuarioControl.cadastrarPessoaEmpresaEUsuario()}" update="@all"
+                  oncomplete="PF('dialogUsuarioSenha').hide();" styleClass="concluirCadastroButton" />
+               <a:newLine />
+            </p:column>
+         </p:row>
+
+         <p:row>
+            <p:column>
+               <a:newLine />
+            </p:column>
+         </p:row>
+      </p:panelGrid>
+      <a:newLine />
+   </h:form>
+</h:body>
+</html>
