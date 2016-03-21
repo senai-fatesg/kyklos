@@ -27,120 +27,125 @@ import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
 
 @Named("PessoaControl")
 @Scope("conversation")
-public class PessoaControl implements Serializable{
+public class PessoaControl implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   @Autowired
-   private PessoaDao pessoaDao;
+	@Autowired
+	private PessoaDao pessoaDao;
 
-   @Autowired
-   private PessoaEmpresaDao pessoaEmpresaDao;
+	@Autowired
+	private PessoaEmpresaDao pessoaEmpresaDao;
 
-   @Autowired
-   private PessoaNeg pessoaNeg;
+	@Autowired
+	private PessoaNeg pessoaNeg;
 
-   @Autowired
-   private CepNeg cepNeg;
+	@Autowired
+	private CepNeg cepNeg;
 
-   @Autowired
-   private MunicipioDao municipioDao;
+	@Autowired
+	private MunicipioDao municipioDao;
 
-   @Autowired
-   private UsuarioLogadoControl usuarioLogadoControl;
+	@Autowired
+	private UsuarioLogadoControl usuarioLogadoControl;
 
-   @Autowired
-   private ParametroDao parametroDao;
+	@Autowired
+	private ParametroDao parametroDao;
 
-   private List<Municipio> municipios = new ArrayList<Municipio>();
+	private List<Municipio> municipios = new ArrayList<Municipio>();
 
-   private Pessoa pessoa = new Pessoa();
+	private Pessoa pessoa = new Pessoa();
 
-   private PessoaEmpresa pessoaEmpresa = new PessoaEmpresa();
+	private PessoaEmpresa pessoaEmpresa = new PessoaEmpresa();
 
-   private String cpfCnpj;
+	private String cpfCnpj;
 
-   private String uf;
+	private String uf;
 
-   public void consultarCep(){
-      try {
-         Cep cepDto = cepNeg.consultar(pessoa.getCep());
-         pessoa.setMunicipio(municipioDao.consultarPorCodigoIbge(cepDto.getCodigoIbge()));
-         pessoa.setLogradouro(cepDto.getLogradouro());
-         pessoa.setBairro(cepDto.getBairro());
-      } catch (PedidoException e) {
-         UtilFaces.addMensagemFaces("Erro ao consultar o CEP: ");
-         UtilFaces.addMensagemFaces(e.getMessage());
-      }
-   }
+	public void consultarCep() {
+		try {
+			Cep cepDto = cepNeg.consultar(pessoa.getCep());
+			pessoa.setMunicipio(municipioDao.consultarPorCodigoIbge(cepDto
+					.getCodigoIbge()));
+			pessoa.setLogradouro(cepDto.getLogradouro());
+			pessoa.setBairro(cepDto.getBairro());
+		} catch (PedidoException e) {
+			UtilFaces.addMensagemFaces("Erro ao consultar o CEP: ");
+			UtilFaces.addMensagemFaces(e.getMessage());
+		}
+	}
 
-   public List<Municipio> completeMunicipio(String municipio) {
-      return municipioDao.listarPorDescricao(municipio);
-   }
+	public List<Municipio> completeMunicipio(String municipio) {
+		return municipioDao.listarPorDescricao(municipio);
+	}
 
-   public void consultar(){
-      try {
-         pessoa = pessoaNeg.consultar(cpfCnpj);
-      } catch (Exception e) {
-         UtilFaces.addMensagemFaces("Erro ao consultar.");
-         UtilFaces.addMensagemFaces(e.getMessage());
-      }
-   }
+	public void consultar() {
+		try {
+			pessoa = pessoaNeg.consultar(cpfCnpj);
+			if (pessoa.getId() == null) {
+				UtilFaces.addMensagemFaces("CPF/CNPJ não cadastrado.");
 
-   public void limpar(){
-      pessoa = new Pessoa();
-      municipios = new ArrayList<Municipio>();
-   }
+			}
+		} catch (Exception e) {
+			UtilFaces.addMensagemFaces("Erro ao consultar.");
+			UtilFaces.addMensagemFaces(e.getMessage());
+		}
+	}
 
-   public void salvar(ActionEvent actionEvent){
-      try {
-         pessoaNeg.salvar(pessoa, usuarioLogadoControl);
-         pessoa = new Pessoa();
-         UtilFaces.addMensagemFaces("Salvo com sucesso!");
-      } catch (Exception e) {
-         UtilFaces.addMensagemFaces("Erro ao Salvar.");
-         UtilFaces.addMensagemFaces(e.getMessage());
-      }
-   }
+	public void limpar() {
+		pessoa = new Pessoa();
+		municipios = new ArrayList<Municipio>();
+	}
 
-   public Pessoa getPessoa() {
-      return pessoa;
-   }
+	public void salvar(ActionEvent actionEvent) {
+		try {
+			pessoaNeg.salvar(pessoa, usuarioLogadoControl);
+			pessoa = new Pessoa();
+			UtilFaces.addMensagemFaces("Salvo com sucesso!");
+		} catch (Exception e) {
+			UtilFaces.addMensagemFaces("Erro ao Salvar.");
+			UtilFaces.addMensagemFaces(e.getMessage());
+		}
+	}
 
-   public void setPessoa(Pessoa pessoa) {
-      this.pessoa = pessoa;
-   }
+	public Pessoa getPessoa() {
+		return pessoa;
+	}
 
-   public PessoaEmpresa getPessoaEmpresa() {
-      return pessoaEmpresa;
-   }
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
+	}
 
-   public void setPessoaEmpresa(PessoaEmpresa pessoaEmpresa) {
-      this.pessoaEmpresa = pessoaEmpresa;
-   }
+	public PessoaEmpresa getPessoaEmpresa() {
+		return pessoaEmpresa;
+	}
 
-   public List<Municipio> getMunicipios() {
-      return municipios;
-   }
+	public void setPessoaEmpresa(PessoaEmpresa pessoaEmpresa) {
+		this.pessoaEmpresa = pessoaEmpresa;
+	}
 
-   public String getCpfCnpj() {
-      return cpfCnpj;
-   }
+	public List<Municipio> getMunicipios() {
+		return municipios;
+	}
 
-   public void setCpfCnpj(String cpfCnpj) {
-      this.cpfCnpj = cpfCnpj;
-   }
+	public String getCpfCnpj() {
+		return cpfCnpj;
+	}
 
-   public String getUf() {
-      return uf;
-   }
+	public void setCpfCnpj(String cpfCnpj) {
+		this.cpfCnpj = cpfCnpj;
+	}
 
-   public void setUf(String uf) {
-      this.uf = uf;
-   }
+	public String getUf() {
+		return uf;
+	}
 
-   public List<SelectItem> getUfs() {
-      return new ArrayList<SelectItem>(UtilFaces.getListEnum(EnumUf.values()));
-   }
+	public void setUf(String uf) {
+		this.uf = uf;
+	}
+
+	public List<SelectItem> getUfs() {
+		return new ArrayList<SelectItem>(UtilFaces.getListEnum(EnumUf.values()));
+	}
 
 }
