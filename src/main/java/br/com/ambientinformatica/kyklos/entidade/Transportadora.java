@@ -2,6 +2,7 @@ package br.com.ambientinformatica.kyklos.entidade;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +25,11 @@ public class Transportadora extends Entidade implements Serializable{
 	
 	private String razaoSocial;
 	
-	@ManyToOne(optional=false)
+	@Column(nullable = true)
+	private String fantasia;
+	
+	@ManyToOne(optional=false, cascade=CascadeType.ALL)
+	
 	private Endereco endereco = new Endereco();
 
 	@Column(unique=true)
@@ -67,6 +72,14 @@ public class Transportadora extends Entidade implements Serializable{
 	@Override
 	public Integer getId() {
 		return this.id;
+	}
+
+	public String getFantasia() {
+		return fantasia;
+	}
+
+	public void setFantasia(String fantasia) {
+		this.fantasia = fantasia;
 	}
 
 
