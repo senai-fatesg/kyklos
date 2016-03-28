@@ -57,8 +57,7 @@ public class TransportadoraControl implements Serializable{
 
    public void criarTransportadora(){
       activeIndex = 0;
-      transportadora = new Transportadora();
-      enderecoTransportadora = new Endereco();
+      limpar();
    }
    
    public void listarTransportadoras(){
@@ -79,6 +78,8 @@ public class TransportadoraControl implements Serializable{
          transportadora.setCpfCnpj(pessoaDto.getCpfCnpj());
          transportadora.setInscricaoEstadual(pessoaDto.getInscricaoEstadual());
          transportadora.setRazaoSocial(pessoaDto.getNome());
+         transportadora.setFantasia(pessoaDto.getNomeFantasia());
+      
       } catch (Exception e) {
          UtilFaces.addMensagemFaces("Erro ao Consultar: " + e.getMessage());
       }
@@ -100,15 +101,26 @@ public class TransportadoraControl implements Serializable{
    
    @SuppressWarnings("null")
    public void salvarTransportadora(){
-      Transportadora transportadoraConsultada = transportadoraDao.consultarTransportadoraPorCpfCnpj(transportadora.getCpfCnpj());
-      if(transportadoraConsultada != null || transportadoraConsultada.getId() != null){
-         transportadoraDao.incluir(transportadora);
-      }else{
+     Transportadora transportadoraConsultada = transportadoraDao.consultarTransportadoraPorCpfCnpj(transportadora.getCpfCnpj());
+   if(transportadoraConsultada == null || transportadoraConsultada.getId() == null){
+      transportadoraDao.incluir(transportadora);
+	}else{
          UtilFaces.addMensagemFaces("Cadastro já existente:");
          UtilFaces.addMensagemFaces("Razão Social: " + transportadoraConsultada.getRazaoSocial());
          UtilFaces.addMensagemFaces("CPF/CNPJ: " + transportadoraConsultada.getCpfCnpj());
       }
    }
+   
+   public void limpar(){
+	   transportadora = new Transportadora();
+	   enderecoTransportadora = new Endereco();
+	   cpfCnpjTransportadora = new String();
+	   cepTransportadora = new String();
+	   transportadora.setCpfCnpj("");
+	   enderecoTransportadora.setCep("");
+
+   }
+   
 
    public String getBuscaText() {
       return buscaText;
