@@ -27,30 +27,37 @@
       </div>
 
       <div class="contentField">
-         <p:panel header="Buscar / Filtros" toggleable="true" id="filtrosjs" widgetVar="filtrosjs" toggleOrientation="vertical">
+         <p:panel header="Buscar / Filtros" toggleable="true" id="filtrosjs" widgetVar="filtrosjs" toggleOrientation="vertical" icon="ui-icon-search">
 
             <p:panelGrid styleClass="semBorda" style="width:100%;">
                <p:row>
-                  <p:column style="text-align: right; width:60%">
-                     <p:inputText id="textBox" class="searchBar" value="#{TransportadoraControl.buscaText}" placeholder="Transportadora" spaceLeft="10px">
-                        <f:ajax event="change" actionListener="#{TransportadoraControl.listarTransportadoras}" />
+                  <p:column colspan="2" style="text-align: right; width:60%">
+                  
+                     <p:inputText id="textBox" class="searchBar" placeholder="Transportadora" update="@all" value="#{TransportadoraControl.buscaText}">
                      </p:inputText>
+                     
                   </p:column>
-                  <p:column style="text-align:left;">
-                     <p:commandButton class="listaButton" actionListener="#{TransportadoraControl.listarTransportadoras}" ajax="false" value="" icon="ui-icon-search" />
+                  <p:column colspan="2" style="text-align:left;">
+                     <p:commandButton class="listaButton" actionListener="#{TransportadoraControl.listarTransportadoras}" ajax="false" value="" icon="ui-icon-search" update="@all" />
                   </p:column>
+                  
                </p:row>
             </p:panelGrid>
+		  </p:panel>
+        <p:dataTable id="tableEstoque" value="#{TransportadoraControl.listaTransportadoras}" var="t" >
+            <p:column headerText="Razão Social" >
+               <h:outputText value="#{t.razaoSocial}" style="width:40%;" />
+            </p:column>
 
-         </p:panel>
-         
-         <p:dataTable id="listaDeTransportadoras"  var="t" value="#{TransportadoraControl.listaTransportadoras}" selection="#{TransportadoraControl.listaTransportadoras}" rowKey="#{transportadora.id}" style="margin-bottom:0">
-            <p:column headerText="Razão Social" value="#{t.razaoSocial}" style="width:30%;"></p:column>
-            <p:column headerText="CPF/CNPJ" value="#{t.cpfCnpj}" style="width:20%;"></p:column>
-            <p:column headerText="Endereço" value="#{t.endereco.numero}, #{t.endereco.logradouro} - #{t.endereco.bairro}"></p:column>
-        </p:dataTable>
+            <p:column headerText="CPF/CNPJ">
+               <h:outputText value="#{t.cpfCnpj}" style="width:15%;"  />
+            </p:column>
 
-      </div>
+            <p:column headerText="Endereço">
+               <h:outputText value="#{t.endereco.numero}, #{t.endereco.logradouro} - #{t.endereco.bairro}" style="width:45%;"  />
+            </p:column>
+		</p:dataTable>
+	</div>
 	
 	<div>
       <p:dialog  header="Cadastro de Transportadora" widgetVar="formTransportadora" id="formTransportadora" showEffect="puff" hideEffect="scale" width="700px" height="475px" resizable="false">
@@ -67,7 +74,7 @@
                      </p:column>
 
                      <p:column>
-                        <p:commandButton value="Salvar" actionListener="#{TransportadoraControl.salvarTransportadora}" update="formTransportadora" icon="ui-icon-disk" />
+                        <p:commandButton value="Salvar" actionListener="#{TransportadoraControl.salvarTransportadora}" update="formTransportadora" icon="ui-icon-disk" validateClient="true" />
                      </p:column>
                   </p:row>
                  
@@ -188,5 +195,4 @@
       </p:dialog>
 	</div>
    </ui:define>
-
 </ui:composition>
