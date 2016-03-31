@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a="http://www.ambientinformatica.com.br/jsf2"
+	xmlns:p="http://primefaces.org/ui">
+	<link href="css/estilo.css" rel="stylesheet" type="text/css" />
+
+	<ui:define name="cabecalho">
+
+		<style>
+.ui-autocomplete-input {
+	width: 170px !important;
+}
+</style>
+	</ui:define>
+
+	<ui:define name="corpo">
+
+		
+
+		<div class="screenHeader">
+			<a:field spaceLeft="1%">
+				<p:panelGrid id="gridTop" styleClass="semBorda">
+					<p:row>
+						<p:column>
+							<p:commandButton value="Cadastrar"
+								actionListener="#{unidadeMedidaControl.criarUnidade}"
+								update="formUnidade" oncomplete="PF('formUnidade').show();"
+								icon="ui-icon-plusthick" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</a:field>
+		</div>
+
+		<div class="contentField">
+			<p:panel header="Buscar / Filtros" toggleable="true" id="filtrosjs"
+				widgetVar="filtrosjs" toggleOrientation="vertical">
+
+				<p:panelGrid styleClass="semBorda" style="width:100%;">
+					<p:row>
+						<p:column style="text-align: right; width:60%">
+							<p:inputText id="textBox" class="searchBar"
+								value="#{unidadeMedidaControl.buscaText}"
+								placeholder="Unidade (Código/Descrição)" spaceLeft="10px">
+								<f:ajax event="change"
+									actionListener="#{unidadeMedidaControl.listarUnidades}"
+									update="form" />
+							</p:inputText>
+						</p:column>
+						<p:column style="text-align:left;">
+							<p:commandButton class="listaButton"
+								actionListener="#{unidadeMedidaControl.listarUnidades}"
+								update="form, textBox" ajax="false" value=""
+								icon="ui-icon-search" />
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+
+			</p:panel>
+
+			<p:dataTable id="unidades-table"
+				value="#{unidadeMedidaControl.todasUnidades}" var="unidade"
+				emptyMessage="Nenhuma unidade cadastrada." rows="10"
+				paginator="true" paginatorPosition="bottom"
+				selection="unidadeMedidaControl.unidadeSelecionada"
+				selectionMode="single" rowKey="#{transportadora.id}"
+				style="margin-bottom:0">
+
+
+				<p:column style="width:16px">
+					<p:rowToggler />
+				</p:column>
+
+				<p:column headerText="Unidade" sortBy="#{unidade.descricao}"
+					width="70%">
+					<h:outputText value="#{unidade.descricao}" />
+				</p:column>
+
+				<p:column headerText="Sigla" sortBy="#{unidade.sigla}" width="20%">
+					<h:outputText value="#{unidade.sigla}" />
+				</p:column>
+
+				<p:rowExpansion>
+
+					<p:dataTable id="listaEstoqueProduto"
+						value="#{ProdutoControl.estoquesProdutos}" var="ep"
+						emptyMessage="O produto '#{p.descricao}' não foi cadastrado em nenhum estoque.">
+
+						<p:column sortBy="#{ep.estoque.descricao}">
+							<f:facet name="header">
+								<h:outputText value="Descrição" />
+							</f:facet>
+							<h:outputText value="#{ep.estoque.descricao}" />
+						</p:column>
+
+						<p:column sortBy="#{ep.quantidade}">
+							<f:facet name="header">
+								<h:outputText value="Quantidade" />
+							</f:facet>
+							<h:outputText value="#{ep.quantidade}" />
+						</p:column>
+
+						<p:column sortBy="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}">
+							<f:facet name="header">
+								<h:outputText value="Empresa" />
+							</f:facet>
+							<h:outputText
+								value="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}" />
+						</p:column>
+
+					</p:dataTable>
+
+				</p:rowExpansion>
+
+			</p:dataTable>
+
+		</div>
+
+		<p:dialog header="Cadastro de Unidade" widgetVar="formUnidade"
+			id="formUnidade" showEffect="puff" hideEffect="scale" height="45%"
+			resizable="false">
+
+			<div id="topMenu" align="center">
+				<a:field spaceLeft="1%">
+					<p:panelGrid id="gridTopDialog" styleClass="semBorda">
+						<p:row>
+							<p:column>
+								<p:commandButton value="Limpar" type="reset"
+									icon="ui-icon-trash" />
+							</p:column>
+							<p:column>
+								<p:commandButton value="Salvar"
+									actionListener="#{unidadeMedidaControl.salvar}"
+									update="formUnidade" icon="ui-icon-disk" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</a:field>
+			</div>
+
+			<a:newLine />
+			<p:tabView id="produtoTabview"
+				activeIndex="#{unidadeMedidaControl.activeIndex}" class="semBorda"
+				cache="true" style="width:624px; text-align: left;"
+				onTabShow="#{unidadeMedidaControl.limpar()}">
+				<p:tab id="produto" title="Unidade">
+					<p:panelGrid id="produtoPanel" style="width: 100%;">
+						<p:row>
+						</p:row>
+						<p:row>
+						</p:row>
+						<p:row>
+							<p:column style="width:200px !important;">
+								<h:outputLabel for="unidade" value="Unidade" />
+								<a:newLine />
+								<p:inputText id="unidade"
+									value="#{unidadeMedidaControl.unidadeMedida.descricao}"
+									placeholder="Descrição Unidade" style="width: 200px;" />
+							</p:column>
+
+							<p:column style="width:200px !important;">
+								<h:outputLabel for="sigla" value="Sigla" />
+								<a:newLine />
+								<p:inputText id="sigla"
+									value="#{unidadeMedidaControl.unidadeMedida.sigla}"
+									placeholder="Unidade" style="width: 200px;" />
+							</p:column>
+						</p:row>
+						<p:row>
+						</p:row>
+					</p:panelGrid>
+				</p:tab>
+			</p:tabView>
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>
