@@ -31,7 +31,7 @@
                      <p:inputText id="textBox" class="searchBar" placeholder="Descrição" update="@all" value="#{EstoqueControl.descricao}">
                      </p:inputText>
                   </p:column>
-                  <p:column colspan="2" style="text-align:left;">
+                  <p:column style="text-align:left;">
                      <p:commandButton class="listaButton" actionListener="#{EstoqueControl.consultar}" ajax="false" value="" icon="ui-icon-search" update="@all" />
                   </p:column>
                </p:row>
@@ -39,7 +39,8 @@
             </p:panelGrid>
          </p:panel>
 
-         <p:dataTable id="tableEstoque" value="#{EstoqueControl.listaEstoques}" var="e">
+         <p:dataTable id="tableEstoque" value="#{EstoqueControl.listaEstoques}" var="e"
+          emptyMessage="Nenhum estoque cadastrado.">
             <p:column headerText="Empresa">
                <h:outputText value="#{e.pessoaEmpresa.pessoa.nome}" />
             </p:column>

@@ -24,7 +24,7 @@ public class UnidadeMedidaControl {
 
 	private UnidadeMedida unidadeMedida = new UnidadeMedida();
 
-	private List<UnidadeMedida> unidadeMedidas = new ArrayList<UnidadeMedida>();
+	private List<UnidadeMedida> listaUnidadeMedida = new ArrayList<UnidadeMedida>();
 
 	@Autowired
 	private UnidadeMedidaDao unidadeMedidaDao;
@@ -43,6 +43,10 @@ public class UnidadeMedidaControl {
 	private List<UnidadeMedida> todasUnidades;
 
 	private String id;
+	
+	private String descricao;
+	
+	private String sigla;
 
 	private int activeIndex;
 
@@ -91,7 +95,9 @@ public class UnidadeMedidaControl {
 	}
 	
 	public void consultar() {
-		todasUnidades = unidadeMedidaNegImpl.todas();
+		//todasUnidades = unidadeMedidaNegImpl.todas();
+		//listaUnidadeMedida = unidadeMedidaDao.listarPorDescricao(descricao);
+		listaUnidadeMedida = unidadeMedidaDao.listarUnidadesPorSigla(sigla);
 	}
 
 	// public void listarUnidades() {
@@ -107,9 +113,9 @@ public class UnidadeMedidaControl {
 	// }
 
 	public void expanssionUnidade(UnidadeMedida unidade) {
-		unidadeMedidas = unidadeMedidaDao.listar();
-		if (unidadeMedidas == null) {
-			unidadeMedidas = new ArrayList<UnidadeMedida>();
+		listaUnidadeMedida = unidadeMedidaDao.listar();
+		if (listaUnidadeMedida == null) {
+			listaUnidadeMedida = new ArrayList<UnidadeMedida>();
 		}
 	}
 
@@ -122,11 +128,11 @@ public class UnidadeMedidaControl {
 	}
 
 	public List<UnidadeMedida> getUnidadeMedidas() {
-		return unidadeMedidas;
+		return listaUnidadeMedida;
 	}
 
 	public void setUnidadeMedidas(List<UnidadeMedida> unidadeMedidas) {
-		this.unidadeMedidas = unidadeMedidas;
+		this.listaUnidadeMedida = unidadeMedidas;
 	}
 
 	public UnidadeMedidaDao getUnidadeMedidaDao() {
@@ -196,5 +202,38 @@ public class UnidadeMedidaControl {
 	public void setUnidadeSelecionada(UnidadeMedida unidadeSelecionada) {
 		this.unidadeSelecionada = unidadeSelecionada;
 	}
+
+	public UnidadeMedidaNegImpl getUnidadeMedidaNegImpl() {
+		return unidadeMedidaNegImpl;
+	}
+
+	public void setUnidadeMedidaNegImpl(UnidadeMedidaNegImpl unidadeMedidaNegImpl) {
+		this.unidadeMedidaNegImpl = unidadeMedidaNegImpl;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public List<UnidadeMedida> getListaUnidadeMedida() {
+		return listaUnidadeMedida;
+	}
+
+	public void setListaUnidadeMedida(List<UnidadeMedida> listaUnidadeMedida) {
+		this.listaUnidadeMedida = listaUnidadeMedida;
+	}
+
+	public String getSigla() {
+		return sigla;
+	}
+
+	public void setSigla(String sigla) {
+		this.sigla = sigla.toUpperCase();
+	}
+	
 
 }
