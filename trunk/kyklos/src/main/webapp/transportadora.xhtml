@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
    xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
-   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
 
    <ui:define name="cabecalho">
       <style>
@@ -38,7 +37,7 @@
                      
                   </p:column>
                   <p:column colspan="2" style="text-align:left;">
-                     <p:commandButton class="listaButton" actionListener="#{TransportadoraControl.listarTransportadoras}" ajax="false" value="" icon="ui-icon-search" update="@all" />
+                     <p:commandButton class="listaButton" actionListener="#{TransportadoraControl.listarTransportadoras}" ajax="false" value="Pesquisar" icon="ui-icon-search" update="@all" />
                   </p:column>
                   
                </p:row>
@@ -60,7 +59,7 @@
 	</div>
 	
 	<div>
-      <p:dialog  header="Cadastro de Transportadora" widgetVar="formTransportadora" id="formTransportadora" showEffect="puff" hideEffect="scale" width="700px" height="475px" resizable="false">
+      <p:dialog  header="Cadastro de Transportadora" widgetVar="formTransportadora" id="formTransportadora" showEffect="puff" hideEffect="scale" width="700px" height="630px" resizable="false">
          <div id="topMenu" align="center">
             <a:field spaceLeft="1%">
                <p:panelGrid id="gridTopDialog" styleClass="semBorda">

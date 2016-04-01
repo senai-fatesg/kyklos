@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a="http://www.ambientinformatica.com.br/jsf2"
+	xmlns:p="http://primefaces.org/ui">
+		
+		<p:sticky target="menubar" />
+		<p:growl autoUpdate="true" id="growl" showDetail="true" sticky="true" />
+		<p:menubar id="menubar" autoDisplay="true" style="margin-top: -5px"> 
+			<p:menuitem icon="ui-icon-home" value="Início" action="inicio?faces-redirect=true" ajax="false" />
+			<p:submenu label="Pedidos" icon="ui-icon-search">
+				<p:menuitem value="Novo pedido" action="pedido?faces-redirect=true" ajax="false" icon="ui-icon-search" />
+				<p:menuitem value="Consultar pedido" action="pedidoLista?faces-redirect=true" ajax="false" icon="ui-icon-search" />
+				<p:menuitem value="Importar pedido" action="importarPedido?faces-redirect=true" ajax="false" icon="ui-icon-search" />
+			</p:submenu>
+			<p:submenu label="Cadastro" icon="ui-icon-folder-collapsed">
+                <p:menuitem icon="ui-icon-document" value="Pessoa" action="pessoa?faces-redirect=true" ajax="false"/>
+                <p:menuitem icon="ui-icon-document" value="Produto" action="produto?faces-redirect=true" ajax="false"/>
+                <p:menuitem icon="ui-icon-document" value="Estoque" action="estoque?faces-redirect=true" ajax="false"/>
+                <p:menuitem icon="ui-icon-document" value="Transportadora" action="transportadora?faces-redirect=true" ajax="false"/>
+            </p:submenu>
+			<p:submenu label="Administrar" icon="ui-icon-wrench">
+				<p:menuitem icon="ui-icon-document" value="Usuário" action="usuário?faces-redirect=true" ajax="false" />
+			</p:submenu>			
+			<p:menuitem value="Sair" icon="ui-icon-power" onclick="document.location.href='sair.jsp'" immediate="true" />
+		</p:menubar>
+
+</ui:composition>

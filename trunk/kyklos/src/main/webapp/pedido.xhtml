@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
    xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
-   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
 
    <ui:define name="corpo">
 
+	<p:panel header="Pedido">
       <div class="screenHeader">
 
          <a:field spaceLeft="1%">
-            <p:panelGrid id="gridTop" styleClass="semBorda">
+            <p:panelGrid id="gridTop" styleClass="form-group">
                <p:row>
                   <p:column>
                      <p:commandButton title="Limpar Tela" value="limpar" type="reset" icon="ui-icon-trash" />
@@ -342,7 +342,7 @@
       </p:dialog>
 
       <p:dialog id="formFinalizarNegociacao" header="Opções de Frete - #{NegociacaoPedidoControl.negociacaoPedido.cliente.nome}" widgetVar="formFinalizarNegociacao" showEffect="puff"
-         hideEffect="scale" closable="false" resizable="false" width="630px" height="440px" style="text-align:center;">
+         hideEffect="scale" closable="false" resizable="false" width="800px" height="730px" style="text-align:center;">
          <h:form id="formFreteEPagamento">
 
             <p:growl id="growl" sticky="true" showDetail="true" />
@@ -369,31 +369,31 @@
                   <a:newLine />
                   <p:panelGrid id="panelFrete" styleClass="semBorda" style="width:590px;">
                      <p:row>
-                        <p:column colspan="2" styleClass="e">
+                        <p:column class="col-md-3" styleClass="e">
                            <p:selectOneMenu id="selectOneEndereco" style="width:100%;">
                               <f:selectItem itemLabel="Endereços Cadastrados" />
                            </p:selectOneMenu>
                         </p:column>
-                        <p:column colspan="2">
+                        <p:column class="col-md-3">
                            <p:commandButton value="Vincular Endereço ao Cliente" icon="ui-icon-home" />
                         </p:column>
                      </p:row>
                      <p:row>
-                        <p:column style="width:159px;" styleClass="e">
+                        <p:column class="col-md-3" style="width:159px;" styleClass="e">
                            <h:outputText value="CEP" />
                            <a:newLine />
                            <p:inputMask id="inputCEP" mask="99.999-999" style="height: 15px; width:150px;" />
                         </p:column>
-                        <p:column styleClass="e">
+                        <p:column class="col-md-3" styleClass="e">
                            <a:newLine />
                            <p:commandButton id="buscarCepButton" value="Buscar" icon="ui-icon-search" style="width:100%;" />
                         </p:column>
-                        <p:column styleClass="e">
+                        <p:column class="col-md-3" styleClass="e">
                            <p:outputLabel value="Logradouro:" />
                            <a:newLine />
                            <p:inputText id="logradouroInfo" value="Rua S 3 Qd S 11" disabled="true" />
                         </p:column>
-                        <p:column styleClass="e">
+                        <p:column class="col-md-3" styleClass="e">
                            <p:outputLabel value="Nº:" />
                            <a:newLine />
                            <p:inputText id="numeroInfo" value="419" style="width: 65px;" />
@@ -426,26 +426,26 @@
                      </p:row>
 
                      <p:row>
-                        <p:column colspan="2" rowspan="2">
+                        <p:column class="col-md-3" rowspan="2">
                            <p:dataTable id="listaTransportadoras" widgetVar="transportadora" value="#{NegociacaoPedidoControl.transportadoras}" style="width:100%;">
                               <f:facet name="header">
                                  <p:outputLabel value="Transportadoras" />
                               </f:facet>
 
-                              <p:column headerText="Transportadora" style="width:45%;">
+                              <p:column class="col-md-3" headerText="Transportadora">
 
                               </p:column>
 
-                              <p:column headerText="Prazo">
+                              <p:column class="col-md-3" headerText="Prazo" >
 
                               </p:column>
 
-                              <p:column headerText="Valor">
+                              <p:column class="col-md-3" headerText="Valor">
 
                               </p:column>
                            </p:dataTable>
                         </p:column>
-                        <p:column colspan="2" styleClass="e">
+                        <p:column class="col-md-3" styleClass="e">
                            <p:outputLabel value="Complemento:" />
                            <a:newLine />
                            <p:inputText id="complementoInfo" value="Apto 303 Residencial Novità" style="width:250px;" />
@@ -663,6 +663,7 @@
          </p:panelGrid>
       </p:dialog>
 
+	</p:panel>
    </ui:define>
 
 </ui:composition>
