@@ -33,7 +33,7 @@ public class UnidadeMedida extends Entidade implements Serializable {
 	}
 
 	public void setSigla(String sigla) {
-		this.sigla = sigla;
+		this.sigla = sigla.toUpperCase();
 	}
 
 	public String getDescricao() {
@@ -41,10 +41,18 @@ public class UnidadeMedida extends Entidade implements Serializable {
 	}
 
 	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+		this.descricao = descricao.toUpperCase();
 	}
 
 	public Integer getId() {
 		return id;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 }

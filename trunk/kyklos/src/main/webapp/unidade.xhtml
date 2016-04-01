@@ -19,7 +19,7 @@
 
 	<ui:define name="corpo">
 
-		
+
 
 		<div class="screenHeader">
 			<a:field spaceLeft="1%">
@@ -38,84 +38,38 @@
 
 		<div class="contentField">
 			<p:panel header="Buscar / Filtros" toggleable="true" id="filtrosjs"
-				widgetVar="filtrosjs" toggleOrientation="vertical">
+				widgetVar="filtrosjs" toggleOrientation="vertical"
+				icon="ui-icon-search">
 
 				<p:panelGrid styleClass="semBorda" style="width:100%;">
 					<p:row>
 						<p:column style="text-align: right; width:60%">
-							<p:inputText id="textBox" class="searchBar"
-								value="#{unidadeMedidaControl.buscaText}"
-								placeholder="Unidade (Código/Descrição)" spaceLeft="10px">
-								<f:ajax event="change"
-									actionListener="#{unidadeMedidaControl.listarUnidades}"
-									update="form" />
-							</p:inputText>
+							<p:inputText id="textBox" style="text-transform:uppercase" size="10" class="searchBar"
+								placeholder="Unidade (sigla)" update="textBox unidades-table"
+								value="#{unidadeMedidaControl.sigla}"/>
 						</p:column>
 						<p:column style="text-align:left;">
 							<p:commandButton class="listaButton"
-								actionListener="#{unidadeMedidaControl.listarUnidades}"
-								update="form, textBox" ajax="false" value=""
-								icon="ui-icon-search" />
+								actionListener="#{unidadeMedidaControl.consultar}"
+								ajax="false" value="" icon="ui-icon-search"
+								update="@all"/>
 						</p:column>
 					</p:row>
+					
 				</p:panelGrid>
-
 			</p:panel>
 
 			<p:dataTable id="unidades-table"
-				value="#{unidadeMedidaControl.todasUnidades}" var="unidade"
-				emptyMessage="Nenhuma unidade cadastrada." rows="10"
-				paginator="true" paginatorPosition="bottom"
-				selection="unidadeMedidaControl.unidadeSelecionada"
-				selectionMode="single" rowKey="#{transportadora.id}"
-				style="margin-bottom:0">
+				value="#{unidadeMedidaControl.listaUnidadeMedida}" var="u"
+				emptyMessage="Nenhuma unidade cadastrada.">
 
-
-				<p:column style="width:16px">
-					<p:rowToggler />
+				<p:column headerText="Unidade" width="70%">
+					<h:outputText value="#{u.descricao}" />
 				</p:column>
 
-				<p:column headerText="Unidade" sortBy="#{unidade.descricao}"
-					width="70%">
-					<h:outputText value="#{unidade.descricao}" />
+				<p:column headerText="Sigla" width="20%">
+					<h:outputText value="#{u.sigla}" />
 				</p:column>
-
-				<p:column headerText="Sigla" sortBy="#{unidade.sigla}" width="20%">
-					<h:outputText value="#{unidade.sigla}" />
-				</p:column>
-
-				<p:rowExpansion>
-
-					<p:dataTable id="listaEstoqueProduto"
-						value="#{ProdutoControl.estoquesProdutos}" var="ep"
-						emptyMessage="O produto '#{p.descricao}' não foi cadastrado em nenhum estoque.">
-
-						<p:column sortBy="#{ep.estoque.descricao}">
-							<f:facet name="header">
-								<h:outputText value="Descrição" />
-							</f:facet>
-							<h:outputText value="#{ep.estoque.descricao}" />
-						</p:column>
-
-						<p:column sortBy="#{ep.quantidade}">
-							<f:facet name="header">
-								<h:outputText value="Quantidade" />
-							</f:facet>
-							<h:outputText value="#{ep.quantidade}" />
-						</p:column>
-
-						<p:column sortBy="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}">
-							<f:facet name="header">
-								<h:outputText value="Empresa" />
-							</f:facet>
-							<h:outputText
-								value="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}" />
-						</p:column>
-
-					</p:dataTable>
-
-				</p:rowExpansion>
-
 			</p:dataTable>
 
 		</div>
@@ -135,7 +89,8 @@
 							<p:column>
 								<p:commandButton value="Salvar"
 									actionListener="#{unidadeMedidaControl.salvar}"
-									update="formUnidade" icon="ui-icon-disk" />
+									action="#{unidadeMedidaControl.consultar}"
+									update="@all" icon="ui-icon-disk" />
 							</p:column>
 						</p:row>
 					</p:panelGrid>
@@ -148,7 +103,7 @@
 				cache="true" style="width:624px; text-align: left;"
 				onTabShow="#{unidadeMedidaControl.limpar()}">
 				<p:tab id="produto" title="Unidade">
-					<p:panelGrid id="produtoPanel" style="width: 100%;">
+					<p:panelGrid id="produtoPanel"  style="width: 100%;">
 						<p:row>
 						</p:row>
 						<p:row>
@@ -157,17 +112,17 @@
 							<p:column style="width:200px !important;">
 								<h:outputLabel for="unidade" value="Unidade" />
 								<a:newLine />
-								<p:inputText id="unidade"
+								<p:inputText id="unidade" style="text-transform:uppercase"
 									value="#{unidadeMedidaControl.unidadeMedida.descricao}"
-									placeholder="Descrição Unidade" style="width: 200px;" />
+									placeholder="Descrição Unidade" />
 							</p:column>
 
 							<p:column style="width:200px !important;">
 								<h:outputLabel for="sigla" value="Sigla" />
 								<a:newLine />
-								<p:inputText id="sigla"
+								<p:inputText id="sigla" style="text-transform:uppercase"
 									value="#{unidadeMedidaControl.unidadeMedida.sigla}"
-									placeholder="Unidade" style="width: 200px;" />
+									placeholder="Unidade" />
 							</p:column>
 						</p:row>
 						<p:row>

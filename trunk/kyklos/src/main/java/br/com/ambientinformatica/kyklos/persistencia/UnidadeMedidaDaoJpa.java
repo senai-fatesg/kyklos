@@ -38,16 +38,28 @@ public class UnidadeMedidaDaoJpa extends PersistenciaJpa<UnidadeMedida>
 		}
 	}
 
-	@Override
+	 @SuppressWarnings("unchecked")
 	public List<UnidadeMedida> listarUnidadesPorSigla(String sigla) {
 		try {
-			Query query = em.createQuery("select u from UnidadeMedida u"
-					+ " where UPPER(u.sigla) like UPPER(:sigla)");
+			Query query = em.createQuery("select u from UnidadeMedida u where upper(u.sigla) like :sigla");
 			query.setParameter("sigla", "%" + sigla + "%");
-			query.setMaxResults(25);
+			//query.setMaxResults(25);
 			return query.getResultList();
 		} catch (NoResultException e) {
 			return null;
 		}
 	}
+
+	 @SuppressWarnings("unchecked")
+	public List<UnidadeMedida> listarPorDescricao(String descricao) {
+		try {
+			Query query = em
+					.createQuery("select u from UnidadeMedida u where upper(u.descricao) like :descricao");
+			query.setParameter("descricao", "%" + descricao.toUpperCase() + "%");
+			return query.getResultList();
+		} catch (NoResultException nre) {
+			return null;
+		}
+	}
+
 }
