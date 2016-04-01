@@ -2,6 +2,11 @@ html, body, hr {
 	margin:0;
 	padding:0;	
 }
+
+html{
+	overflow-x: hidden;	
+}
+
 .wrapper {
 	width:100%;	
 }
@@ -152,5 +157,20 @@ html, body, hr {
 .footer p {
 	color:#999;
 }
+
+.header-topo {
+	 
+	height: 60px; 
+	max-height: 80px;
+	padding-left: 0px; padding-right: 0px;
+	 
+	padding-bottom: 30px;
+	margin-top: -20px;
+	margin-bottom: 5px;
+ 	background: #E1F5C4 url("../img/bg-recicle-pattern.png"); /*repeat-y top left;
+ 	/* background-image: url("../imagens/topo-pattern.png"); */''
+ 	border-bottom: 1px solid #658A2D;
+}
+
 
 

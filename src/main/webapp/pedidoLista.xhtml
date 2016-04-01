@@ -1,32 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
    xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
-   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
 
    <ui:define name="corpo">
-
-      <div class="screenHeader">
-         <a:field spaceLeft="1%">
-            <p:panelGrid id="gridTop" styleClass="semBorda">
-               <p:row>
-                  <p:column>
-                     <p:commandButton class="cadastraButton" value="Novo Pedido" icon="ui-icon-plusthick" onclick="document.location.href='pedido.xhtml'" />
-                  </p:column>
-                  <p:column>
-                  </p:column>
-                  <p:column>
-                  </p:column>
-                  <p:column>
-                  </p:column>
-               </p:row>
-            </p:panelGrid>
-         </a:field>
-      </div>
-
       <div class="contentField">
-
+  	
          <p:panel header="Buscar / Filtros" toggleable="true" id="filtrosjs" widgetVar="filtrosjs" toggleOrientation="vertical" style="border-radius:0px !important;">
-
+			<a:field>
+                 <p:commandButton class="cadastraButton" value="Novo Pedido" icon="ui-icon-plusthick" onclick="document.location.href='pedido.xhtml'" />
+            </a:field>
             <p:panelGrid style="width:100%; text-align: center;" styleClass="semBorda">
                <p:row>
                   <p:column colspan="2" style="text-align: right; width:60%">
@@ -35,7 +17,7 @@
                      </p:inputText>
                   </p:column>
                   <p:column colspan="2" style="text-align:left;">
-                     <p:commandButton class="listaButton" actionListener="#{NegociacaoPedidoControl.listarPedidos}" update="form, textBox" ajax="false" value="" icon="ui-icon-search" />
+                     <p:commandButton class="listaButton" actionListener="#{NegociacaoPedidoControl.listarPedidos}" update="form, textBox" ajax="false" value="Negociação" icon="ui-icon-search" />
                   </p:column>
                </p:row>
 

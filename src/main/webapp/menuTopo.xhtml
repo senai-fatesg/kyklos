@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+
+	<ui:insert name="header">
+		<div id="header">
+			<div id="headerLeft" style="height: 40px; background-color: rgb(216, 216, 216);">
+				<div style="float: left;">
+		         	<font face="Arial Narrow" ><h3>Empresa: </h3></font>
+		         </div>
+		         <div style="float: left; margin-top: -20px">
+			         <a:field spaceLeft="10px">
+				         <p:autoComplete id="empresa" size="20" dropdown="true" rendered="#{usuarioLogadoControl.variasEmpresas}" converter="objectConverter" value="#{usuarioLogadoControl.empresaUsuario}"
+				             var="e" itemValue="#{e}" itemLabel="#{e.empresa.nome}" completeMethod="#{usuarioLogadoControl.completeEmpresa}" style="height: 30px">
+				             <p:ajax event="itemSelect" update="@all" />
+				         </p:autoComplete>
+			         </a:field>
+		         </div>
+		         
+		         <h:outputText value="#{usuarioLogadoControl.empresaUsuario.empresa.pessoa.nome}" rendered="#{!usuarioLogadoControl.variasEmpresas}" style="height: 30px; width: 100px;" />
+			    
+		    </div>
+		</div>
+		    
+				<div class="header-topo" style="margin-top: 20px">
+					<div class="header-topo-container">
+						<div class="col-md-8" style="margin-top: -18px">
+							<img src="img/logo-kyklos.png" alt="KYKLOS" width="160" style="margin-top: 10px" />
+						</div>
+						<div class="col-md-6">
+							<h:form>
+							
+								<div style="float: right;">
+									<div class="row">
+										<div class="col-md-2">
+											<p:graphicImage id="imageBtn" width="60px" value="img/user2.png" onclick="PF('panelPerfil').loadContents();" style="cursor: pointer; margin-top: -100px" />
+										</div>								
+									</div>
+									<p:commandLink id="ppp" style="float:right;"></p:commandLink>
+									<p:overlayPanel id="panelPerfil" widgetVar="panelPerfil" for="ppp" hideEffect="fade">
+										<p:panel header="PERFIL">
+											<table style="width: 100%;">
+												<tr>
+													<td rowspan="2"><p:graphicImage width="100px;height:70px" value="img/user2.png" />
+													</td>
+														<td><h:outputText value="#{UsuarioLogadoControl.pessoa.nome}" style="font-size:12px" /> 
+															<a:newLine /> 
+															<h:outputText value="#{usuarioLogadoControl.usuario.login}" style="font-size:20px" /> 
+															<a:newLine /> 
+															<a:newLine /> 
+															<h:outputText value="#{usuarioLogadoControl.usuario.nome}" style="font-size:15px;font-style:italic">
+															<a:newLine/>
+															</h:outputText>
+															<a:newLine />
+															<p:outputLabel value="Último Acesso:" style="font-weight:bold;" />
+						                        			<p:outputLabel value="#{usuarioLogadoControl.usuario.dataUltimoAcesso}" style="font-size:15px;font-style:italic">
+						                           				<f:convertDateTime pattern="dd/MM/yyyy" />
+						                        			</p:outputLabel> 
+														</td>
+												</tr>
+											</table>
+											<p:separator/>
+											<a:field>
+												<p:commandButton value="Redefinir senha" action="#{usuarioLogadoControl.limparSenhas}" onclick="PF('panelPerfil').hide(); PF('dialogChangePassword').show();" icon="ui-icon-key" />
+											</a:field>
+											<a:field spaceLeft="10px">
+												<p:commandButton value="Meu cadastro" icon="ui-icon-person" onclick="PF('panelPerfil').hide(); PF('dialogMeuCadastro').show();" />
+											</a:field>
+											<a:field spaceLeft="10px">
+												<p:commandButton value="Sair" icon="ui-icon-power" onclick="PF('confirmDialog').show();" immediate="true"/>
+											</a:field>
+											<a:newLine/>
+											
+											<p:confirmDialog header="Confirmação" message="Tem certeza que deseja sair?" severity="alert" widgetVar="confirmDialog" resizable="false" global="true" showEffect="fade" hideEffect="fade">
+		                  						<p:commandButton value="Sim" onclick="document.location.href='sair.jsp';" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		                  						<p:commandButton value="Não" onclick="PF('confirmDialog').hide()" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		               						</p:confirmDialog>
+										</p:panel>
+									</p:overlayPanel>
+								</div>
+								<div id="content">
+						            <p:messages autoUpdate="true" />
+						            <p:dialog header="Meu Cadastro" widgetVar="dialogMeuCadastro" id="dialogMeuCadastro" showEffect="puff" hideEffect="scale" resizable="false" modal="true" position="center">
+						               <p:panelGrid id="meuCadastroGrid" styleClass="semBorda">
+						                  <p:row>
+						                     <p:column class="col-md-3">
+						                        <p:outputLabel value="Usuário: " style="font-weight:bold;" />
+						                        <h:outputText value="#{usuarioLogadoControl.usuario.login}" />
+						                     </p:column>
+						                  </p:row>
+						                  <p:row>
+						                     <p:column class="col-md-3">
+						                        <p:outputLabel value="Nome: " style="font-weight:bold;" />
+						                        <p:inputText value="#{usuarioLogadoControl.usuario.nome}" />
+						                     </p:column>
+						                  </p:row>
+						                  <p:row>
+						                     <p:column class="col-md-3">
+						                        <p:outputLabel value="Data de Cadastro" style="font-weight:bold;" />
+						                        <a:newLine />
+						                        <p:outputLabel value="#{usuarioLogadoControl.usuario.dataCriacao}">
+						                           <f:convertDateTime pattern="dd/MM/yyyy" />
+						                        </p:outputLabel>
+						                     </p:column>
+						                  </p:row>
+						                  <p:row>
+						                     <p:column class="col-md-3">
+						                     	<a:field spaceLeft="10px">
+						                        	<p:commandButton value="Cancelar" onclick="PF('dialogMeuCadastro').hide();" />
+						                        </a:field>
+						                  		<a:field spaceLeft="10px"> 
+						                        	<p:commandButton value="Alterar" actionListener="#{usuarioLogadoControl.alterar}" />
+						                        </a:field>
+						                     </p:column>
+						                  </p:row>
+						               </p:panelGrid>
+						
+						            </p:dialog>
+						
+						            <p:dialog header="Redefinir Senha" widgetVar="dialogChangePassword" id="dialogChangePassword" showEffect="puff" hideEffect="scale" resizable="false" modal="true" position="center">
+						               <p:panelGrid id="changePasswordGrid" styleClass="semBorda" responsive="true">
+						                  <p:row>
+						                     <p:column class="col-md-2">
+						                        <p:outputLabel value="Digite sua senha atual" style="font-weight:bold;" />
+						                        <a:newLine />
+						                        <p:password value="#{usuarioLogadoControl.senhaAtual}" style="width: 220px;" />
+						                     </p:column>
+						                  </p:row>
+						                  <p:row>
+						                     <p:column class="col-md-2">
+						                        <p:outputLabel value="Digite sua nova senha" style="font-weight:bold;" />
+						                        <a:newLine />
+						                        <p:password value="#{usuarioLogadoControl.novaSenha}" style="width: 220px;" />
+						                     </p:column>
+						                  </p:row>
+						                  <p:row>
+						                     <p:column class="col-md-2">
+						                        <p:outputLabel value="Confirme sua nova senha" style="font-weight:bold;" />
+						                        <a:newLine />
+						                        <p:password value="#{usuarioLogadoControl.confirmacaoNovaSenha}" style="width: 220px;" />
+						                     </p:column>
+						                  </p:row>
+						                  <p:row>
+						                     <p:column class="col-md-2" styleClass="c">
+						                        <a:newLine />
+						                        <p:commandButton value="Confirmar" actionListener="#{usuarioLogadoControl.alterarSenha}" onsuccess="PF('dialogChangePassword').hide();" />
+						                     </p:column>
+						                  </p:row>
+						               </p:panelGrid>
+						            </p:dialog>
+						         </div>
+							</h:form>
+						</div>
+					</div>
+				</div>
+	</ui:insert>
+</ui:composition>
