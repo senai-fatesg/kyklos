@@ -2,6 +2,7 @@ package br.com.ambientinformatica.kyklos.persistencia;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
@@ -16,6 +17,9 @@ public class UnidadeMedidaDaoJpa extends PersistenciaJpa<UnidadeMedida>
 
 	private static final long serialVersionUID = -6621951628831277824L;
 
+	
+	private EntityManager manager;
+
 	@Override
 	public UnidadeMedida consultarPorSigla(String sigla) {
 		try {
@@ -28,6 +32,12 @@ public class UnidadeMedidaDaoJpa extends PersistenciaJpa<UnidadeMedida>
 		}
 	}
 
+//	@SuppressWarnings("unchecked")
+//	public List<UnidadeMedida> consultarTodasUnidadesDeMedida() {
+//		return manager.createQuery("from UnidadeMedida", UnidadeMedida.class)
+//				.getResultList();
+//	}
+
 	@SuppressWarnings("unchecked")
 	public List<UnidadeMedida> consultarTodasUnidadesDeMedida() {
 		try {
@@ -38,19 +48,20 @@ public class UnidadeMedidaDaoJpa extends PersistenciaJpa<UnidadeMedida>
 		}
 	}
 
-	 @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public List<UnidadeMedida> listarUnidadesPorSigla(String sigla) {
 		try {
-			Query query = em.createQuery("select u from UnidadeMedida u where upper(u.sigla) like :sigla");
+			Query query = em
+					.createQuery("select u from UnidadeMedida u where upper(u.sigla) like :sigla");
 			query.setParameter("sigla", "%" + sigla + "%");
-			//query.setMaxResults(25);
+			// query.setMaxResults(25);
 			return query.getResultList();
 		} catch (NoResultException e) {
 			return null;
 		}
 	}
 
-	 @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	public List<UnidadeMedida> listarPorDescricao(String descricao) {
 		try {
 			Query query = em
@@ -61,5 +72,7 @@ public class UnidadeMedidaDaoJpa extends PersistenciaJpa<UnidadeMedida>
 			return null;
 		}
 	}
+
+	
 
 }
