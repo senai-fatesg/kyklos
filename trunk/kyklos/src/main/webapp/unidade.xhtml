@@ -19,7 +19,9 @@
 
 	<ui:define name="corpo">
 
-
+		<f:metadata>
+			<f:viewAction action = "#{unidadeMedidaControl.consultar}" update="unidades-table" />
+		</f:metadata>
 
 		<div class="screenHeader">
 			<a:field spaceLeft="1%">
@@ -44,18 +46,18 @@
 				<p:panelGrid styleClass="semBorda" style="width:100%;">
 					<p:row>
 						<p:column style="text-align: right; width:60%">
-							<p:inputText id="textBox" style="text-transform:uppercase" size="10" class="searchBar"
-								placeholder="Unidade (sigla)" update="textBox unidades-table"
-								value="#{unidadeMedidaControl.sigla}"/>
+							<p:inputText id="textBox" style="text-transform:uppercase"
+								size="10" class="searchBar" placeholder="Unidade (sigla)"
+								update="textBox unidades-table"
+								value="#{unidadeMedidaControl.sigla}" />
 						</p:column>
 						<p:column style="text-align:left;">
 							<p:commandButton class="listaButton"
-								actionListener="#{unidadeMedidaControl.consultar}"
-								ajax="false" value="" icon="ui-icon-search"
-								update="@all"/>
+								actionListener="#{unidadeMedidaControl.consultar}" ajax="false"
+								value="" icon="ui-icon-search" update="@all" />
 						</p:column>
 					</p:row>
-					
+
 				</p:panelGrid>
 			</p:panel>
 
@@ -89,8 +91,8 @@
 							<p:column>
 								<p:commandButton value="Salvar"
 									actionListener="#{unidadeMedidaControl.salvar}"
-									action="#{unidadeMedidaControl.consultar}"
-									update="@all" icon="ui-icon-disk" />
+									action="#{unidadeMedidaControl.consultar}" update="@all"
+									icon="ui-icon-disk" />
 							</p:column>
 						</p:row>
 					</p:panelGrid>
@@ -103,7 +105,7 @@
 				cache="true" style="width:624px; text-align: left;"
 				onTabShow="#{unidadeMedidaControl.limpar()}">
 				<p:tab id="produto" title="Unidade">
-					<p:panelGrid id="produtoPanel"  style="width: 100%;">
+					<p:panelGrid id="produtoPanel" style="width: 100%;">
 						<p:row>
 						</p:row>
 						<p:row>

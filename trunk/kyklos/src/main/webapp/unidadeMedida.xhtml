@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a="http://www.ambientinformatica.com.br/jsf2"
+	xmlns:p="http://primefaces.org/ui">
+	<link href="css/estilo.css" rel="stylesheet" type="text/css" />
+
+	<ui:define name="corpo">
+		<h:form id="form">
+			<p:panel id="pnlUnidade" header="Unidade" style="text-align:center">
+				<p:toolbar>
+					<p:toolbarGroup align="left">
+						<p:commandButton value="Cadastrar" title="Nova Unidade"
+							icon="ui-icon-document" action="#{unidadeControl.preparaIncluir}"
+							process="@this" update="unidade-dialog"
+							oncomplete="PF('edicaoUnidadeDialog').show()">
+							<p:resetInput target="unidade-dialog" />
+						</p:commandButton>
+					</p:toolbarGroup>
+					<p:toolbarGroup align="right">
+
+						<p:inputText id="inputFiltroGlobal"
+							value="#{unidadeControl.sigla}" placeholder="Filtro" />
+						<p:spacer width="5" height="0" />
+						<p:commandButton id="cmdFiltroGlobal" icon="ui-icon-search"
+							actionListener="#{unidadeControl.filtrarPorSigla}" update="@all" />
+						<p:focus for="inputFiltroGlobal" />
+						<p:defaultCommand target="cmdFiltroGlobal" />
+					</p:toolbarGroup>
+				</p:toolbar>
+
+				<p:dataTable id="dtUnidade" var="u"
+					value="#{unidadeControl.unidades}"
+					emptyMessage="Nenhum registro encontrado" paginator="true"
+					rows="10">
+					<p:outputLabel value="Unidades" />
+
+					<p:column headerText="Descrição">
+						<h:outputText value="#{u.descricao}" />
+					</p:column>
+					<p:column headerText="Sigla">
+						<h:outputText value="#{u.sigla}" />
+					</p:column>
+
+					<p:column headerText="Ação" width="10%">
+						<p:commandButton icon="ui-icon-pencil" title="Alterar Unidade"
+							actionListener="#{unidadeControl.preparaAlterar}" ajax="false"
+							process="@this"
+							oncomplete="PF('edicaoUnidadeDialog').show()">
+							<f:attribute name="unidade" value="#{u}" />
+						</p:commandButton>
+						<p:commandButton icon="ui-icon-trash" title="Excluir Unidade"
+							ajax="false" actionListener="#{unidadeControl.prepararExcluir}"
+							process="@this, pnlExcluir" update="pnlUnidade">
+							<f:attribute name="unidade" value="#{unidade}" />
+						</p:commandButton>
+					</p:column>
+					<f:facet name="footer">
+						<p:outputLabel value="#{unidadeControl.tamanhoLista } Registro(s)" />
+					</f:facet>
+				</p:dataTable>
+
+				<p:dialog header="Nova Unidade" widgetVar="edicaoUnidadeDialog"
+					id="unidade-dialog" resizable="false" closeOnEscape="true"
+					modal="true">
+
+					<p:messages id="msgs-dialog" />
+					<p:defaultCommand target="salvar-button" scope="unidade-dialog" />
+
+					<h:panelGrid columns="2" id="painel-dialog">
+						<p:outputLabel value="Descrição" for="descricao" />
+						<p:inputText id="descricao" style="text-transform:uppercase"
+							size="60" maxlength="80"
+							value="#{unidadeControl.unidade.descricao}" />
+
+						<p:outputLabel value="Sigla" for="sigla" />
+						<p:inputText id="sigla" style="text-transform:uppercase" size="18"
+							maxlength="11" value="#{unidadeControl.unidade.sigla}" />
+
+						<p:commandButton value="Salvar" id="salvar-button"
+							action="#{unidadeControl.salvar}" process="unidade-dialog"
+							update="pnlUnidade"
+							oncomplete="if (!args.validationFailed) PF('edicaoUnidadeDialog').hide()" />
+					</h:panelGrid>
+				</p:dialog>
+
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
