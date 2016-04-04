@@ -34,7 +34,7 @@ public class UnidadeMedidaNegImpl implements UnidadeMedidaNeg {
 	PessoaEmpresa pessoaEmpresa = new PessoaEmpresa();
 
 	@Override
-	public UnidadeMedida consultar(String id) throws PedidoException {
+	public UnidadeMedida consultar(Integer id) throws PedidoException {
 		unidade = unidadeDao.consultar(id);
 		return unidade;
 	}
@@ -45,10 +45,16 @@ public class UnidadeMedidaNegImpl implements UnidadeMedidaNeg {
 		unidade = unidadeDao.alterar(um);
 
 	}
-
+	
+	@Override
 	public List<UnidadeMedida> todas() {
 		return manager.createQuery("from Unidademedida", UnidadeMedida.class)
 				.getResultList();
+	}
+	
+	@Override
+	public void excluir(UnidadeMedida um) {
+		unidadeDao.excluirPorId(um.getId());
 	}
 
 }
