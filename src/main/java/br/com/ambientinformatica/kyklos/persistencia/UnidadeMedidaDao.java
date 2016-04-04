@@ -10,11 +10,9 @@ import br.com.ambientinformatica.kyklos.entidade.UnidadeMedida;
 public interface UnidadeMedidaDao extends Persistencia<UnidadeMedida> {
 
 	UnidadeMedida consultarPorSigla(String sigla);
-
 	List<UnidadeMedida> consultarTodasUnidadesDeMedida();
-
 	public List<UnidadeMedida> listarUnidadesPorSigla(String sigla);
-
 	List<UnidadeMedida> listarPorDescricao(String descricao);
+	
 
 }
