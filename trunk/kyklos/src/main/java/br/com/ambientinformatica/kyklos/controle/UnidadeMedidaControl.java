@@ -3,7 +3,6 @@ package br.com.ambientinformatica.kyklos.controle;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
@@ -16,224 +15,140 @@ import br.com.ambientinformatica.kyklos.negocio.UnidadeMedidaNeg;
 import br.com.ambientinformatica.kyklos.negocio.UnidadeMedidaNegImpl;
 import br.com.ambientinformatica.kyklos.persistencia.UnidadeMedidaDao;
 
-@Named("unidadeMedidaControl")
+@Named("UnidadeMedidaControl")
 @Scope("conversation")
 public class UnidadeMedidaControl {
 
-	private static final long serialVersionUID = 1L;
+   private static final long serialVersionUID = 1L;
 
-	private UnidadeMedida unidadeMedida = new UnidadeMedida();
+   private UnidadeMedida unidadeMedida = new UnidadeMedida();
 
-	private List<UnidadeMedida> listaUnidadeMedida = new ArrayList<UnidadeMedida>();
+   private List<UnidadeMedida> listaUnidadesMedida = new ArrayList<UnidadeMedida>();
 
-	@Autowired
-	private UnidadeMedidaDao unidadeMedidaDao;
+   @Autowired
+   private UnidadeMedidaDao unidadeMedidaDao;
 
-	@Autowired
-	private UsuarioLogadoControl usuarioLogadoControl;
+   @Autowired
+   private UsuarioLogadoControl usuarioLogadoControl;
 
-	@Autowired
-	private UnidadeMedidaNeg unidadeMedidaNeg;
+   @Autowired
+   private UnidadeMedidaNeg unidadeMedidaNeg;
 
-	@Autowired
-	private UnidadeMedidaNegImpl unidadeMedidaNegImpl;
+   @Autowired
+   private UnidadeMedidaNegImpl unidadeMedidaNegImpl;
 
-	private UnidadeMedida unidadeSelecionada;
+   private UnidadeMedida unidadeSelecionada;
 
-	private List<UnidadeMedida> todasUnidades;
+   private String descricaoOuSiglaConsulta;
 
-	private String id;
-	
-	private String descricao;
-	
-	private String sigla;
+   
+   public void limpar() {
+      unidadeMedida = new UnidadeMedida();
+   }
 
-	private int activeIndex;
+   public void salvar() {
+      try {
+         unidadeMedida = unidadeMedidaDao.alterar(unidadeMedida);
+         unidadeMedida = new UnidadeMedida();
+         listarUnidadesDeMedida();
+         UtilFaces.addMensagemFaces("Salvo com sucesso!");
+      } catch (Exception e) {
+         UtilFaces.addMensagemFaces("Erro ao Salvar.");
+         UtilFaces.addMensagemFaces(e.getMessage());
+      }
+   }
 
-	private String buscaText = new String();
+   public void excluir(UnidadeMedida unidadeMedida){
+      try{
+         unidadeMedidaDao.excluirPorId(unidadeMedida);
+         listarUnidadesDeMedida();
+         UtilFaces.addMensagemFaces("Registro Excluido com sucesso!");
+      }catch(Exception e){
+         UtilFaces.addMensagemFaces("Erro ao Excluir.");
+         UtilFaces.addMensagemFaces(e.getMessage());
+      }
+   }
+   
+   public List<SelectItem> getSelectunidades() {
+      List<UnidadeMedida> list = unidadeMedidaNegImpl.todas();
+      List<SelectItem> itens = new ArrayList<SelectItem>(list.size());
+      for (UnidadeMedida u : list) {
+         itens.add(new SelectItem(u.getId(), u.getDescricao(), u.getSigla()));
+      }
+      return itens;
+   }
 
-	// public void consultar() {
-	// try {
-	// unidadeMedida = unidadeMedidaNeg.consultar(id);
-	// if (unidadeMedida.getId() == null) {
-	// UtilFaces.addMensagemFaces("Unidade de Medida não cadastrado.");
-	//
-	// }
-	// } catch (Exception e) {
-	// UtilFaces.addMensagemFaces("Erro ao consultar.");
-	// UtilFaces.addMensagemFaces(e.getMessage());
-	// }
-	// }
+   public void listarUnidadesDeMedida() {
+      listaUnidadesMedida = unidadeMedidaDao
+            .listarUnidadesPorSiglaOuDescricao(descricaoOuSiglaConsulta);
+   }
 
-	public void limpar() {
-		unidadeMedida = new UnidadeMedida();
-	}
+   public int getTamanhoListaUnidadesMedida() {
+      return listaUnidadesMedida.size();
+   }
 
-	public void salvar(ActionEvent actionEvent) {
-		try {
-			unidadeMedidaNeg.salvar(unidadeMedida, usuarioLogadoControl);
-			unidadeMedida = new UnidadeMedida();
-			UtilFaces.addMensagemFaces("Salvo com sucesso!");
-		} catch (Exception e) {
-			UtilFaces.addMensagemFaces("Erro ao Salvar.");
-			UtilFaces.addMensagemFaces(e.getMessage());
-		}
-	}
+   public UnidadeMedida getUnidadeMedida() {
+      return unidadeMedida;
+   }
 
-	public void criarUnidade() {
-		activeIndex = 0;
-		limpar();
-	}
+   public void setUnidadeMedida(UnidadeMedida unidadeMedida) {
+      this.unidadeMedida = unidadeMedida;
+   }
 
-	public List<SelectItem> getSelectunidades() {
-		List<UnidadeMedida> list = unidadeMedidaNegImpl.todas();
-		List<SelectItem> itens = new ArrayList<SelectItem>(list.size());
-		for (UnidadeMedida u : list) {
-			itens.add(new SelectItem(u.getId(), u.getDescricao(), u.getSigla()));
-		}
-		return itens;
-	}
-	
-	public void consultar() {
-		//todasUnidades = unidadeMedidaNegImpl.todas();
-		//listaUnidadeMedida = unidadeMedidaDao.listarPorDescricao(descricao);
-		listaUnidadeMedida = unidadeMedidaDao.listarUnidadesPorSigla(sigla);
-	}
+   public UnidadeMedidaDao getUnidadeMedidaDao() {
+      return unidadeMedidaDao;
+   }
 
-	// public void listarUnidades() {
-	// try {
-	//
-	// listaUnidades = unidadeMedidaDao.listarUnidadesPorSigla(buscaText);
-	// if (listaUnidades.isEmpty()) {
-	// UtilFaces.addMensagemFaces("Nenhum resultado encontrado!");
-	// }
-	// } catch (Exception e) {
-	// UtilFaces.addMensagemFaces("Erro de consulta");
-	// }
-	// }
+   public void setUnidadeMedidaDao(UnidadeMedidaDao unidadeMedidaDao) {
+      this.unidadeMedidaDao = unidadeMedidaDao;
+   }
 
-	public void expanssionUnidade(UnidadeMedida unidade) {
-		listaUnidadeMedida = unidadeMedidaDao.listar();
-		if (listaUnidadeMedida == null) {
-			listaUnidadeMedida = new ArrayList<UnidadeMedida>();
-		}
-	}
+   public UsuarioLogadoControl getUsuarioLogadoControl() {
+      return usuarioLogadoControl;
+   }
 
-	public UnidadeMedida getUnidadeMedida() {
-		return unidadeMedida;
-	}
+   public void setUsuarioLogadoControl(UsuarioLogadoControl usuarioLogadoControl) {
+      this.usuarioLogadoControl = usuarioLogadoControl;
+   }
 
-	public void setUnidadeMedida(UnidadeMedida unidadeMedida) {
-		this.unidadeMedida = unidadeMedida;
-	}
+   public UnidadeMedidaNeg getUnidadeMedidaNeg() {
+      return unidadeMedidaNeg;
+   }
 
-	public List<UnidadeMedida> getUnidadeMedidas() {
-		return listaUnidadeMedida;
-	}
+   public void setUnidadeMedidaNeg(UnidadeMedidaNeg unidadeMedidaNeg) {
+      this.unidadeMedidaNeg = unidadeMedidaNeg;
+   }
 
-	public void setUnidadeMedidas(List<UnidadeMedida> unidadeMedidas) {
-		this.listaUnidadeMedida = unidadeMedidas;
-	}
+   public static long getSerialversionuid() {
+      return serialVersionUID;
+   }
 
-	public UnidadeMedidaDao getUnidadeMedidaDao() {
-		return unidadeMedidaDao;
-	}
+   public UnidadeMedida getUnidadeSelecionada() {
+      return unidadeSelecionada;
+   }
 
-	public void setUnidadeMedidaDao(UnidadeMedidaDao unidadeMedidaDao) {
-		this.unidadeMedidaDao = unidadeMedidaDao;
-	}
+   public void setUnidadeSelecionada(UnidadeMedida unidadeSelecionada) {
+      this.unidadeSelecionada = unidadeSelecionada;
+   }
 
-	public UsuarioLogadoControl getUsuarioLogadoControl() {
-		return usuarioLogadoControl;
-	}
+   public UnidadeMedidaNegImpl getUnidadeMedidaNegImpl() {
+      return unidadeMedidaNegImpl;
+   }
 
-	public void setUsuarioLogadoControl(UsuarioLogadoControl usuarioLogadoControl) {
-		this.usuarioLogadoControl = usuarioLogadoControl;
-	}
+   public void setUnidadeMedidaNegImpl(UnidadeMedidaNegImpl unidadeMedidaNegImpl) {
+      this.unidadeMedidaNegImpl = unidadeMedidaNegImpl;
+   }
 
-	public UnidadeMedidaNeg getUnidadeMedidaNeg() {
-		return unidadeMedidaNeg;
-	}
+   public List<UnidadeMedida> getListaUnidadesMedida() {
+      return listaUnidadesMedida;
+   }
 
-	public void setUnidadeMedidaNeg(UnidadeMedidaNeg unidadeMedidaNeg) {
-		this.unidadeMedidaNeg = unidadeMedidaNeg;
-	}
+   public String getDescricaoOuSiglaConsulta() {
+      return descricaoOuSiglaConsulta;
+   }
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public int getActiveIndex() {
-		return activeIndex;
-	}
-
-	public void setActiveIndex(int activeIndex) {
-		this.activeIndex = activeIndex;
-	}
-
-	public String getBuscaText() {
-		return buscaText;
-	}
-
-	public void setBuscaText(String buscaText) {
-		this.buscaText = buscaText;
-	}
-
-	public List<UnidadeMedida> getTodasUnidades() {
-		return todasUnidades;
-	}
-
-	public void setTodasUnidades(List<UnidadeMedida> todasUnidades) {
-		this.todasUnidades = todasUnidades;
-	}
-
-	public UnidadeMedida getUnidadeSelecionada() {
-		return unidadeSelecionada;
-	}
-
-	public void setUnidadeSelecionada(UnidadeMedida unidadeSelecionada) {
-		this.unidadeSelecionada = unidadeSelecionada;
-	}
-
-	public UnidadeMedidaNegImpl getUnidadeMedidaNegImpl() {
-		return unidadeMedidaNegImpl;
-	}
-
-	public void setUnidadeMedidaNegImpl(UnidadeMedidaNegImpl unidadeMedidaNegImpl) {
-		this.unidadeMedidaNegImpl = unidadeMedidaNegImpl;
-	}
-
-	public String getDescricao() {
-		return descricao;
-	}
-
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
-	}
-
-	public List<UnidadeMedida> getListaUnidadeMedida() {
-		return listaUnidadeMedida;
-	}
-
-	public void setListaUnidadeMedida(List<UnidadeMedida> listaUnidadeMedida) {
-		this.listaUnidadeMedida = listaUnidadeMedida;
-	}
-
-	public String getSigla() {
-		return sigla;
-	}
-
-	public void setSigla(String sigla) {
-		this.sigla = sigla.toUpperCase();
-	}
-	
+   public void setDescricaoOuSiglaConsulta(String descricaoOuSiglaConsulta) {
+      this.descricaoOuSiglaConsulta = descricaoOuSiglaConsulta;
+   }
 
 }
