@@ -13,21 +13,25 @@
 			<p:toolbar>
 				<p:toolbarGroup align="left">
 					<p:commandButton value="Cadastrar" title="Nova Unidade"
-						icon="ui-icon-document" actionListener="#{UnidadeMedidaControl.limpar}"
+						icon="ui-icon-document"
+						actionListener="#{UnidadeMedidaControl.limpar}"
 						onsuccess="PF('UnidadeMedidaDialog').show();" />
 				</p:toolbarGroup>
 				<p:toolbarGroup align="right">
-					<p:inputText id="inputFiltroGlobal" value="#{UnidadeMedidaControl.descricaoOuSiglaConsulta}"
+					<p:inputText id="inputFiltroGlobal"
+						value="#{UnidadeMedidaControl.descricaoOuSiglaConsulta}"
 						placeholder="Filtro" />
 					<p:spacer width="5" height="0" />
 					<p:commandButton id="cmdFiltroGlobal" icon="ui-icon-search"
-						actionListener="#{UnidadeMedidaControl.listarUnidadesDeMedida}" update="dataTableUnidadeMedida" />
+						actionListener="#{UnidadeMedidaControl.listarUnidadesDeMedida}"
+						update="dataTableUnidadeMedida" />
 				</p:toolbarGroup>
 			</p:toolbar>
 
 			<p:dataTable id="dataTableUnidadeMedida"
-				value="#{UnidadeMedidaControl.listaUnidadesMedida}" var="unidadeMedida"
-				emptyMessage="Nenhum registro encontrado" paginator="true" rows="10">
+				value="#{UnidadeMedidaControl.listaUnidadesMedida}"
+				var="unidadeMedida" emptyMessage="Nenhum registro encontrado"
+				paginator="true" rows="10">
 				<p:outputLabel value="Unidades de Medida " />
 
 				<p:column headerText="Descrição">
@@ -38,15 +42,28 @@
 				</p:column>
 
 				<p:column headerText="Ação" width="10%">
-				<p:commandButton id="btnEditarRegistro" icon="ui-icon-pencil" oncomplete="PF('UnidadeMedidaDialog').show();"
-                  update=":formCorpo:UnidadeMedidaDialog">
-                  <f:setPropertyActionListener value="#{unidadeMedida}" target="#{UnidadeMedidaControl.unidadeMedida}" />
-               </p:commandButton>
-               <p:commandButton id="btnExcluirRegistro" icon="ui-icon-trash" actionListener="#{UnidadeMedidaControl.excluir(unidadeMedida)}"
-                  update=":formCorpo:dataTableUnidadeMedida">
-               </p:commandButton>
+					<p:commandButton id="btnEditarRegistro" icon="ui-icon-pencil"
+						oncomplete="PF('UnidadeMedidaDialog').show();"
+						update=":formCorpo:UnidadeMedidaDialog">
+						<f:setPropertyActionListener value="#{unidadeMedida}"
+							target="#{UnidadeMedidaControl.unidadeMedida}" />
+					</p:commandButton>
+					<p:commandButton id="btnExcluirRegistro" icon="ui-icon-trash"
+						actionListener="#{UnidadeMedidaControl.excluir(unidadeMedida)}"
+						update=":formCorpo:dataTableUnidadeMedida">
+
+						<p:confirm header="Excluir Unidade" message="Tem certeza que deseja excluir esta unidade?"
+							icon="ui-icon-alert" />
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Sim" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="Não" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</p:confirmDialog>
+					</p:commandButton>
 				</p:column>
-				
+
 				<f:facet name="footer">
 					<p:outputLabel
 						value="#{UnidadeMedidaControl.tamanhoListaUnidadesMedida} Registro(s)" />
@@ -54,19 +71,26 @@
 			</p:dataTable>
 		</p:panel>
 
-		<p:dialog header="Detalhes Unidade de Medida" widgetVar="UnidadeMedidaDialog" id="UnidadeMedidaDialog"
-			resizable="false" modal="true">
-			<p:messages id="msgs-dialog" />
-			<p:commandButton id="cmbSalvarUnidadeMedida" value="Salvar" actionListener="#{UnidadeMedidaControl.salvar}" update="@all" />
+		<p:dialog header="Nova Unidade" widgetVar="UnidadeMedidaDialog"
+			id="UnidadeMedidaDialog" resizable="false" modal="true">
 
-			<p:panelGrid id="panelGridUnidadeMedida" columns="2">
+			<p:messages id="msgs-dialog" />
+
+
+			<p:panelGrid styleClass="semBorda" id="panelGridUnidadeMedida"
+				columns="2">
 				<p:outputLabel value="Descrição" for="descricao" />
-				<p:inputText id="descricao" style="text-transform:uppercase" size="60" maxlength="80" value="#{UnidadeMedidaControl.unidadeMedida.descricao}" />
+				<p:inputText id="descricao" style="text-transform:uppercase"
+					size="60" maxlength="80"
+					value="#{UnidadeMedidaControl.unidadeMedida.descricao}" />
 
 
 				<p:outputLabel value="Sigla" for="sigla" />
 				<p:inputText id="sigla" style="text-transform:uppercase" size="18"
 					maxlength="11" value="#{UnidadeMedidaControl.unidadeMedida.sigla}" />
+
+				<p:commandButton id="cmbSalvarUnidadeMedida" value="Salvar"
+					actionListener="#{UnidadeMedidaControl.salvar}" update="@all" />
 			</p:panelGrid>
 
 		</p:dialog>
