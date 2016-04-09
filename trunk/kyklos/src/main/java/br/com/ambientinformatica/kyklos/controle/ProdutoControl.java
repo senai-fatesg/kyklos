@@ -196,7 +196,7 @@ public class ProdutoControl implements Serializable{
    }
 
    public List<UnidadeMedida> listarUnidadeDeMedida() {
-      return unidadeMedidaDao.consultarTodasUnidadesDeMedida();
+      return unidadeMedidaDao.consultarUnidadesAtivas();
    }
 
    public Produto getProduto() {

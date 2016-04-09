@@ -9,13 +9,15 @@ public interface UnidadeMedidaDao extends Persistencia<UnidadeMedida> {
 	
    public UnidadeMedida consultarPorSigla(String sigla);
 
-   public List<UnidadeMedida> consultarTodasUnidadesDeMedida();
+   public List<UnidadeMedida> consultarUnidadesAtivas();
 	
    public List<UnidadeMedida> listarUnidadesPorSigla(String sigla);
 	
    public List<UnidadeMedida> listarPorDescricao(String descricao);
    
-   public List<UnidadeMedida> listarUnidadesPorSiglaOuDescricao(String descricaoESiglaConsulta);
+//   public List<UnidadeMedida> listarUnidadesPorSiglaOuDescricao(String descricaoESiglaConsulta);
+   
+   public List<UnidadeMedida> listarUnidadesPorSiglaOuDescricao(String descricaoESiglaConsulta, String status);
 
    public void excluirPorId(UnidadeMedida unidadeMedida) throws Exception;
 

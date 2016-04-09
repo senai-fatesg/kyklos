@@ -40,7 +40,9 @@ public class UnidadeMedidaControl {
 
 	private UnidadeMedida unidadeSelecionada;
 
-	private String descricaoOuSiglaConsulta;
+	private String descricaoOuSiglaConsulta = "";
+	
+	private String status = "ATIVO";
 
 	@PostConstruct
 	private void init() {
@@ -86,7 +88,7 @@ public class UnidadeMedidaControl {
 
 	public void listarUnidadesDeMedida() {
 		listaUnidadesMedida = unidadeMedidaDao
-				.listarUnidadesPorSiglaOuDescricao(descricaoOuSiglaConsulta);
+				.listarUnidadesPorSiglaOuDescricao(descricaoOuSiglaConsulta, status);
 	}
 
 	public int getTamanhoListaUnidadesMedida() {
@@ -156,5 +158,18 @@ public class UnidadeMedidaControl {
 	public void setDescricaoOuSiglaConsulta(String descricaoOuSiglaConsulta) {
 		this.descricaoOuSiglaConsulta = descricaoOuSiglaConsulta;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setListaUnidadesMedida(List<UnidadeMedida> listaUnidadesMedida) {
+		this.listaUnidadesMedida = listaUnidadesMedida;
+	}
+	
 
 }

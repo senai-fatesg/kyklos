@@ -29,9 +29,11 @@ public class UnidadeMedidaDaoJpa extends PersistenciaJpa<UnidadeMedida>
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<UnidadeMedida> consultarTodasUnidadesDeMedida() {
+	public List<UnidadeMedida> consultarUnidadesAtivas() {
 		try {
-			Query query = em.createQuery("select un from UnidadeMedida un");
+			// Query query = em.createQuery("select un from UnidadeMedida un");
+			Query query = em
+					.createQuery("select un from UnidadeMedida as un where un.status = 'ATIVO'");
 			return query.getResultList();
 		} catch (NoResultException e) {
 			return null;
@@ -63,29 +65,71 @@ public class UnidadeMedidaDaoJpa extends PersistenciaJpa<UnidadeMedida>
 		}
 	}
 
-   @SuppressWarnings("unchecked")
-   @Override
-   public List<UnidadeMedida> listarUnidadesPorSiglaOuDescricao(String descricaoSigla){
-         try {
-            Query query = em.createQuery("select um from UnidadeMedida um where upper(um.sigla) like upper(:sigla)"
-                  + " or upper(um.descricao) like upper(:descricao)");
-            query.setParameter("sigla", "%" + descricaoSigla+ "%");
-            query.setParameter("descricao", "%" + descricaoSigla+ "%");
-            return query.getResultList();
-         } catch (NoResultException e) {
-            return null;
-         }
-   }
+	// @SuppressWarnings("unchecked")
+	// @Override
+	// public List<UnidadeMedida> listarUnidadesPorSiglaOuDescricao(String
+	// descricaoSigla){
+	// try {
+	// Query query =
+	// em.createQuery("select um from UnidadeMedida um where upper(um.sigla) like upper(:sigla)"
+	// + " or upper(um.descricao) like upper(:descricao)");
+	// query.setParameter("sigla", "%" + descricaoSigla+ "%");
+	// query.setParameter("descricao", "%" + descricaoSigla+ "%");
+	// return query.getResultList();
+	// } catch (NoResultException e) {
+	// return null;
+	// }
+	// }
+	@Override
+	public List<UnidadeMedida> listarUnidadesPorSiglaOuDescricao(
+			String descricaoSigla, String status) {
+		if (status.equals("ATIVO")) {
+			try {
+				Query query = em
+						.createQuery("select um from UnidadeMedida as um where um.status = 'ATIVO' and upper(um.sigla) like upper(:sigla)"
+								+ " or upper(um.descricao) like upper(:descricao)");
+				query.setParameter("sigla", "%" + descricaoSigla + "%");
+				query.setParameter("descricao", "%" + descricaoSigla + "%");
+				return query.getResultList();
+			} catch (NoResultException e) {
+				return null;
+			}
+		} else if (status.equals("INATIVO")) {
+			try {
+				Query query = em
+						.createQuery("select um from UnidadeMedida as um where um.status = 'INATIVO' upper(um.sigla) like upper(:sigla)"
+								+ " or upper(um.descricao) like upper(:descricao)");
+				query.setParameter("sigla", "%" + descricaoSigla + "%");
+				query.setParameter("descricao", "%" + descricaoSigla + "%");
+				return query.getResultList();
+			} catch (NoResultException e) {
+				return null;
+			}
+		} else {
+			try {
+				Query query = em
+						.createQuery("select um from UnidadeMedida um where upper(um.sigla) like upper(:sigla)"
+								+ " or upper(um.descricao) like upper(:descricao)");
+				query.setParameter("sigla", "%" + descricaoSigla + "%");
+				query.setParameter("descricao", "%" + descricaoSigla + "%");
+				return query.getResultList();
+			} catch (NoResultException e) {
+				return null;
+			}
+		}
 
-   @Override
-   public void excluirPorId(UnidadeMedida unidadeMedida) throws Exception {
-      try{
-         Query query = em.createQuery("delete from UnidadeMedida u where u.id = :id");
-         query.setParameter("id", unidadeMedida.getId());
-         query.executeUpdate();
-      }catch(Exception e){
-         throw new Exception("Erro ao Excluir.");
-      }
-   }
+	}
+
+	@Override
+	public void excluirPorId(UnidadeMedida unidadeMedida) throws Exception {
+		try {
+			Query query = em
+					.createQuery("delete from UnidadeMedida u where u.id = :id");
+			query.setParameter("id", unidadeMedida.getId());
+			query.executeUpdate();
+		} catch (Exception e) {
+			throw new Exception("Erro ao Excluir.");
+		}
+	}
 
 }
