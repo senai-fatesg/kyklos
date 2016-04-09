@@ -27,9 +27,20 @@ public class UnidadeMedida extends Entidade implements Serializable {
 
 	@Column(nullable = false)
 	private String descricao;
+	
+	@Column(name = "status")
+	private String status;
 
 	public String getSigla() {
 		return sigla;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status.toUpperCase();
 	}
 
 	public void setSigla(String sigla) {
@@ -55,4 +66,5 @@ public class UnidadeMedida extends Entidade implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
 }

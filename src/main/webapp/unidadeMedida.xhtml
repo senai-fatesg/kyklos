@@ -9,6 +9,7 @@
 	<link href="css/estilo.css" rel="stylesheet" type="text/css" />
 
 	<ui:define name="corpo">
+
 		<p:panel id="pnlUnidade" header="Unidade" style="text-align:center">
 			<p:toolbar>
 				<p:toolbarGroup align="left">
@@ -18,13 +19,19 @@
 						onsuccess="PF('UnidadeMedidaDialog').show();" />
 				</p:toolbarGroup>
 				<p:toolbarGroup align="right">
-					<p:inputText id="inputFiltroGlobal"
+					<p:inputText id="inputFiltroGlobal" style="text-transform:uppercase"
 						value="#{UnidadeMedidaControl.descricaoOuSiglaConsulta}"
 						placeholder="Filtro" />
-					<p:spacer width="5" height="0" />
+					<p:spacer width="5"  height="0" />
 					<p:commandButton id="cmdFiltroGlobal" icon="ui-icon-search"
 						actionListener="#{UnidadeMedidaControl.listarUnidadesDeMedida}"
 						update="dataTableUnidadeMedida" />
+
+					<p:selectOneRadio id="console" value="#{UnidadeMedidaControl.status}">
+						<f:selectItem itemLabel="Ativo" itemValue="ATIVO" />
+						<f:selectItem itemLabel="Inativo" itemValue="INATIVO" />
+						<f:selectItem itemLabel="Todos" itemValue="TODOS" />
+					</p:selectOneRadio>
 				</p:toolbarGroup>
 			</p:toolbar>
 
@@ -40,6 +47,9 @@
 				<p:column headerText="Sigla">
 					<h:outputText value="#{unidadeMedida.sigla}" />
 				</p:column>
+				<p:column headerText="Status" width="10%">
+					<h:outputText value="#{unidadeMedida.status}" />
+				</p:column>
 
 				<p:column headerText="Ação" width="10%">
 					<p:commandButton id="btnEditarRegistro" icon="ui-icon-pencil"
@@ -52,7 +62,8 @@
 						actionListener="#{UnidadeMedidaControl.excluir(unidadeMedida)}"
 						update=":formCorpo:dataTableUnidadeMedida">
 
-						<p:confirm header="Excluir Unidade" message="Tem certeza que deseja excluir esta unidade?"
+						<p:confirm header="Excluir Unidade"
+							message="Tem certeza que deseja excluir esta unidade?"
 							icon="ui-icon-alert" />
 
 						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
@@ -77,8 +88,8 @@
 			<p:messages id="msgs-dialog" />
 
 
-			<p:panelGrid styleClass="semBorda" id="panelGridUnidadeMedida"
-				columns="2">
+			<p:panelGrid styleClass="semBorda" columns="2"
+				id="panelGridUnidadeMedida">
 				<p:outputLabel value="Descrição" for="descricao" />
 				<p:inputText id="descricao" style="text-transform:uppercase"
 					size="60" maxlength="80"
@@ -89,8 +100,18 @@
 				<p:inputText id="sigla" style="text-transform:uppercase" size="18"
 					maxlength="11" value="#{UnidadeMedidaControl.unidadeMedida.sigla}" />
 
+				<p:outputLabel for="status" value="Status" />
+				<p:selectOneMenu id="status"
+					value="#{UnidadeMedidaControl.unidadeMedida.status}"
+					style="width:125px">
+					<f:selectItem itemLabel="ATIVO" itemValue="ATIVO" />
+					<f:selectItem itemLabel="INATIVO" itemValue="INATIVO" />
+				</p:selectOneMenu>
+
 				<p:commandButton id="cmbSalvarUnidadeMedida" value="Salvar"
 					actionListener="#{UnidadeMedidaControl.salvar}" update="@all" />
+
+
 			</p:panelGrid>
 
 		</p:dialog>
