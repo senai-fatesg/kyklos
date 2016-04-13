@@ -27,17 +27,6 @@
 					<p:commandButton id="cmdFiltroGlobal" icon="ui-icon-search"
 						actionListener="#{UnidadeMedidaControl.listarUnidadesDeMedida}"
 						update="dataTableUnidadeMedida" />
-
-					<p:selectOneRadio id="console"
-						value="#{UnidadeMedidaControl.status}">
-						<f:selectItem itemLabel="Ativo" itemValue="ATIVO"
-							action="#{UnidadeMedidaControl.listarUnidadesPorStatus(ATIVO)}" />
-						<f:selectItem itemLabel="Inativo" itemValue="INATIVO"
-							action="#{UnidadeMedidaControl.listarUnidadesPorStatus(INATIVO)}" />
-						<f:selectItem itemLabel="Todos" itemValue="TODOS"
-							action="#{UnidadeMedidaControl.listarUnidadesPorStatus(TODOS)}" />/>
-						
-					</p:selectOneRadio>
 				</p:toolbarGroup>
 			</p:toolbar>
 
