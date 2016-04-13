@@ -49,7 +49,7 @@
                <p:inputText value="#{PessoaControl.pessoa.nome}" style="width:431px;" />
             </a:field>
             <a:newLine />
-            <a:field label="Dt de Nascimento" width="100px">
+            <a:field label="Dt de Nascimento" width="120px">
                <p:inputMask id="dataNascimento" value="#{PessoaControl.pessoa.dataNascimento}" style="width:100px" mask="99/99/9999">
                   <f:convertDateTime pattern="dd/MM/yyyy" />
                </p:inputMask>
@@ -57,7 +57,7 @@
 
             <a:field label="Sexo" spaceLeft="15px" width="85px">
                <p:selectOneMenu id="sexo" value="#{PessoaControl.pessoa.sexo}" converter="objectConverter" style="width:90px">
-                  <f:selectItem itemLabel="" itemValue="" />
+                  <f:selectItem itemLabel="Sexo" itemValue="#{null}" />
                   <f:selectItem itemLabel="Masculino" itemValue="MASCULINO" />
                   <f:selectItem itemLabel="Feminino" itemValue="FEMININO" />
                </p:selectOneMenu>
@@ -65,7 +65,7 @@
             <a:field label="RG" spaceLeft="15px" width="108px">
                <p:inputText id="rg" value="#{PessoaControl.pessoa.docIdentificacao}" style="width:108px;" />
             </a:field>
-            <a:field label="Órgão Expedidor" spaceLeft="15px" width="93px">
+            <a:field label="Órgão Expedidor" spaceLeft="15px" width="120px">
                <p:inputText id="orgaoExpedidor" value="#{PessoaControl.pessoa.orgaoExpedidor}" style="width:93px;" />
             </a:field>
             <a:newLine />
@@ -89,7 +89,7 @@
          </p:panel>
          <p:panel id="panelEndereco" header="Endereço">
             <a:field label="CEP" width="108px">
-               <p:inputText id="cep" value="#{PessoaControl.pessoa.cep}" style="width:108px;" />
+               <p:inputMask mask="99999-999" id="cep" value="#{PessoaControl.pessoa.cep}" style="width:108px;" />
             </a:field>
             <a:field spaceLeft="15px">
                <p:commandButton id="btnConsultarCep" value="Consultar" icon="ui-icon-search" style="margin:0;" actionListener="#{PessoaControl.consultarCep}" update=":formCorpo:panelEndereco" />
@@ -121,13 +121,13 @@
          </p:panel>
          <p:panel id="panelContato" header="Contato">
             <a:field label="Telefone" width="134px">
-               <p:inputText id="telefone" value="#{PessoaControl.pessoa.telefone}" style="width:134px" />
+               <p:inputMask mask="(999) 999-9999" id="telefone" value="#{PessoaControl.pessoa.telefone}" style="width:134px" />
             </a:field>
             <a:field label="Celular" spaceLeft="15px" width="134px">
-               <p:inputText id="celular" value="#{PessoaControl.pessoa.celular}" style="width:134px" />
+               <p:inputMask mask="(999) 999-9999" id="celular" value="#{PessoaControl.pessoa.celular}" style="width:134px" />
             </a:field>
             <a:field label="Fax" spaceLeft="15px" width="133px">
-               <p:inputText id="fax" value="#{PessoaControl.pessoa.fax}" style="width:133px" />
+               <p:inputMask mask="(999) 999-9999" id="fax" value="#{PessoaControl.pessoa.fax}" style="width:133px" />
             </a:field>
             <a:newLine />
             <a:field label="Email" width="431px">
