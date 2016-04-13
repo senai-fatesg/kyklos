@@ -19,23 +19,29 @@
 						onsuccess="PF('UnidadeMedidaDialog').show();" />
 				</p:toolbarGroup>
 				<p:toolbarGroup align="right">
-					<p:inputText id="inputFiltroGlobal" style="text-transform:uppercase"
+					<p:inputText id="inputFiltroGlobal"
+						style="text-transform:uppercase"
 						value="#{UnidadeMedidaControl.descricaoOuSiglaConsulta}"
 						placeholder="Filtro" />
-					<p:spacer width="5"  height="0" />
+					<p:spacer width="5" height="0" />
 					<p:commandButton id="cmdFiltroGlobal" icon="ui-icon-search"
 						actionListener="#{UnidadeMedidaControl.listarUnidadesDeMedida}"
 						update="dataTableUnidadeMedida" />
 
-					<p:selectOneRadio id="console" value="#{UnidadeMedidaControl.status}">
-						<f:selectItem itemLabel="Ativo" itemValue="ATIVO" />
-						<f:selectItem itemLabel="Inativo" itemValue="INATIVO" />
-						<f:selectItem itemLabel="Todos" itemValue="TODOS" />
+					<p:selectOneRadio id="console"
+						value="#{UnidadeMedidaControl.status}">
+						<f:selectItem itemLabel="Ativo" itemValue="ATIVO"
+							action="#{UnidadeMedidaControl.listarUnidadesPorStatus(ATIVO)}" />
+						<f:selectItem itemLabel="Inativo" itemValue="INATIVO"
+							action="#{UnidadeMedidaControl.listarUnidadesPorStatus(INATIVO)}" />
+						<f:selectItem itemLabel="Todos" itemValue="TODOS"
+							action="#{UnidadeMedidaControl.listarUnidadesPorStatus(TODOS)}" />/>
+						
 					</p:selectOneRadio>
 				</p:toolbarGroup>
 			</p:toolbar>
 
-			<p:dataTable id="dataTableUnidadeMedida"
+			<p:dataTable id="dataTableUnidadeMedida" widgetVar="unidadeTable"
 				value="#{UnidadeMedidaControl.listaUnidadesMedida}"
 				var="unidadeMedida" emptyMessage="Nenhum registro encontrado"
 				paginator="true" rows="10">
@@ -47,7 +53,20 @@
 				<p:column headerText="Sigla">
 					<h:outputText value="#{unidadeMedida.sigla}" />
 				</p:column>
-				<p:column headerText="Status" width="10%">
+				
+				<p:column filterBy="#{unidadeMedida.status}" headerText="Status" 
+					 width="20%">
+					<f:facet name="filter" >
+						<p:selectOneMenu onchange="PF('unidadeTable').filter()">
+							<f:selectItem itemLabel="TODOS" itemValue="#{null}"
+								noSelectionOption="true" />
+								<f:selectItem itemLabel="ATIVO" itemValue="ATIVO"
+								noSelectionOption="true" />
+							<f:selectItem itemLabel="INATIVO" itemValue="INATIVO"
+								noSelectionOption="true" />
+								
+						</p:selectOneMenu>
+					</f:facet>
 					<h:outputText value="#{unidadeMedida.status}" />
 				</p:column>
 

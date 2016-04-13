@@ -65,59 +65,20 @@ public class UnidadeMedidaDaoJpa extends PersistenciaJpa<UnidadeMedida>
 		}
 	}
 
-	// @SuppressWarnings("unchecked")
-	// @Override
-	// public List<UnidadeMedida> listarUnidadesPorSiglaOuDescricao(String
-	// descricaoSigla){
-	// try {
-	// Query query =
-	// em.createQuery("select um from UnidadeMedida um where upper(um.sigla) like upper(:sigla)"
-	// + " or upper(um.descricao) like upper(:descricao)");
-	// query.setParameter("sigla", "%" + descricaoSigla+ "%");
-	// query.setParameter("descricao", "%" + descricaoSigla+ "%");
-	// return query.getResultList();
-	// } catch (NoResultException e) {
-	// return null;
-	// }
-	// }
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<UnidadeMedida> listarUnidadesPorSiglaOuDescricao(
-			String descricaoSigla, String status) {
-		if (status.equals("ATIVO")) {
-			try {
-				Query query = em
-						.createQuery("select um from UnidadeMedida as um where um.status = 'ATIVO' and upper(um.sigla) like upper(:sigla)"
-								+ " or upper(um.descricao) like upper(:descricao)");
-				query.setParameter("sigla", "%" + descricaoSigla + "%");
-				query.setParameter("descricao", "%" + descricaoSigla + "%");
-				return query.getResultList();
-			} catch (NoResultException e) {
-				return null;
-			}
-		} else if (status.equals("INATIVO")) {
-			try {
-				Query query = em
-						.createQuery("select um from UnidadeMedida as um where um.status = 'INATIVO' upper(um.sigla) like upper(:sigla)"
-								+ " or upper(um.descricao) like upper(:descricao)");
-				query.setParameter("sigla", "%" + descricaoSigla + "%");
-				query.setParameter("descricao", "%" + descricaoSigla + "%");
-				return query.getResultList();
-			} catch (NoResultException e) {
-				return null;
-			}
-		} else {
-			try {
-				Query query = em
-						.createQuery("select um from UnidadeMedida um where upper(um.sigla) like upper(:sigla)"
-								+ " or upper(um.descricao) like upper(:descricao)");
-				query.setParameter("sigla", "%" + descricaoSigla + "%");
-				query.setParameter("descricao", "%" + descricaoSigla + "%");
-				return query.getResultList();
-			} catch (NoResultException e) {
-				return null;
-			}
+			String descricaoSigla) {
+		try {
+			Query query = em
+					.createQuery("select um from UnidadeMedida um where upper(um.sigla) like upper(:sigla)"
+							+ " or upper(um.descricao) like upper(:descricao)");
+			query.setParameter("sigla", "%" + descricaoSigla + "%");
+			query.setParameter("descricao", "%" + descricaoSigla + "%");
+			return query.getResultList();
+		} catch (NoResultException e) {
+			return null;
 		}
-
 	}
 
 	@Override

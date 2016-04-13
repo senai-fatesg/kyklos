@@ -41,8 +41,8 @@ public class UnidadeMedidaControl {
 	private UnidadeMedida unidadeSelecionada;
 
 	private String descricaoOuSiglaConsulta = "";
-	
-	private String status = "ATIVO";
+
+	private String status = "INATIVO";
 
 	@PostConstruct
 	private void init() {
@@ -85,10 +85,13 @@ public class UnidadeMedidaControl {
 		}
 		return itens;
 	}
+	
 
 	public void listarUnidadesDeMedida() {
+
 		listaUnidadesMedida = unidadeMedidaDao
-				.listarUnidadesPorSiglaOuDescricao(descricaoOuSiglaConsulta, status);
+				.listarUnidadesPorSiglaOuDescricao(descricaoOuSiglaConsulta);
+
 	}
 
 	public int getTamanhoListaUnidadesMedida() {
@@ -170,6 +173,5 @@ public class UnidadeMedidaControl {
 	public void setListaUnidadesMedida(List<UnidadeMedida> listaUnidadesMedida) {
 		this.listaUnidadesMedida = listaUnidadesMedida;
 	}
-	
 
 }
