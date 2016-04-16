@@ -1,5 +1,7 @@
 package br.com.ambientinformatica.kyklos.negocio;
 
+import javax.persistence.NoResultException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +18,13 @@ public class CepNegImpl implements CepNeg{
    ParametroDao parametroDao;
 
    @Override
-   public Cep consultar(String cep){
+   public Cep consultar(String cep) throws Exception{
       try{
          Parametro parametroUrl = parametroDao.consultarPorChave(EnumParametro.URL_TOTH.getDescricao());
          String url = String.format("%s/services/cepservice/consultarcep/%s", parametroUrl.getValor(), cep);
          return UtilServico.consultarGet(url, Cep.class);
-      }catch(Exception e){
-         return null;
+      }catch(NoResultException e){
+         throw new Exception("Nenhum resultado encontrado.");
       }
    }
 
