@@ -14,36 +14,35 @@ import javax.persistence.SequenceGenerator;
 import br.com.ambientinformatica.util.Entidade;
 
 @Entity
-public class Transportadora extends Entidade implements Serializable{
+public class Transportadora extends Entidade implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator="transportadora_seq", strategy=GenerationType.SEQUENCE)
-	@SequenceGenerator(name="transportadora_seq", sequenceName="transportadora_seq", allocationSize=1, initialValue=1)
+	@GeneratedValue(generator = "transportadora_seq", strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = "transportadora_seq", sequenceName = "transportadora_seq", allocationSize = 1, initialValue = 1)
 	private Integer id;
-	
+
 	private String razaoSocial;
-	
+
 	@Column(nullable = true)
 	private String fantasia;
-	
-	@ManyToOne(optional=false, cascade=CascadeType.ALL)
-	
+
+	@ManyToOne(optional = false, cascade = CascadeType.ALL)
 	private Endereco endereco = new Endereco();
 
-	@Column(unique=true)
+	@Column(unique = true)
 	private String cpfCnpj;
-	
+
 	private String inscricaoEstadual;
-	
+
 	public String getCpfCnpj() {
 		return cpfCnpj;
 	}
 
 	public void setCpfCnpj(String cpfCnpj) {
 		this.cpfCnpj = cpfCnpj;
-	}	
+	}
 
 	public String getInscricaoEstadual() {
 		return inscricaoEstadual;
@@ -52,7 +51,7 @@ public class Transportadora extends Entidade implements Serializable{
 	public void setInscricaoEstadual(String inscricaoEstadual) {
 		this.inscricaoEstadual = inscricaoEstadual;
 	}
-	
+
 	public String getRazaoSocial() {
 		return razaoSocial;
 	}
@@ -82,5 +81,14 @@ public class Transportadora extends Entidade implements Serializable{
 		this.fantasia = fantasia;
 	}
 
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 }
