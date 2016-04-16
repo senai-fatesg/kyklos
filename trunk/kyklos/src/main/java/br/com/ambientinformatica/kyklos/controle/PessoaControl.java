@@ -62,7 +62,7 @@ public class PessoaControl implements Serializable {
 
 	private String uf;
 
-	public void consultarCep() {
+	public void consultarCep() throws Exception {
 		try {
 			Cep cepDto = cepNeg.consultar(pessoa.getCep());
 			pessoa.setMunicipio(municipioDao.consultarPorCodigoIbge(cepDto
