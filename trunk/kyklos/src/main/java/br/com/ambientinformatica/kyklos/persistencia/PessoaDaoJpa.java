@@ -37,14 +37,14 @@ public class PessoaDaoJpa extends PersistenciaJpa<Pessoa> implements PessoaDao{
    
    @SuppressWarnings("unchecked")
    public List<Pessoa> listarPessoasPorNome(String nome){
-      try {
-         Query query = em.createQuery("select p from Pessoa p"
-               + " where UPPER(p.nome) like UPPER(:nome)");
-         query.setParameter("nome", "%" + nome + "%");
-         query.setMaxResults(25);
-         return query.getResultList();
-      } catch ( NoResultException e ) {  
-         return null;  
-      }
+	   try {
+		   Query query = em.createQuery("select p from Pessoa p"
+				   + " where UPPER(p.nome) like UPPER(:nome)");
+		   query.setParameter("nome", "%" + nome + "%");
+		   query.setMaxResults(25);
+		   return query.getResultList();
+	   } catch ( NoResultException e ) {  
+		   return null;  
+	   }
    }
 }
