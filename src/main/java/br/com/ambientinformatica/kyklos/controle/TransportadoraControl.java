@@ -1,6 +1,5 @@
 package br.com.ambientinformatica.kyklos.controle;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import br.com.ambientinformatica.corporativo.entidade.Municipio;
 import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.kyklos.dto.Cep;
 import br.com.ambientinformatica.kyklos.entidade.Endereco;
-import br.com.ambientinformatica.kyklos.entidade.PedidoException;
 import br.com.ambientinformatica.kyklos.entidade.Transportadora;
 import br.com.ambientinformatica.kyklos.negocio.CepNeg;
 import br.com.ambientinformatica.kyklos.negocio.PessoaNeg;
@@ -23,167 +21,180 @@ import br.com.ambientinformatica.kyklos.persistencia.TransportadoraDao;
 
 @Named("TransportadoraControl")
 @Scope("conversation")
-public class TransportadoraControl implements Serializable{
+public class TransportadoraControl {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Transportadora transportadora = new Transportadora();
-   
-   private String cepTransportadora = new String();
-   
-   private Municipio municipioTransportadora = new Municipio();
+	private Transportadora transportadora = new Transportadora();
 
-   private Endereco enderecoTransportadora = new Endereco();
-   
-   private String cpfCnpjTransportadora = new String();
-   
-   private String buscaText = new String();
+	private String cepTransportadora = new String();
 
-   private List<Transportadora> listaTransportadoras = new ArrayList<Transportadora>();
+	private Municipio municipioTransportadora = new Municipio();
 
-   private int activeIndex;
+	private Endereco enderecoTransportadora = new Endereco();
 
-   @Autowired
-   private TransportadoraDao transportadoraDao;
+	private String cpfCnpjTransportadora = new String();
 
-   @Autowired
-   private PessoaNeg pessoaNeg;
+	private String buscaText = new String();
 
-   @Autowired
-   private CepNeg cepNeg;
-   
-   @Autowired
-   private MunicipioDao municipioDao;
+	private List<Transportadora> listaTransportadoras = new ArrayList<Transportadora>();
 
-   public void criarTransportadora(){
-      activeIndex = 0;
-      limpar();
-   }
-   
-   public void listarTransportadoras(){
-      try{
-         enderecoTransportadora = new Endereco();
-         listaTransportadoras = transportadoraDao.listarTransportadorasPorCpfCnpjRazaoSocial(buscaText);
-         if(listaTransportadoras.isEmpty()){
-            UtilFaces.addMensagemFaces("Nenhum resultado encontrado!");
-         }
-      } catch (Exception e) {
-         UtilFaces.addMensagemFaces("Erro de consulta");
-      }
-   }
+	private int activeIndex;
 
-   public void consultarCpfCnpj(){
-      try {
-         Pessoa pessoaDto = pessoaNeg.consultar(cpfCnpjTransportadora);
-         transportadora.setCpfCnpj(pessoaDto.getCpfCnpj());
-         transportadora.setInscricaoEstadual(pessoaDto.getInscricaoEstadual());
-         transportadora.setRazaoSocial(pessoaDto.getNome());
-         transportadora.setFantasia(pessoaDto.getNomeFantasia());
-      
-      } catch (Exception e) {
-         UtilFaces.addMensagemFaces("Erro ao Consultar: " + e.getMessage());
-      }
-   }
+	@Autowired
+	private TransportadoraDao transportadoraDao;
 
-   public void consultarCep(){
-      try {
-         Cep cepDto = cepNeg.consultar(cepTransportadora.replace(".", "").replace("-", ""));
-         enderecoTransportadora.setAtivo(true);
-         enderecoTransportadora.setBairro(cepDto.getBairro());
-         enderecoTransportadora.setCep(cepDto.getCep());
-         enderecoTransportadora.setLogradouro(cepDto.getLogradouro());
-         enderecoTransportadora.setMunicipio(municipioDao.consultarPorCodigoIbge(cepDto.getCodigoIbge()));
-         transportadora.setEndereco(enderecoTransportadora);
-      } catch (PedidoException e) {
-        UtilFaces.addMensagemFaces("Erro ao Consultar: " + e.getMessage());
-      }
-   }
-   
-   @SuppressWarnings("null")
-   public void salvarTransportadora(){
-     Transportadora transportadoraConsultada = transportadoraDao.consultarTransportadoraPorCpfCnpj(transportadora.getCpfCnpj());
-   if(transportadoraConsultada == null || transportadoraConsultada.getId() == null){
-      transportadoraDao.incluir(transportadora);
-	}else{
-         UtilFaces.addMensagemFaces("Cadastro já existente:");
-         UtilFaces.addMensagemFaces("Razão Social: " + transportadoraConsultada.getRazaoSocial());
-         UtilFaces.addMensagemFaces("CPF/CNPJ: " + transportadoraConsultada.getCpfCnpj());
-      }
-   }
-   
-   public void limpar(){
-	   transportadora = new Transportadora();
-	   enderecoTransportadora = new Endereco();
-	   cpfCnpjTransportadora = new String();
-	   cepTransportadora = new String();
-	   transportadora.setCpfCnpj("");
-	   enderecoTransportadora.setCep("");
+	@Autowired
+	private UsuarioLogadoControl usuarioLogadoControl;
 
-   }
-   
+	@Autowired
+	private PessoaNeg pessoaNeg;
 
-   public String getBuscaText() {
-      return buscaText;
-   }
+	@Autowired
+	private CepNeg cepNeg;
 
-   public void setBuscaText(String buscaText) {
-      this.buscaText = buscaText;
-   }
+	@Autowired
+	private MunicipioDao municipioDao;
 
-   public Endereco getEnderecoTransportadora() {
-      return enderecoTransportadora;
-   }
+	public void criarTransportadora() {
+		limpar();
+	}
 
-   public void setEnderecoTransportadora(Endereco enderecoTransportadora) {
-      this.enderecoTransportadora = enderecoTransportadora;
-   }
 
-   public Transportadora getTransportadora() {
-      return transportadora;
-   }
+	public void limpar() {
+		transportadora = new Transportadora();
+		enderecoTransportadora = new Endereco();
+		cpfCnpjTransportadora = new String();
+		cepTransportadora = new String();
+		transportadora.setCpfCnpj("");
+		enderecoTransportadora.setCep("");
+	}
+	
+	public void salvarTransportadora() {
+		String cpfCnpjConsulta = transportadora.getCpfCnpj();
+		Transportadora transportadoraConsultada = transportadoraDao.consultarTransportadoraPorCpfCnpj(cpfCnpjConsulta);
+		if (transportadoraConsultada == null) {
+			transportadoraDao.incluir(transportadora);
+			UtilFaces.addMensagemFaces("Registro incluido com sucesso.");
+		} else {
+			transportadora.setId(transportadoraConsultada.getId());
+			transportadora = transportadoraDao.alterar(transportadora);
+			UtilFaces.addMensagemFaces("Registro alterado com sucesso.");
+		}
+		limpar();
+	}
 
-   public void setTransportadora(Transportadora transportadora) {
-      this.transportadora = transportadora;
-   }
+	public void listarTransportadoras() {
+		try {
+			enderecoTransportadora = new Endereco();
+			listaTransportadoras = transportadoraDao
+					.listarTransportadorasPorCpfCnpjRazaoSocial(buscaText);
+			if (listaTransportadoras.isEmpty()) {
+				UtilFaces.addMensagemFaces("Nenhum resultado encontrado!");
+			}
+		} catch (Exception e) {
+			UtilFaces.addMensagemFaces("Erro de consulta");
+		}
+	}
 
-   public List<Transportadora> getListaTransportadoras() {
-      return listaTransportadoras;
-   }
+	public void consultarCpfCnpj() {
+		try {
+			Pessoa pessoaDto = pessoaNeg.consultar(transportadora.getCpfCnpj());
+			transportadora.setCpfCnpj(pessoaDto.getCpfCnpj());
+			transportadora.setInscricaoEstadual(pessoaDto.getInscricaoEstadual());
+			transportadora.setRazaoSocial(pessoaDto.getNome());
+			transportadora.setFantasia(pessoaDto.getNomeFantasia());
 
-   public void setListaTransportadoras(List<Transportadora> listaTransportadoras) {
-      this.listaTransportadoras = listaTransportadoras;
-   }
+		} catch (Exception e) {
+			UtilFaces.addMensagemFaces(e.getMessage());
+		}
+	}
 
-   public int getActiveIndex() {
-      return activeIndex;
-   }
+	public void consultarCep() {
+		try {
+			Cep cepDto = cepNeg.consultar(transportadora.getEndereco().getCep().replace(".", "").replace("-", ""));
+			enderecoTransportadora.setAtivo(true);
+			enderecoTransportadora.setBairro(cepDto.getBairro());
+			enderecoTransportadora.setCep(cepDto.getCep());
+			enderecoTransportadora.setLogradouro(cepDto.getLogradouro());
+			enderecoTransportadora.setMunicipio(municipioDao.consultarPorCodigoIbge(cepDto.getCodigoIbge()));
+			transportadora.setEndereco(enderecoTransportadora);
+		} catch (Exception e) {
+			UtilFaces.addMensagemFaces(e.getMessage());
+		}
+	}
 
-   public void setActiveIndex(int activeIndex) {
-      this.activeIndex = activeIndex;
-   }
+	public int getTamanhoListaTransportadoras() {
+		return listaTransportadoras.size();
+	}
 
-   public String getCepTransportadora() {
-      return cepTransportadora;
-   }
+	public String getBuscaText() {
+		return buscaText;
+	}
 
-   public void setCepTransportadora(String cepTransportadora) {
-      this.cepTransportadora = cepTransportadora;
-   }
+	public void setBuscaText(String buscaText) {
+		this.buscaText = buscaText;
+	}
 
-   public Municipio getMunicipioTransportadora() {
-      return municipioTransportadora;
-   }
+	public Endereco getEnderecoTransportadora() {
+		return enderecoTransportadora;
+	}
 
-   public void setMunicipioTransportadora(Municipio municipioTransportadora) {
-      this.municipioTransportadora = municipioTransportadora;
-   }
+	public void setEnderecoTransportadora(Endereco enderecoTransportadora) {
+		this.enderecoTransportadora = enderecoTransportadora;
+	}
 
-   public String getCpfCnpjTransportadora() {
-      return cpfCnpjTransportadora;
-   }
+	public Transportadora getTransportadora() {
+		return transportadora;
+	}
 
-   public void setCpfCnpjTransportadora(String cpfCnpjTransportadora) {
-      this.cpfCnpjTransportadora = cpfCnpjTransportadora;
-   }
+	public void setTransportadora(Transportadora transportadora) {
+		this.transportadora = transportadora;
+	}
+
+	public List<Transportadora> getListaTransportadoras() {
+		return listaTransportadoras;
+	}
+
+	public void setListaTransportadoras(
+			List<Transportadora> listaTransportadoras) {
+		this.listaTransportadoras = listaTransportadoras;
+	}
+
+	public int getActiveIndex() {
+		return activeIndex;
+	}
+
+	public void setActiveIndex(int activeIndex) {
+		this.activeIndex = activeIndex;
+	}
+
+	public String getCepTransportadora() {
+		return cepTransportadora;
+	}
+
+	public void setCepTransportadora(String cepTransportadora) {
+		this.cepTransportadora = cepTransportadora;
+	}
+
+	public Municipio getMunicipioTransportadora() {
+		return municipioTransportadora;
+	}
+
+	public void setMunicipioTransportadora(Municipio municipioTransportadora) {
+		this.municipioTransportadora = municipioTransportadora;
+	}
+
+	public String getCpfCnpjTransportadora() {
+		return cpfCnpjTransportadora;
+	}
+
+	public void setCpfCnpjTransportadora(String cpfCnpjTransportadora) {
+		this.cpfCnpjTransportadora = cpfCnpjTransportadora;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
 }
