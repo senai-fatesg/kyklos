@@ -5,9 +5,9 @@
    	xmlns:a="http://www.ambientinformatica.com.br/jsf2">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
-  	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<link href="css/estilo.css" rel="stylesheet" type="text/css" />
+    <link href="css/kyklos.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
   	
   	<script>
 		function focar() {
@@ -17,9 +17,6 @@
 <title>Login</title>
 </head>
 <body>
-
-
-		
 	<div class="navbar navbar-dark bg-inverse"
 		style="background-color: #708090;"></div>
 	<div class="container-fluid">
@@ -75,10 +72,10 @@
 							<div class="col-md-12 control">
 								<div class="toggle"
 									style="border-top: 1px solid #888; padding-top: 15px; font-size: 85%">
-									Não tem uma conta! <i class="fa fa-times fa-pencil"></i> <a
+									Ainda não é cadastrado! <i class="fa fa-times fa-pencil"></i> <a
 										href="#"
-										onclick="window.open('./cadastroUsuario.xhtml', 'loginFrame'); document.getElementById('loginbox').style.display='none';" />
-									Crie uma agora.
+										onclick="window.open('./cadastroUsuario.xhtml', '_parent');" />
+									Cadastre-se já.
 								</div>
 							</div>
 						</div>

@@ -4,14 +4,14 @@
 
 	<ui:insert name="header">
 		<div id="header">
-			<div id="headerLeft" style="height: 40px; background-color: rgb(216, 216, 216);">
+			<div id="headerLeft" style="height: 30px; background-color: #f2f2f2">
 				<div style="float: left;">
 		         	<font face="Arial Narrow" ><h3>Empresa: </h3></font>
 		         </div>
 		         <div style="float: left; margin-top: -20px">
 			         <a:field spaceLeft="10px">
 				         <p:autoComplete id="empresa" size="20" dropdown="true" rendered="#{usuarioLogadoControl.variasEmpresas}" converter="objectConverter" value="#{usuarioLogadoControl.empresaUsuario}"
-				             var="e" itemValue="#{e}" itemLabel="#{e.empresa.nome}" completeMethod="#{usuarioLogadoControl.completeEmpresa}" style="height: 30px">
+				             var="e" itemValue="#{e}" itemLabel="#{e.empresa.nome}" completeMethod="#{usuarioLogadoControl.completeEmpresa}" style="height: 28px">
 				             <p:ajax event="itemSelect" update="@all" />
 				         </p:autoComplete>
 			         </a:field>
