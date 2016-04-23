@@ -7,59 +7,59 @@
 			<div id="headerLeft" style="height: 30px; background-color: #f2f2f2">
 				<div style="float: left;">
 		         	<font face="Arial Narrow" ><h3>Empresa: </h3></font>
-		         </div>
-		         <div style="float: left; margin-top: -20px">
-			         <a:field spaceLeft="10px">
+		        </div>
+		         <div style="float: left;">
+			         <a:field spaceLeft="4px">
 				         <p:autoComplete id="empresa" size="20" dropdown="true" rendered="#{usuarioLogadoControl.variasEmpresas}" converter="objectConverter" value="#{usuarioLogadoControl.empresaUsuario}"
-				             var="e" itemValue="#{e}" itemLabel="#{e.empresa.nome}" completeMethod="#{usuarioLogadoControl.completeEmpresa}" style="height: 28px">
+				             var="e" itemValue="#{e}" itemLabel="#{e.empresa.nome}" completeMethod="#{usuarioLogadoControl.completeEmpresa}" style="height: 18px">
 				             <p:ajax event="itemSelect" update="@all" />
 				         </p:autoComplete>
 			         </a:field>
 		         </div>
-		         
 		         <h:outputText value="#{usuarioLogadoControl.empresaUsuario.empresa.pessoa.nome}" rendered="#{!usuarioLogadoControl.variasEmpresas}" style="height: 30px; width: 100px;" />
-			    
-		    </div>
+			</div>
 		</div>
-		    
-				<div class="header-topo" style="margin-top: 20px">
-					<div class="header-topo-container">
-						<div class="col-md-8" style="margin-top: -18px">
-							<img src="img/logo-kyklos.png" alt="KYKLOS" width="160" style="margin-top: 10px" />
+			
+			<div class="header-topo" style="margin-top: 15px">
+				<div class="header-topo-container">
+					<div class="col-md-8" style="margin-top: -18px">
+						<p:graphicImage value="img/logoSecundaria.png" width="95" />
+					</div>
+					
+					<div style="float: right;">
+						<div class="row">
+							<div class="col-md-2">
+								<p:graphicImage id="imageBtn" width="75px" value="img/user2.png" onclick="PF('panelPerfil').loadContents();" style="cursor: pointer; margin-top: -115px" />
+							</div>								
 						</div>
-						<div class="col-md-6">
-							<h:form>
-							
-								<div style="float: right;">
-									<div class="row">
-										<div class="col-md-2">
-											<p:graphicImage id="imageBtn" width="60px" value="img/user2.png" onclick="PF('panelPerfil').loadContents();" style="cursor: pointer; margin-top: -100px" />
-										</div>								
-									</div>
-									<p:commandLink id="ppp" style="float:right;"></p:commandLink>
+					</div>
+					<div class="col-md-6">
+						<h:form>
+							<div style="float: right;">
+								<p:commandLink id="ppp" style="float:right;"></p:commandLink>
 									<p:overlayPanel id="panelPerfil" widgetVar="panelPerfil" for="ppp" hideEffect="fade">
 										<p:panel header="PERFIL">
 											<table style="width: 100%;">
 												<tr>
 													<td rowspan="2"><p:graphicImage width="100px;height:70px" value="img/user2.png" />
 													</td>
-														<td><h:outputText value="#{UsuarioLogadoControl.pessoa.nome}" style="font-size:12px" /> 
-															<a:newLine /> 
-															<h:outputText value="#{usuarioLogadoControl.usuario.login}" style="font-size:20px" /> 
-															<a:newLine /> 
-															<a:newLine /> 
-															<h:outputText value="#{usuarioLogadoControl.usuario.nome}" style="font-size:15px;font-style:italic">
-															<a:newLine/>
-															</h:outputText>
-															<a:newLine />
-															<p:outputLabel value="Último Acesso:" style="font-weight:bold;" />
-						                        			<p:outputLabel value="#{usuarioLogadoControl.usuario.dataUltimoAcesso}" style="font-size:15px;font-style:italic">
-						                           				<f:convertDateTime pattern="dd/MM/yyyy" />
-						                        			</p:outputLabel> 
-														</td>
+													<td><h:outputText value="#{UsuarioLogadoControl.pessoa.nome}" style="font-size:12px" /> 
+														<a:newLine /> 
+													<h:outputText value="#{usuarioLogadoControl.usuario.login}" style="font-size:20px" /> 
+														<a:newLine /> 
+														<a:newLine /> 
+													<h:outputText value="#{usuarioLogadoControl.usuario.nome}" style="font-size:15px;font-style:italic">
+														<a:newLine/>
+													</h:outputText>
+														<a:newLine />
+													<p:outputLabel value="Último Acesso:" style="font-weight:bold;" />
+						                        	<p:outputLabel value="#{usuarioLogadoControl.usuario.dataUltimoAcesso}" style="font-size:15px;font-style:italic">
+						                           		<f:convertDateTime pattern="dd/MM/yyyy" />
+						                        	</p:outputLabel> 
+													</td>
 												</tr>
 											</table>
-											<p:separator/>
+												<p:separator/>
 											<a:field>
 												<p:commandButton value="Redefinir senha" action="#{usuarioLogadoControl.limparSenhas}" onclick="PF('panelPerfil').hide(); PF('dialogChangePassword').show();" icon="ui-icon-key" />
 											</a:field>
