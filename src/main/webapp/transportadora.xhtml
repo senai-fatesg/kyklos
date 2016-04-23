@@ -54,10 +54,8 @@
 			</p:dataTable>
 		</p:panel>
 
-		<p:dialog header="Cadastro de Transportadora" widgetVar="transportadoraDialog" id="transportadoraDialog"
-			resizable="false" modal="true" showEffect="puff" hideEffect="scale">
-			<p:messages id="msgs-dialog" />
-			
+		<p:dialog header="Cadastro de Transportadora" widgetVar="transportadoraDialog" id="transportadoraDialog" resizable="false" modal="true" showEffect="puff" hideEffect="scale">
+
 			<p:commandButton id="cmbCancelarTransportadora" value="Cancelar" icon="ui-icon-cancel" onclick="PF('transportadoraDialog').hide();"/>
 			<p:commandButton id="cmbLimparTransportadora" value="Limpar" icon="ui-icon-trash" actionListener="#{TransportadoraControl.limpar}" update="panelGridTransportadora" />
 			<p:commandButton id="cmbSalvarTransportadora" value="Salvar" icon="ui-icon-disk" actionListener="#{TransportadoraControl.salvarTransportadora}" update="panelGridTransportadora, pnlTransportadora" />
@@ -67,9 +65,10 @@
 						<p:panelGrid id="panelGridTransportadoraInformacoes" columns="3" >
 							<p:column>
                         		<h:outputText value="CPF/CNPJ" />
-                        			<a:newLine />
-                        		<p:inputText id="cpfCnpj" style="text-transform:uppercase" value="#{TransportadoraControl.transportadora.cpfCnpj}" placeholder="CPF/CNPJ"/>
-                		    	<p:commandButton value="Consultar" actionListener="#{TransportadoraControl.consultarCpfCnpj}" icon="ui-icon-search" update="panelGridTransportadoraInformacoes" />
+                        			<a:newLine/>
+                        		<p:inputText id="cpfCnpj" value="#{TransportadoraControl.transportadora.cpfCnpj}" maxlength="14"  placeholder="CPF/CNPJ" required="false" requiredMessage="Campo [CPF/CNPJ] é obrigatório." />
+                        		<p:commandButton value="Consultar" actionListener="#{TransportadoraControl.consultarCpfCnpj}" icon="ui-icon-search" update="panelGridTransportadoraInformacoes" />
+                				<p:message for="cpfCnpj"/>
                 			</p:column>
                 			<p:column>
 								<p:outputLabel value="Razão Social" for="razaoSocial" />

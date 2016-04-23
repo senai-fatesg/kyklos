@@ -17,13 +17,19 @@
 <title>Login</title>
 </head>
 <body>
+
 	<div class="navbar navbar-dark bg-inverse"
-		style="background-color: #708090;"></div>
+		style="background-color: rgb(4,127,40)"></div>
 	<div class="container-fluid">
-		<div id="loginbox" style="margin-top: 50px;"
+	
+	<div id="loginbox" style="margin-top: -15px;margin-left: -7px">
+		<img src="img/logoPrimaria.png" width="185" />
+	</div>
+		<div id="loginbox" style="margin-top: -65px;"
 			class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
 			<div class="panel panel-info">
-				<div class="panel-heading">
+			
+				<div class="panel-heading" style="background-color: rgb(0,220,99)">
 					<div class="panel-title">Kyklos | Login</div>
 					<div
 						style="float: right; font-size: 80%; position: relative; top: -10px">
@@ -64,7 +70,7 @@
 
 							<div class="col-sm-12 controls">
 								<a><input id="btn-login" href="#" type="submit"
-									class="btn btn-success" /></a>
+									class="btn btn-success" style="background-color: rgb(4,127,40)"/></a>
 
 							</div>
 						</div>
@@ -86,11 +92,5 @@
 		</div>
 
 	</div>
-
-	<div class="embed-responsive embed-responsive-16by9">
-		<iframe class="embed-responsive-item" id="loginFrame"
-			name="loginFrame"> </iframe>
-	</div>
-
 </body>
 </html>
