@@ -28,7 +28,7 @@ public class UnidadeMedida extends Entidade implements Serializable {
 	@Column(nullable = false)
 	private String descricao;
 	
-	@Column(name = "status")
+	@Column(nullable = false)
 	private String status;
 
 	public String getSigla() {

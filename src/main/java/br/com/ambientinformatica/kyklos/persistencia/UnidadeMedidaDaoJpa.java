@@ -93,4 +93,15 @@ public class UnidadeMedidaDaoJpa extends PersistenciaJpa<UnidadeMedida>
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> listarTodosStatus() {
+		try {
+			Query query = em.createQuery("select distinct(um.status) from UnidadeMedida um");
+			return query.getResultList();
+		} catch (NoResultException e) {
+			return null;
+		}
+
+	}
 }

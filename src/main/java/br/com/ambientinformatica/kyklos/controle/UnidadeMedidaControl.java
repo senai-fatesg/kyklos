@@ -25,6 +25,8 @@ public class UnidadeMedidaControl {
 	private UnidadeMedida unidadeMedida = new UnidadeMedida();
 
 	private List<UnidadeMedida> listaUnidadesMedida = new ArrayList<UnidadeMedida>();
+	
+	private List<String> listaStatus = new ArrayList<String>();
 
 	@Autowired
 	private UnidadeMedidaDao unidadeMedidaDao;
@@ -42,12 +44,18 @@ public class UnidadeMedidaControl {
 
 	private String descricaoOuSiglaConsulta = "";
 
-	private String status = "INATIVO";
+	private String status = "";
 
 	@PostConstruct
 	private void init() {
 		descricaoOuSiglaConsulta = "";
 		listarUnidadesDeMedida();
+		buscarTodosOsStatus();
+	}
+
+	private void buscarTodosOsStatus() {
+		listaStatus = unidadeMedidaDao.listarTodosStatus();
+		
 	}
 
 	public void limpar() {
@@ -59,6 +67,7 @@ public class UnidadeMedidaControl {
 			unidadeMedida = unidadeMedidaDao.alterar(unidadeMedida);
 			unidadeMedida = new UnidadeMedida();
 			listarUnidadesDeMedida();
+			listaStatus = unidadeMedidaDao.listarTodosStatus();
 			UtilFaces.addMensagemFaces("Salvo com sucesso!");
 		} catch (Exception e) {
 			UtilFaces.addMensagemFaces("Erro ao Salvar.");
@@ -77,21 +86,28 @@ public class UnidadeMedidaControl {
 		}
 	}
 
-	public List<SelectItem> getSelectunidades() {
-		List<UnidadeMedida> list = unidadeMedidaNegImpl.todas();
-		List<SelectItem> itens = new ArrayList<SelectItem>(list.size());
-		for (UnidadeMedida u : list) {
-			itens.add(new SelectItem(u.getId(), u.getDescricao(), u.getSigla()));
-		}
-		return itens;
-	}
+//	public List<SelectItem> getStatusCadastrados() {
+//		ArrayList<SelectItem> a = new ArrayList<SelectItem>();
+//		for (UnidadeMedida unidadeMedida : listaUnidadesMedida) {
+//			a.add(new SelectItem(unidadeMedida.getStatus()));
+//		}
+//		return a;
+//	}
 	
+	public List<SelectItem> getStatusCadastrados() {
+		ArrayList<SelectItem> a = new ArrayList<SelectItem>();
+		for (String unidadeMedida : listaStatus) {
+			a.add(new SelectItem(unidadeMedida));
+		}
+		return a;
+	}
+
 
 	public void listarUnidadesDeMedida() {
 
-		listaUnidadesMedida = unidadeMedidaDao
-				.listarUnidadesPorSiglaOuDescricao(descricaoOuSiglaConsulta);
-
+		listaUnidadesMedida = unidadeMedidaDao.listarUnidadesPorSiglaOuDescricao(descricaoOuSiglaConsulta);
+		listaStatus = unidadeMedidaDao.listarTodosStatus();
+		
 	}
 
 	public int getTamanhoListaUnidadesMedida() {
