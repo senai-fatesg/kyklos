@@ -1,202 +1,272 @@
 package br.com.ambientinformatica.kyklos.controle;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 import br.com.ambientinformatica.ambientjsf.util.UtilFaces;
-import br.com.ambientinformatica.jpa.exception.PersistenciaException;
 import br.com.ambientinformatica.kyklos.entidade.Estoque;
 import br.com.ambientinformatica.kyklos.entidade.EstoqueProduto;
 import br.com.ambientinformatica.kyklos.entidade.MovimentacaoEstoque;
 import br.com.ambientinformatica.kyklos.entidade.PedidoException;
+import br.com.ambientinformatica.kyklos.entidade.PessoaEmpresa;
 import br.com.ambientinformatica.kyklos.entidade.Produto;
 import br.com.ambientinformatica.kyklos.entidade.UnidadeMedida;
 import br.com.ambientinformatica.kyklos.entidade.ValorProduto;
 import br.com.ambientinformatica.kyklos.persistencia.EstoqueDao;
 import br.com.ambientinformatica.kyklos.persistencia.EstoqueProdutoDao;
 import br.com.ambientinformatica.kyklos.persistencia.MovimentacaoEstoqueDao;
+import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
 import br.com.ambientinformatica.kyklos.persistencia.ProdutoDao;
 import br.com.ambientinformatica.kyklos.persistencia.UnidadeMedidaDao;
 import br.com.ambientinformatica.kyklos.persistencia.ValorProdutoDao;
 
 @Named("ProdutoControl")
 @Scope("conversation")
-public class ProdutoControl implements Serializable{
-
-   private static final long serialVersionUID = 1L;
-
-   private Produto produto = new Produto();
-
-   private ValorProduto valorProduto = new ValorProduto();
-
-   private ValorProduto valorProdutoConsultado = new ValorProduto();
-
-   private List<Produto> produtos = new ArrayList<Produto>();
-
-   private EstoqueProduto estoqueProduto = new EstoqueProduto();
-
-   private Estoque estoque = new Estoque();
-
-   private List<EstoqueProduto> estoquesProdutos = new ArrayList<EstoqueProduto>();
-
-   private String buscaText;
-
-   private UnidadeMedida unidadeMedida = new UnidadeMedida();
-
-   private List<ValorProduto> alteracoesValorProduto = new ArrayList<ValorProduto>();
-
-   private BigDecimal quantidade;
-
-   private BigDecimal quantidadeTotal;
-
-   private int activeIndex;
-
-   @Autowired
-   private MovimentacaoEstoqueDao movimentacaoEstoqueDao;
-
-   @Autowired
-   private ValorProdutoDao valorProdutoDao;
-
-   @Autowired
-   private ProdutoDao produtoDao;
-
-   @Autowired
-   private UnidadeMedidaDao unidadeMedidaDao;
+public class ProdutoControl {
 
    @Autowired
    private UsuarioLogadoControl usuarioLogadoControl;
 
    @Autowired
+   private ProdutoDao produtoDao;
+
+   @Autowired
    private EstoqueProdutoDao estoqueProdutoDao;
+
+   @Autowired
+   private UnidadeMedidaDao unidadeMedidaDao;
+
+   @Autowired
+   PessoaEmpresaDao pessoaEmpresaDao;
 
    @Autowired
    private EstoqueDao estoqueDao;
 
+   @Autowired
+   private ValorProdutoDao valorProdutoDao;
 
-   public void expanssionProduto(Produto produto) {
-      estoquesProdutos = estoqueProdutoDao.listarPorProduto(produto);
-      if(estoquesProdutos == null){
-         estoquesProdutos = new ArrayList<EstoqueProduto>();
-      }
-   }
+   @Autowired
+   private MovimentacaoEstoqueDao movimentacaoEstoqueDao;
 
-   public void alterarEstoqueProduto(){
-      estoqueProduto = estoqueProdutoDao.consultarPorProdutoAndEstoque(produto, estoque);
-      if(estoqueProduto == null){
-         estoqueProduto = new EstoqueProduto();
-         estoqueProduto.setProduto(produto);
-         estoqueProduto.setEstoque(estoque);
-      }
-      estoqueProduto.setQuantidade(quantidade);
-      estoqueProdutoDao.alterar(estoqueProduto);
-      MovimentacaoEstoque movimentacaoEstoque = new MovimentacaoEstoque();
-      movimentacaoEstoque.setData(new Date());
-      movimentacaoEstoque.setEstoque(estoque);
-      movimentacaoEstoque.setProduto(produto);
-      movimentacaoEstoque.setQuantidade(quantidade);
-      movimentacaoEstoque.setUsuario(usuarioLogadoControl.getUsuario());
-      movimentacaoEstoqueDao.incluir(movimentacaoEstoque);
-      UtilFaces.addMensagemFaces("Alterado com sucesso!");
-   }
+   private Produto produto = new Produto();
 
-   public void criarProduto(){
-      activeIndex = 0;
-      produto = new Produto();
-      valorProdutoConsultado = new ValorProduto();
-      alteracoesValorProduto = new ArrayList<ValorProduto>();
-      quantidadeTotal = new BigDecimal(0);
-      estoquesProdutos = new ArrayList<EstoqueProduto>();
-      valorProduto = new ValorProduto();
-      unidadeMedida = new UnidadeMedida();
-      produto.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
-   }
+   private EstoqueProduto estoqueProduto = new EstoqueProduto();
 
-   public void editarProduto(Produto produto){
-      try {
-         activeIndex = 0;
-         quantidadeTotal = new BigDecimal(0);
-         produto = produtoDao.consultarPorCodigo(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(), produto.getCodigo());
-         estoquesProdutos = estoqueProdutoDao.listarPorProduto(produto);
-         valorProdutoConsultado = valorProdutoDao.consultarValorAtual(produto);
-         alteracoesValorProduto = valorProdutoDao.listarPorProduto(produto);
-      } catch (PedidoException e) {
-         UtilFaces.addMensagemFaces("Cadastro de produto sem valor!");
-      }
-   }
+   private ValorProduto valorProduto = new ValorProduto();
 
-   public void limpar(){
-      quantidade = null;
-   }
+   private List<Produto> listaProduto = new ArrayList<Produto>();
 
-   public void salvar(){
-      try {
-         Produto produtoConsultado = produtoDao.consultarPorCodigo(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(), produto.getCodigo());
-         valorProduto = new ValorProduto();
-         if(produtoConsultado == null){
-            produtoDao.incluir(produto);
-            produtoConsultado = produto;
-         }
-         valorProduto.setProduto(produtoConsultado);
-         valorProduto.setValorCompra(valorProdutoConsultado.getValorCompra());
-         valorProduto.setValorVenda(valorProdutoConsultado.getValorVenda());
-         valorProduto.setUsuario(usuarioLogadoControl.getUsuario());
-         valorProdutoDao.incluir(valorProduto);
-         if(estoque.getId() != null){
-            estoqueProduto.setQuantidade(quantidade);
-            estoqueProduto.setEstoque(estoque);
-            estoqueProduto.setProduto(produtoConsultado);
-            estoqueProduto.setData(new Date());
-            estoqueProdutoDao.alterar(estoqueProduto);
-         }
+   private List<EstoqueProduto> listaEstoqueProduto = new ArrayList<EstoqueProduto>();
+
+   private List<ValorProduto> listaValorProduto;
+
+   private String codigoDescricaoBuscaProduto;
+
+   public void editarEstoqueProduto() {
+      try{
+         EstoqueProduto estoqueProdutoConsultado = estoqueProdutoDao.consultar(estoqueProduto.getId());
+         BigDecimal quantidadeAtual = estoqueProdutoConsultado.getQuantidade();
+         estoqueProdutoDao.alterar(estoqueProduto);
+      
          MovimentacaoEstoque movimentacaoEstoque = new MovimentacaoEstoque();
          movimentacaoEstoque.setData(new Date());
-         movimentacaoEstoque.setEstoque(estoque);
-         movimentacaoEstoque.setProduto(produtoConsultado);
-         movimentacaoEstoque.setQuantidade(quantidade);
+         movimentacaoEstoque.setEstoque(estoqueProduto.getEstoque());
+         movimentacaoEstoque.setProduto(produto);
+         /*
+          * Insere a quantidade na movimentação de acordo com o resultado da subtração do valor a ser alterado com o valor existente.
+          */
+         movimentacaoEstoque.setQuantidade(estoqueProduto.getQuantidade().subtract(quantidadeAtual));
+         
          movimentacaoEstoque.setUsuario(usuarioLogadoControl.getUsuario());
          movimentacaoEstoqueDao.incluir(movimentacaoEstoque);
-
-         UtilFaces.addMensagemFaces("Produto cadastrado com sucesso!");
-      } catch (Exception cve) {
-         UtilFaces.addMensagemFaces("Este produto já esta cadastrado.");
+         
+         UtilFaces.addMensagemFaces("Alterado com sucesso!");
+      }catch(Exception e){
+         UtilFaces.addMensagemFaces(e.getMessage());
       }
    }
 
-   public void excluir(Produto prod){
+   public void selecionarProdutoParaEdicao(Produto produto) {
       try {
-         EstoqueProduto estoqueProdutoExcluir = estoqueProdutoDao.consultarPorProdutoAndEstoque(prod, estoque);
-         estoqueProdutoDao.excluirPorId(estoqueProdutoExcluir);
-         produtoDao.excluirPorId(prod.getId());
-         produtos.remove(prod);
-         UtilFaces.addMensagemFaces("(" + prod.getCodigo() + ") " + prod.getDescricao() + " excluído com sucesso!");
-      } catch (PersistenciaException e) {
-         UtilFaces.addMensagemFaces(e);
+         /*
+          * Consulta o produto selecionado da lista.
+          */
+         this.produto = produtoDao.consultarPorCodigo(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(), produto.getCodigo());
+         
+         /*
+          * Preenche a Lista de estoqueProduto pelo produto selecionado.
+          */
+         listaEstoqueProduto = estoqueProdutoDao.listarPorProduto(this.produto);
+         /*
+          * Seta no estoqueProduto caso só tenha um item na lista de Estoque Produto.
+          */
+         if(listaEstoqueProduto.size() == 1){
+            estoqueProduto = listaEstoqueProduto.get(0);
+         }
+         
+         /*
+          * Preenche a lista de valores do produto pelo produto consultado, possibilitando visualizar o historico dos valores alterados.
+          */
+         listaValorProduto = valorProdutoDao.listarPorProduto(this.produto);
+         /*
+          * Consulta valor Atual de um produto (Ultima versão do valor.)
+          */
+         valorProduto = valorProdutoDao.consultarValorAtual(this.produto);
+         
+      } catch (PedidoException e) {
+         UtilFaces.addMensagemFaces(e.getMessage());
       }
    }
 
-   public void trocarTab(int index) {
-      this.activeIndex = index;
+   public void editar() {
+      try {
+         boolean teveMudanca = false;
+         Produto produtoConsultado = produtoDao.consultarPorCodigo(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(), produto.getCodigo());
+         if (!produtoConsultado.getDescricao().equals(produto.getDescricao()) || !produtoConsultado.getUnidadeMedida().equals(produto.getUnidadeMedida())) {
+            produtoConsultado  = produtoDao.alterar(produto);
+            teveMudanca = true;
+         }
+
+         ValorProduto valorConsultado = valorProdutoDao.consultarValorAtual(produtoConsultado);
+         if (valorConsultado != null) {
+            if (valorConsultado.getValorCompra().compareTo(valorProduto.getValorCompra()) != 0 || valorConsultado.getValorVenda().compareTo(valorProduto.getValorVenda()) != 0) {
+               valorConsultado = new ValorProduto();
+               valorConsultado.setProduto(produtoConsultado);
+               valorConsultado.setUsuario(usuarioLogadoControl.getUsuario());
+               valorConsultado.setValorCompra(valorProduto.getValorCompra());
+               valorConsultado.setValorVenda(valorProduto.getValorVenda());
+               valorProdutoDao.incluir(valorConsultado);
+               teveMudanca = true;
+            }
+         }
+         if (teveMudanca == true) {
+            UtilFaces.addMensagemFaces("Produto Alterado com Sucesso!");
+         } else {
+            UtilFaces.addMensagemFaces("Nenhuma mudança foi realizada.");
+         }
+         limpar();
+      } catch (PedidoException e) {
+         UtilFaces.addMensagemFaces("Erro ao Editar o Produto" + e.getMessage());
+      }
    }
 
-   public List<Estoque> completeEstoqueProduto(String estoqueProduto) {
-      return estoqueDao.listarPorEmpresaCliente(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
+   public void limpar() {
+      codigoDescricaoBuscaProduto = "";
+      
+      produto = new Produto();
+      valorProduto = new ValorProduto();
+      estoqueProduto = new EstoqueProduto();
+
+      listaProduto = new ArrayList<Produto>();
+      listaValorProduto = new ArrayList<ValorProduto>();
+      listaEstoqueProduto = new ArrayList<EstoqueProduto>();
+   }
+   
+   public List<UnidadeMedida> completeUnidadeDeMedida(String siglaOuDescricao) {
+      return unidadeMedidaDao.listarUnidadesPorSiglaOuDescricao(siglaOuDescricao);
    }
 
-   public void listarProduto(ActionEvent event){
-      produtos = produtoDao.listarProdutos(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(), buscaText);
+   public void excluir(Produto produto){
+      try{
+         produtoDao.excluirPorId(produto.getId());
+         listarProdutos();
+         UtilFaces.addMensagemFaces("Produto Excluído com sucesso!");
+      }catch(Exception e){
+         UtilFaces.addMensagemFaces(e.getMessage());
+      }
+   }
+   
+   public void salvar() {
+      try {
+         /*
+          *  Verifica se todos os campos para o cadastro de um novo produto
+          */
+         if (!produto.getDescricao().isEmpty() && !produto.getCodigo().isEmpty() && produto.getUnidadeMedida() != null) {
+
+            /*
+             *  Verifica se o produto existe.
+             */
+            Produto produtoConsultado = produtoDao.consultarPorCodigo(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(), produto.getCodigo());
+            if (produtoConsultado == null) {
+
+               /*
+                * Seta os atributos do produto que foram digitados pelo usuário no TabView de cadastro de Produto.
+                */
+               produto.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
+
+               produtoDao.incluir(produto);
+
+               /*
+                * Validações para cadastro do valor do produto.
+                */
+               if (valorProduto.getValorCompra() != null && valorProduto.getValorVenda() != null) {
+                  valorProduto.setProduto(produto);
+                  valorProduto.setUsuario(usuarioLogadoControl.getUsuario());
+                  valorProdutoDao.incluir(valorProduto);
+               }
+
+               /*
+                * Validação para o cadastro de estoqueProduto.
+                */
+               if (estoqueProduto.getQuantidade() != null && estoqueProduto.getEstoque() != null) {
+                  estoqueProduto.setData(new Date());
+                  estoqueProduto.setProduto(produto);
+                  estoqueProduto.setQuantidade(estoqueProduto.getQuantidade());
+                  estoqueProdutoDao.incluir(estoqueProduto);
+               }
+               limpar();
+               UtilFaces.addMensagemFaces("Produto cadastrado com sucesso.");
+            } else {
+               limpar();
+               throw new Exception("Já existe um produto com o código informado, consulte pelo código ou descrição e edite-o.");
+            }
+         } else {
+            throw new Exception("Preencha o código, descrição e unidade de medida.");
+         }
+      } catch (Exception e) {
+         UtilFaces.addMensagemFaces(e.getMessage());
+      }
    }
 
-   public List<UnidadeMedida> listarUnidadeDeMedida() {
-      return unidadeMedidaDao.consultarUnidadesAtivas();
+   public List<Estoque> completeEstoqueProduto(String descricao) {
+      try {
+         List<PessoaEmpresa> pessoas = pessoaEmpresaDao.consultarEmpresasVinculadas(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
+         return estoqueDao.listarPorDescricaoEPessoa(descricao, pessoas);
+      } catch (PedidoException e) {
+         e.printStackTrace();
+         return new ArrayList<Estoque>();
+      }
+   }
+
+   public void listarProdutos() {
+      listaProduto = produtoDao.listarProdutos(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(), codigoDescricaoBuscaProduto);
+   }
+
+   /*
+    * Método responsável por receber um produto passado por parâmetro ao expandir a linha do DataTable (listaProduto)
+    */
+   public void listarEstoqueProduto(Produto produto) {
+      listaEstoqueProduto = estoqueProdutoDao.listarPorProduto(produto);
+      if(listaEstoqueProduto == null){
+         listaEstoqueProduto = new ArrayList<EstoqueProduto>();
+      }
+   }
+   
+   public BigDecimal getQuantidadeTotal() {
+      BigDecimal quantidadeTotal = BigDecimal.ZERO;
+      if(listaEstoqueProduto != null){
+         for (EstoqueProduto estoqueProduto : listaEstoqueProduto) {
+            quantidadeTotal = quantidadeTotal.add(estoqueProduto.getQuantidade());
+         }
+      }
+      return quantidadeTotal;
    }
 
    public Produto getProduto() {
@@ -207,28 +277,12 @@ public class ProdutoControl implements Serializable{
       this.produto = produto;
    }
 
-   public List<Produto> getProdutos() {
-      return produtos;
+   public EstoqueProduto getEstoqueProduto() {
+      return estoqueProduto;
    }
 
-   public void setProdutos(List<Produto> produtos) {
-      this.produtos = produtos;
-   }
-
-   public String getBuscaText() {
-      return buscaText;
-   }
-
-   public void setBuscaText(String buscaText) {
-      this.buscaText = buscaText;
-   }
-
-   public UnidadeMedida getUnidadeMedida() {
-      return unidadeMedida;
-   }
-
-   public void setUnidadeMedida(UnidadeMedida unidadeMedida) {
-      this.unidadeMedida = unidadeMedida;
+   public void setEstoqueProduto(EstoqueProduto estoqueProduto) {
+      this.estoqueProduto = estoqueProduto;
    }
 
    public ValorProduto getValorProduto() {
@@ -239,67 +293,24 @@ public class ProdutoControl implements Serializable{
       this.valorProduto = valorProduto;
    }
 
-   public List<EstoqueProduto> getEstoquesProdutos() {
-      return estoquesProdutos;
+   public String getCodigoDescricaoBuscaProduto() {
+      return codigoDescricaoBuscaProduto;
    }
 
-   public List<ValorProduto> getAlteracoesValorProduto() {
-      return alteracoesValorProduto;
+   public void setCodigoDescricaoBuscaProduto(String codigoDescricaoBuscaProduto) {
+      this.codigoDescricaoBuscaProduto = codigoDescricaoBuscaProduto;
    }
 
-   public void setAlteracoesValorProduto(ArrayList<ValorProduto> alteracoesValorProduto) {
-      this.alteracoesValorProduto = alteracoesValorProduto;
+   public List<Produto> getListaProduto() {
+      return listaProduto;
    }
 
-   public EstoqueProduto getEstoqueProduto() {
-      return estoqueProduto;
+   public List<EstoqueProduto> getListaEstoqueProduto() {
+      return listaEstoqueProduto;
    }
 
-   public void setEstoqueProduto(EstoqueProduto estoqueProduto) {
-      this.estoqueProduto = estoqueProduto;
-   }
-
-   public Estoque getEstoque() {
-      return estoque;
-   }
-
-   public void setEstoque(Estoque estoque) {
-      this.estoque = estoque;
-   }
-
-   public ValorProduto getValorProdutoConsultado() {
-      return valorProdutoConsultado;
-   }
-
-   public void setValorProdutoConsultado(ValorProduto valorProdutoConsultado) {
-      this.valorProdutoConsultado = valorProdutoConsultado;
-   }
-
-   public BigDecimal getQuantidade() {
-      return quantidade;
-   }
-
-   public void setQuantidade(BigDecimal quantidade) {
-      this.quantidade = quantidade;
-   }
-
-   public BigDecimal getQuantidadeTotal() {
-      for(EstoqueProduto ep : estoquesProdutos){
-         quantidadeTotal = quantidadeTotal.add(ep.getQuantidade());
-      }
-      return quantidadeTotal;
-   }
-
-   public void setQuantidadeTotal(BigDecimal quantidadeTotal) {
-      this.quantidadeTotal = quantidadeTotal;
-   }
-
-   public int getActiveIndex() {
-      return activeIndex;
-   }
-
-   public void setActiveIndex(int activeIndex) {
-      this.activeIndex = activeIndex;
+   public List<ValorProduto> getListaValorProduto() {
+      return listaValorProduto;
    }
 
 }

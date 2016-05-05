@@ -43,6 +43,17 @@ public class PessoaEmpresaDaoJpa extends PersistenciaJpa<PessoaEmpresa> implemen
       }catch(NoResultException nre ){
          return null;
       }
-
+   }
+   
+   @SuppressWarnings("unchecked")
+   @Override
+   public List<PessoaEmpresa> consultarEmpresasVinculadas(EmpresaCliente empresaCliente) {
+      try {
+         Query query = em.createQuery("select pe from PessoaEmpresa pe where pe.empresa = :empresaCliente");
+         query.setParameter("empresaCliente", empresaCliente);
+         return query.getResultList();
+      } catch (NoResultException nre) {
+         return null;
+      }
    }
 }
