@@ -1,322 +1,811 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
    xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
-   <ui:define name="cabecalho">
-      <style>
-         .ui-autocomplete-input {
-            width: 170px !important;
-         }
-      </style>
-   </ui:define>
+   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
 
    <ui:define name="corpo">
 
       <div class="screenHeader">
-         <a:field spaceLeft="1%">
-            <p:panelGrid id="gridTop" styleClass="semBorda">
-               <p:row>
-                  <p:column>
-                     <p:commandButton value="Cadastrar" actionListener="#{ProdutoControl.criarProduto}" update="formProduto" oncomplete="PF('formProduto').show();" icon="ui-icon-plusthick" />
-                  </p:column>
-               </p:row>
-            </p:panelGrid>
-         </a:field>
+         <p:panelGrid id="gridTop" styleClass="semBorda">
+            <p:row>
+               <p:column>
+                  <p:commandButton title="Limpar Tela" value="limpar" type="reset" icon="ui-icon-trash" />
+               </p:column>
+               <p:column>
+                  <p:commandButton title="Consultar Pedidos" value="Buscar" icon="ui-icon-search" onclick="document.location.href='pedidoLista.xhtml'" />
+               </p:column>
+               <p:column>
+                  <p:commandButton title="Salvar Pedidos" value="Salvar" actionListener="#{NegociacaoPedidoControl.salvarNegociacaoPedidos}" icon="ui-icon-disk" />
+               </p:column>
+               <p:column>
+                  <p:commandButton id="encaminharButton" value="Finalizar Negociação" actionListener="#{NegociacaoPedidoControl.salvarNegociacaoPedidos}"
+                     onclick="PF('formFinalizarNegociacao').show();" update="fretesSelecionados" icon="ui-icon-cart" />
+               </p:column>
+            </p:row>
+         </p:panelGrid>
       </div>
 
       <div class="contentField">
-         <p:panel header="Buscar / Filtros" toggleable="true" id="filtrosjs" widgetVar="filtrosjs" toggleOrientation="vertical">
+         <p:panelGrid id="pedidoGrid" class="semBorda" style="width:100%; background-color:#F9FAFB">
+            <p:row>
+               <p:column styleClass="pedInfoLabel">
+                  <p:outputLabel value="Cliente:" style="font-weight: bold;" />
+               </p:column>
 
-            <p:panelGrid styleClass="semBorda" style="width:100%;">
-               <p:row>
-                  <p:column style="text-align: right; width:60%">
-                     <p:inputText id="textBox" class="searchBar" value="#{ProdutoControl.buscaText}" placeholder="Produto (Código/Descrição)" spaceLeft="10px">
-                        <f:ajax event="change" actionListener="#{ProdutoControl.listarProduto}" update="form" />
-                     </p:inputText>
-                  </p:column>
-                  <p:column style="text-align:left;">
-                     <p:commandButton actionListener="#{ProdutoControl.listarProduto}" update="form, textBox" ajax="false" value="" icon="ui-icon-search"/>                
-                  </p:column>
-               </p:row>
-            </p:panelGrid>
+               <p:column styleClass="pedInfo">
+                  <p:autoComplete id="consultarCliente" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.negociacaoPedido.cliente}" var="c" itemValue="#{c}"
+                     itemLabel="#{c.nome}" completeMethod="#{NegociacaoPedidoControl.completeCliente}" placeholder="Adicionar Cliente (Nome)" minQueryLength="3" style="width: 100% !important;"
+                     inputStyle="width: 100% !important; text-align: center;">
+                     <p:ajax event="itemSelect" update="formCorpo" />
 
-         </p:panel>
+                     <p:column>
+                        <p:outputLabel value="#{c.id} - #{c.nome}" />
+                     </p:column>
 
-         <p:dataTable id="listaProduto" value="#{ProdutoControl.produtos}" var="p">
+                  </p:autoComplete>
+               </p:column>
 
-            <p:ajax event="rowToggle" listener="#{ProdutoControl.expanssionProduto(p)}" />
+               <p:column styleClass="pedInforLabel">
+                  <p:commandButton styleClass="addButton" id="addClienteButton" onclick="PF('dialogCadastroRapidoCliente').show();"
+                     actionListener="#{NegociacaoPedidoControl.limparClienteCadastroRapido}" icon="ui-icon-plusthick" />
+               </p:column>
 
-            <p:column style="width:16px">
-               <p:rowToggler />
-            </p:column>
+               <p:column styleClass="pedInfoLabel2">
+                  <p:outputLabel for="numeroPedido" value="Nº: " style="font-weight: bold;" />
+               </p:column>
 
-            <p:column width="10%" sortBy="#{p.codigo}" headerText="Código">
-               <h:outputText value="#{p.codigo}" />
-            </p:column>
+               <p:column colspan="2">
+                  <h:outputText id="numeroPedido" value="#{NegociacaoPedidoControl.pedido.numeroPedidoExterno}" />
+               </p:column>
 
-            <p:column sortBy="#{p.descricao}" headerText="Descrição">
-               <h:outputText value="#{p.descricao}" />
-            </p:column>
+            </p:row>
+            <p:row>
+               <p:column styleClass="pedInfoLabel">
+                  <p:outputLabel value="Vendedor:" style="font-weight: bold;" />
+               </p:column>
 
-            <p:column width="8%" headerText="Medida">
-               <h:outputText value="#{p.unidadeMedida.sigla}" />
-            </p:column>
+               <p:column styleClass="pedInfo">
+                  <p:autoComplete id="consultarVendedor" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.vendedor}" var="v" itemValue="#{v}"
+                     itemLabel="#{v.pessoa.nome}" completeMethod="#{NegociacaoPedidoControl.completeVendedor}" placeholder="Vendedor (Nome)" style="width: 100% !important;"
+                     inputStyle="width: 100% !important; text-align: center; align: left;">
 
-            <p:column width="8%" headerText="Opções">
+                     <p:ajax event="itemSelect" update="formCorpo" />
 
-               <p:commandButton id="editButton" class="tableButton" icon="ui-icon-pencil" actionListener="#{ProdutoControl.editarProduto(p)}" oncomplete="PF('formProduto').show();"
-                  update=":formCorpo:formProduto">
-                  <f:setPropertyActionListener value="#{p}" target="#{ProdutoControl.produto}"></f:setPropertyActionListener>
-               </p:commandButton>
+                     <p:column>
+                        <p:outputLabel value="#{v.id} - #{v.pessoa.nome}" />
+                     </p:column>
+                  </p:autoComplete>
+               </p:column>
 
-               <p:commandButton id="delButton" class="tableButton" icon="ui-icon-trash" onclick="PF('confirmDialogRemoverProduto').show();" type="button" ajax="false" />
+               <p:column>
+               </p:column>
 
-               <p:confirmDialog header="Confirmação" message="Deseja realmente excluir este cadastro?" severity="alert" widgetVar="confirmDialogRemoverProduto" resizable="false">
+               <p:column styleClass="pedInfoLabel2">
+                  <p:outputLabel for="dataEmissao" value="Emissão:" style="font-weight: bold;" />
+               </p:column>
 
-                  <p:commandButton value="Sim" actionListener="#{ProdutoControl.excluir(p)}" onclick="PF('confirmDialogRemoverProduto').hide();" update=":formCorpo:listaProduto"
-                     styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+               <p:column colspan="2">
+                  <h:outputText id="dataEmissao" value="#{NegociacaoPedidoControl.pedido.data}">
+                     <f:convertDateTime pattern="dd/MM/yy" />
+                  </h:outputText>
+               </p:column>
+            </p:row>
 
-                  <p:commandButton value="Não" onclick="PF('confirmDialogRemoverProduto').hide()" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            <p:row>
+               <p:column styleClass="d">
+                  <p:outputLabel value="Produto:" style="font-weight: bold;" />
+               </p:column>
 
-               </p:confirmDialog>
-            </p:column>
+               <p:column style="width:2% !important;">
+                  <p:autoComplete id="consultarProduto1" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.produto}" var="p" itemValue="#{p}"
+                     itemLabel="#{p.descricao}" completeMethod="#{NegociacaoPedidoControl.completeProduto}" placeholder="Adicionar Produto (Nome/Código)" minQueryLength="3"
+                     style="width: 100% !important;" inputStyle="width: 100% !important; text-align: center; align: left;">
 
-            <p:rowExpansion>
+                     <p:ajax event="itemSelect" update="formCorpo" listener="#{NegociacaoPedidoControl.selecionarProduto}" oncomplete="PF('formProdutoNegocio').show();" />
 
-               <p:dataTable id="listaEstoqueProduto" value="#{ProdutoControl.estoquesProdutos}" var="ep" emptyMessage="O produto '#{p.descricao}' não foi cadastrado em nenhum estoque.">
+                     <p:column>
+                        <p:outputLabel value="#{p.codigo} - #{p.descricao}" />
+                     </p:column>
 
-                  <p:column sortBy="#{ep.estoque.descricao}">
-                     <f:facet name="header">
-                        <h:outputText value="Descrição" />
-                     </f:facet>
-                     <h:outputText value="#{ep.estoque.descricao}" />
-                  </p:column>
+                  </p:autoComplete>
+               </p:column>
 
-                  <p:column sortBy="#{ep.quantidade}">
-                     <f:facet name="header">
-                        <h:outputText value="Quantidade" />
-                     </f:facet>
-                     <h:outputText value="#{ep.quantidade}" />
-                  </p:column>
+               <p:column styleClass="pedInfoLabel">
+               </p:column>
 
-                  <p:column sortBy="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}">
-                     <f:facet name="header">
-                        <h:outputText value="Empresa" />
-                     </f:facet>
-                     <h:outputText value="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}" />
-                  </p:column>
+               <p:column styleClass="pedInfoLabel2">
+                  <p:outputLabel for="statusPedido" value="Status:" style="font-weight: bold;" />
+               </p:column>
 
-               </p:dataTable>
+               <p:column>
+                  <h:outputText id="statusPedido" value="#{NegociacaoPedidoControl.pedido.status}" />
+               </p:column>
+            </p:row>
 
-            </p:rowExpansion>
+            <p:row>
+               <p:column colspan="10">
+                  <p:tabView id="pedidoTab" class="semBorda" dynamic="true" cache="true" value="#{NegociacaoPedidoControl.negociacaoPedido.pedidos}" var="pedido" styleClass="tabViewStyle">
 
-         </p:dataTable>
+                     <p:ajax event="tabClose" oncomplete="PF('confirmarRemoverPedido').show();" update="formCorpo" />
+
+                     <p:tab title="#{pedido.empresa.pessoa.nome}" closable="false">
+                        <p:dataTable id="itemTable" value="#{pedido.itens}" var="item" rowIndexVar="rowIndex">
+
+                           <p:column width="8%" headerText="Nº" styleClass="d">
+                              <h:outputText value="#{rowIndex + 1}" />
+                           </p:column>
+
+                           <p:column width="10%" styleClass="e" headerText="Código">
+                              <h:outputText value="#{item.produto.codigo}" />
+                           </p:column>
+
+                           <p:column styleClass="e" headerText="Descrição">
+                              <h:outputText value="#{item.produto.descricao}" />
+                           </p:column>
+
+                           <p:column width="9%" styleClass="d" headerText="Valor Unitário">
+                              <h:outputText value="#{item.valorUnitario}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column width="8%" styleClass="d" headerText="Qtd.">
+                              <h:outputText value="#{item.quantidade}">
+                                 <f:convertNumber pattern="###,##0.####" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column width="8%" styleClass="d" headerText="Total">
+                              <h:outputText value="#{item.valorTotal}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column width="8%" headerText="Opções" rendered="#{NegociacaoPedidoControl.pedido.status == 'ABERTO'}">
+                              <p:commandButton id="editButton" class="tableButton" icon="ui-icon-pencil" action="#{NegociacaoPedidoControl.editarProduto}" oncomplete="PF('formProdutoNegocio').show();"
+                                 update=":formCorpo:formProdutoNegocio">
+                                 <f:setPropertyActionListener value="#{item}" target="#{NegociacaoPedidoControl.item}"></f:setPropertyActionListener>
+                              </p:commandButton>
+
+                              <p:commandButton id="delButton" class="tableButton" icon="ui-icon-trash" oncomplete="PF('confirmarRemoverItem').show();">
+                                 <f:setPropertyActionListener value="#{item}" target="#{NegociacaoPedidoControl.item}"></f:setPropertyActionListener>
+                              </p:commandButton>
+                           </p:column>
+                        </p:dataTable>
+
+                        <p:panelGrid styleClass="d" style="width:100%;">
+                           <p:row>
+                              <p:column colspan="5">
+                                 <h:outputText value="Subtotal: " />
+                                 <h:outputText value="#{pedido.total}">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                 </h:outputText>
+                              </p:column>
+                           </p:row>
+                        </p:panelGrid>
+
+                        <p:confirmDialog header="Confirmação" message="Deseja realmente remover este pedido?" severity="alert" widgetVar="confirmarRemoverPedido" resizable="false">
+
+                           <p:commandButton id="simButton1" value="Sim" actionListener="#{NegociacaoPedidoControl.removerPedido}" onclick="PF('confirmarRemoverPedido').hide();"
+                              styleClass="ui-confirmdialog-yes" update="formCorpo" icon="ui-icon-check">
+                              <f:param name="pedidoAExcluir" value="#{pedido}"></f:param>
+
+                           </p:commandButton>
+
+                           <p:commandButton id="naoButton1" value="Não" onclick="PF('confirmarRemoverPedido').hide();" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+
+                        </p:confirmDialog>
+
+                     </p:tab>
+                  </p:tabView>
+
+               </p:column>
+            </p:row>
+
+         </p:panelGrid>
+
+         <a:newLine />
+
+         <p:confirmDialog header="Confirmação" message="Deseja realmente excluir este produto do pedido?" severity="alert" widgetVar="confirmarRemoverItem" resizable="false">
+
+            <p:commandButton id="simButton2" value="Sim" actionListener="#{NegociacaoPedidoControl.removerProduto}" onclick="PF('confirmarRemoverItem').hide();" styleClass="ui-confirmdialog-yes"
+               update="@all" icon="ui-icon-check">
+               <f:setPropertyActionListener value="#{pedido}" target="#{NegociacaoPedidoControl.pedidoExcluir}" />
+            </p:commandButton>
+
+            <p:commandButton id="naoButton2" value="Não" onclick="PF('confirmarRemoverItem').hide();" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+
+         </p:confirmDialog>
 
       </div>
 
-      <p:dialog header="Cadastro de Produto" widgetVar="formProduto" id="formProduto" showEffect="puff" hideEffect="scale" height="45%" resizable="false">
+      <p:dialog id="formProdutoNegocio" header="Tela de Produto" widgetVar="formProdutoNegocio" showEffect="puff" hideEffect="scale" resizable="false" height="50%" width="50%">
+         <h:panelGroup id="formProduto">
 
-         <div id="topMenu" align="center">
-            <a:field spaceLeft="1%">
-               <p:panelGrid id="gridTopDialog" styleClass="semBorda">
+            <div id="topMenu" align="center">
+               <p:commandButton value="Adicionar" actionListener="#{NegociacaoPedidoControl.adicionarProduto}" update="pedidoGrid" icon="ui-icon-plusthick"
+                  rendered="#{not NegociacaoPedidoControl.modoEdicao}" oncomplete="PF('formProdutoNegocio').hide();" />
+
+               <p:commandButton value="Salvar" update=":formCorpo:pedidoTab" icon="ui-icon-disk" rendered="#{NegociacaoPedidoControl.modoEdicao}" onclick="PF('formProdutoNegocio').hide();" />
+
+               <p:commandButton value="fechar" update=":formCorpo:pedidoTab" type="reset" icon="ui-icon-cancel" onclick="PF('formProdutoNegocio').hide();" />
+            </div>
+
+            <a:newLine />
+            <p:panelGrid styleClass="semBorda">
+               <p:row>
+                  <p:column>
+                     <h:outputLabel for="produtoDescricao" value="Descrição: ">
+                        <h:outputText id="produtoDescricao" value="#{NegociacaoPedidoControl.item.produto.descricao}" />
+                     </h:outputLabel>
+                     <a:newLine />
+                     <a:newLine />
+                     <h:outputLabel for="produtoCodigo" value="Código: ">
+                        <h:outputText id="produtoCodigo" value="#{NegociacaoPedidoControl.item.produto.codigo}" />
+                     </h:outputLabel>
+                  </p:column>
+                  <p:column style="width:65%;">
+
+                     <p:dataTable id="selecionarEstoque" var="e" value="#{NegociacaoPedidoControl.listaEstoque}" converter="objectConverter" selectionMode="multiple"
+                        selection="#{NegociacaoPedidoControl.estoquesSelecionados}" rowKey="#{e.estoque.id}" style="margin-bottom:0">
+
+                        <f:facet name="header">
+                           <h:outputText value="Estoque" />
+                        </f:facet>
+
+                        <p:column headerText="Estoque">
+                           <h:outputText value="#{e.estoque.descricao}" />
+                        </p:column>
+
+                        <p:column headerText="Qtd.">
+                           <p:panelGrid class="semBorda">
+                              <p:column>
+                                 <h:outputText value="#{e.quantidade}">
+                                    <f:convertNumber pattern="#0" />
+                                 </h:outputText>
+                              </p:column>
+                              <p:column>
+                                 <p:inputText id="inputQuantidade" class="inputText" placeholder="Qtd" onfocus="" value="#{e.quantidadeSelecionada}" style="width:100% !important; text-align: center;" />
+                              </p:column>
+                           </p:panelGrid>
+                        </p:column>
+                     </p:dataTable>
+
+                  </p:column>
+               </p:row>
+               <p:row>
+                  <p:column colspan="2" style="padding:0px;">
+                     <p:panel header="Estoques Externos" toggleable="true" rendered="#{NegociacaoPedidoControl.gridEstoqueExterno}" collapsed="true" id="panelEstoqueExterno" widgetVar="estoqueExterno"
+                        toggleOrientation="vertical" style="border:none !important;">
+                        <p:dataTable id="selecionarEstoqueExterno" var="est" value="#{NegociacaoPedidoControl.listaEstoqueExterno}" converter="objectConverter"
+                           selection="#{NegociacaoPedidoControl.estoqueExternoSelecionado}" rowKey="#{est.estoque}" style="margin-bottom:0; width:100%;">
+
+                           <p:column selectionMode="multiple" style="width:16px;text-align:center" />
+
+                           <p:column headerText="Estoque">
+                              <h:outputText value="#{est.estoque.descricao}" />
+                           </p:column>
+
+                           <p:column headerText="Quantidade">
+                              <p:panelGrid class="semBorda">
+                                 <p:column>
+                                    <h:outputText value="#{est.quantidade}" />
+                                 </p:column>
+                                 <p:column>
+                                    <p:inputText id="inputQuantidade2" placeholder="Qtd" value="#{est.quantidadeSelecionada}" style="width:100% !important; text-align: center;" />
+                                 </p:column>
+                              </p:panelGrid>
+                           </p:column>
+
+                           <p:column headerText="Local (CNPJ)">
+                              <h:outputText value="#{est.estoque.pessoaEmpresa.pessoa.nome} (#{est.estoque.pessoaEmpresa.pessoa.cpfCnpj})" />
+                           </p:column>
+                        </p:dataTable>
+                     </p:panel>
+                  </p:column>
+               </p:row>
+
+               <p:row>
+                  <p:column colspan="2" style="text-align:center !important;">
+                     <p:panel>
+                        <f:facet name="header">
+                           <h:outputText value="Valores" />
+                        </f:facet>
+                        <p:panelGrid cellpadding="1" style="width:100%;" styleClass="semBorda">
+                           <p:column>
+                              <h:outputLabel value="Valor Un." />
+                              <a:newLine />
+                              <h:outputText id="OutputValorUnitario" class="outputText" value="R$ #{NegociacaoPedidoControl.item.valorUnitario}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+                           <p:column>
+                              <h:outputLabel value="Total" />
+                              <a:newLine />
+                              <h:outputText id="OutputValorTotal" class="outputText">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+                        </p:panelGrid>
+                     </p:panel>
+                  </p:column>
+               </p:row>
+            </p:panelGrid>
+         </h:panelGroup>
+
+      </p:dialog>
+
+      <p:dialog id="formFinalizarNegociacao" header="Opções de Frete - #{NegociacaoPedidoControl.negociacaoPedido.cliente.nome}" widgetVar="formFinalizarNegociacao" showEffect="puff"
+         hideEffect="scale" closable="false" resizable="false" width="640px" style="text-align:center; height: 100% !important; ">
+
+         <p:growl id="growl" sticky="true" showDetail="true" />
+
+         <p:wizard id="finalizarWizard" showNavBar="true" showStepStatus="true" nextLabel="Próximo" backLabel="Voltar" flowListener="#{NegociacaoPedidoControl.alterarNegociacaoPedido}">
+
+            <p:tab id="frete" title="Opções de Frete">
+               <a:newLine />
+               <p:panelGrid id="gridTopDialog1" styleClass="comBorda" style="width:100% !important;">
                   <p:row>
+                     <p:column>
+                        <p:commandButton value="Fechar" onclick="PF('formFinalizarNegociacao').hide()" icon="ui-icon-cancel" />
+                     </p:column>
+                     <p:column>
+                        <p:commandButton value="Limpar" actionListener="#{NegociacaoPedidoControl.limparFrete}" icon="ui-icon-trash" update="panelFrete" />
+                     </p:column>
+                     <p:column style="text-align:center; width:45.65%;">
+                        <p:selectOneMenu id="selectOneEndereco" style="width:100%;">
+                           <f:selectItem itemLabel="Endereços Cadastrados" />
+                        </p:selectOneMenu>
+                     </p:column>
+                  </p:row>
+               </p:panelGrid>
+
+               <a:newLine />
+               <p:panelGrid id="panelFrete" styleClass="semBorda" style="width:100% !important;">
+                  <p:row>
+                     <p:column colspan="2" styleClass="e">
+                        <p:outputLabel value="Tipo do Frete:" />
+                        <a:newLine />
+                        <p:selectOneMenu value="#{NegociacaoPedidoControl.tipoFreteSelecionado}" style="width:100% !important;">
+                           <f:selectItems itemLabel="Tipo do Frete..." itemValue="" />
+                           <f:selectItems value="#{NegociacaoPedidoControl.tiposFrete}" />
+                        </p:selectOneMenu>
+                     </p:column>
+                     <p:column colspan="2" styleClass="e">
+                        <p:outputLabel value="Descrição:" />
+                        <a:newLine />
+                        <p:inputText id="descricaoInfo" value="#{NegociacaoPedidoControl.endereco.descricaoEndereco}" style="width:250px;" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column style="width:159px;" styleClass="e">
+                        <h:outputText value="CEP:" />
+                        <a:newLine />
+                        <p:inputText value="#{NegociacaoPedidoControl.cepConsulta}" style="height: 15px; width:150px;" />
+                     </p:column>
+                     <p:column styleClass="e">
+                        <a:newLine />
+                        <p:commandButton id="buscarCepButton" value="Consultar" actionListener="#{NegociacaoPedidoControl.consultarCep}" icon="ui-icon-search" style="width:100%;" update="panelFrete" />
+                     </p:column>
+                     <p:column styleClass="e">
+                        <p:outputLabel value="Logradouro:" />
+                        <a:newLine />
+                        <p:inputText value="#{NegociacaoPedidoControl.endereco.logradouro}" />
+                     </p:column>
+                     <p:column styleClass="e">
+                        <p:outputLabel value="Nº:" />
+                        <a:newLine />
+                        <p:inputText id="numeroInfo" value="#{NegociacaoPedidoControl.endereco.numero}" style="width: 65px;" />
+                     </p:column>
+                  </p:row>
+
+                  <p:row>
+                     <p:column colspan="2" rowspan="2">
+                        <p:dataTable id="listaTransportadoras" widgetVar="transportadora" value="#{NegociacaoPedidoControl.transportadoras}" var="transportadora" converter="objectConverter"
+                           selection="#{NegociacaoPedidoControl.transportadoraSelecionada}" style="width:100%;" rowKey="#{transportadora.cpfCnpj}">
+                           <f:facet name="header">
+                              <p:outputLabel value="Transportadoras" />
+                           </f:facet>
+                           <p:column selectionMode="single" style="width:16px;text-align:center" />
+
+                           <p:column headerText="Transportadora" style="width:45%;">
+                              <p:outputLabel value="#{transportadora.razaoSocial}" />
+                           </p:column>
+
+                           <p:column headerText="Prazo">
+                              <p:inputText value="#{NegociacaoPedidoControl.frete.prazoEntrega}" style="width:80%;">
+                                 <f:convertNumber pattern="#,#0.0" />
+                              </p:inputText>
+                           </p:column>
+
+                           <p:column headerText="Valor">
+                              <p:inputText value="#{NegociacaoPedidoControl.frete.valorFrete}" style="width:80%;">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </p:inputText>
+                           </p:column>
+                        </p:dataTable>
+                     </p:column>
+                     <p:column styleClass="e">
+                        <p:outputLabel value="Bairro:" />
+                        <a:newLine />
+                        <p:inputText id="bairroInfo" value="#{NegociacaoPedidoControl.endereco.bairro}" />
+                     </p:column>
+                     <p:column styleClass="e">
+                        <p:outputLabel value="CEP:" />
+                        <a:newLine />
+                        <p:inputText id="cepInfo" value="#{NegociacaoPedidoControl.endereco.cep}" style="width: 65px;" disabled="true" />
+                     </p:column>
+                  </p:row>
+
+                  <p:row>
+
+                     <p:column colspan="2" styleClass="e">
+                        <p:outputLabel value="Complemento:" />
+                        <a:newLine />
+                        <p:inputText id="complementoInfo" value="#{NegociacaoPedidoControl.endereco.complemento}" style="width:250px;" />
+                     </p:column>
+                  </p:row>
+
+                  <p:row>
+                     <p:column styleClass="c">
+                        <a:newLine />
+                        <p:commandButton id="adicionarFrete" icon="ui-icon-plus" value="Adicionar" actionListener="#{NegociacaoPedidoControl.adicionarFrete}" style="width:100%;"
+                           update="fretesSelecionados, panelFrete" />
+                     </p:column>
+                     <p:column styleClass="c">
+                        <a:newLine />
+                        <p:commandButton id="editarFreteButton" value="Editar" style="width:100%;" actionListener="#{NegociacaoPedidoControl.editarFrete}" icon="ui-icon-pencil"
+                           update=":formCorpo:panelFrete" />
+                     </p:column>
+                     <p:column styleClass="e">
+                        <p:outputLabel value="Município:" />
+                        <a:newLine />
+                        <p:inputText id="municipioInfo" value="#{NegociacaoPedidoControl.endereco.municipio.descricao}" disabled="true" />
+                     </p:column>
+                     <p:column styleClass="e">
+                        <p:outputLabel value="UF:" />
+                        <a:newLine />
+                        <p:inputText id="ufInfo" value="#{NegociacaoPedidoControl.endereco.municipio.uf}" disabled="true" style="width: 65px;" />
+                     </p:column>
+                  </p:row>
+
+                  <p:row>
+                     <p:column colspan="10">
+
+                        <p:dataTable id="fretesSelecionados" value="#{NegociacaoPedidoControl.negociacaoPedido.pedidos}" var="pedido" selection="#{NegociacaoPedidoControl.pedidoSelecionado}"
+                           rowKey="#{pedido.id}" selectionMode="single" styleClass="tabViewStyle">
+
+                           <f:facet name="header">
+                              <p:outputLabel value="Fretes Selecionados" />
+                           </f:facet>
+
+                           <p:column headerText="Pedido">
+                              <p:outputLabel value="#{pedido.empresa.pessoa.nome}" />
+                           </p:column>
+
+                           <p:column headerText="Frete Por Conta">
+                              <p:outputLabel value="#{pedido.frete.fretePorContaDe}" rendered="#{pedido.frete.fretePorContaDe != 'SEM_FRETE'}" />
+                              <p:outputLabel value="PRODUTO RETIRADO NA LOJA" rendered="#{pedido.frete.fretePorContaDe == 'SEM_FRETE'}" />
+                           </p:column>
+
+                           <p:column style="width:6%;">
+                              <p:rowToggler id="togglerFrete" />
+                           </p:column>
+
+                           <p:rowExpansion rendered="#{pedido.frete.fretePorContaDe != 'SEM_FRETE'}">
+                              <p:panelGrid>
+                                 <p:row>
+                                    <p:column headerText="Transportadora" styleClass="e" style="width:40% !important;">
+                                       <p:outputLabel value="#{pedido.frete.transportadora.razaoSocial}" />
+                                    </p:column>
+
+                                    <p:column headerText="Valor do Frete" style="width:40%;">
+                                       <p:outputLabel value="#{pedido.frete.valorFrete}">
+                                          <f:convertNumber pattern="R$ ###,##0.00" />
+                                       </p:outputLabel>
+                                    </p:column>
+
+                                    <p:column headerText="Prazo">
+                                       <p:outputLabel value="#{pedido.frete.prazoEntrega}">
+                                          <f:convertNumber pattern="#.# dias" />
+                                       </p:outputLabel>
+                                    </p:column>
+                                 </p:row>
+                                 <p:row>
+                                    <p:column headerText="Logradouro" styleClass="e">
+                                       <p:outputLabel value="#{pedido.frete.enderecoEntrega.logradouro}" />
+                                    </p:column>
+                                    <p:column headerText="Complemento" styleClass="e">
+                                       <p:outputLabel value="#{pedido.frete.enderecoEntrega.complemento}" />
+                                    </p:column>
+                                    <p:column headerText="Municipio" styleClass="e">
+                                       <p:outputLabel value="#{pedido.frete.enderecoEntrega.municipio.descricao} / #{pedido.frete.enderecoEntrega.municipio.uf}" />
+                                    </p:column>
+                                    <f:facet name="footer">
+                                       <h:outputText value=" " />
+                                    </f:facet>
+                                 </p:row>
+                              </p:panelGrid>
+                           </p:rowExpansion>
+
+                        </p:dataTable>
+                     </p:column>
+                  </p:row>
+               </p:panelGrid>
+            </p:tab>
+
+            <p:tab id="formasDePagamentoTab" title="Forma de Pagamento">
+               <a:newLine />
+               <p:panelGrid id="gridTopDialog2" styleClass="semBorda">
+                  <p:row>
+                     <p:column>
+                        <p:commandButton value="Fechar" onclick="PF('formFinalizarNegociacao').hide();" icon="ui-icon-cancel" />
+                     </p:column>
                      <p:column>
                         <p:commandButton value="Limpar" type="reset" icon="ui-icon-trash" />
                      </p:column>
-                     <p:column>
-                        <p:commandButton value="Salvar" actionListener="#{ProdutoControl.salvar}" update="formProduto" icon="ui-icon-disk" />
-                     </p:column>
                   </p:row>
                </p:panelGrid>
-            </a:field>
-         </div>
 
-         <a:newLine />
-         <p:tabView id="produtoTabview" activeIndex="#{ProdutoControl.activeIndex}" class="semBorda" cache="true" style="width:624px; text-align: left;" onTabShow="#{ProdutoControl.limpar()}">
-            <p:tab id="produto" title="Produto">
-               <p:panelGrid id="produtoPanel" style="width: 100%;">
+               <a:newLine />
+
+               <p:panelGrid id="faturamentoGrid" class="semBorda" style="width:100%; background-color:#F9FAFB">
+
                   <p:row>
-                     <p:column style="width: 275px !important">
-                        <h:outputLabel value="Código: " />
-                        <h:outputText value="#{ProdutoControl.produto.codigo}" />
-                     </p:column>
                      <p:column>
-                        <h:outputLabel value="Descrição: " />
-                        <h:outputText value="#{ProdutoControl.produto.descricao}" />
+                        <h:outputText value="Valor Total da Negociação" style="font-weight: bold;" />
+                        <a:newLine />
+                        <h:outputText value="#{NegociacaoPedidoControl.negociacaoPedido.total}">
+                           <f:convertNumber pattern="###,##0.00" />
+                        </h:outputText>
+                     </p:column>
+
+                     <p:column>
+                        <h:outputText value="Valor Total Pago" style="font-weight: bold;" />
+                        <a:newLine />
+                        <h:outputText value="#{NegociacaoPedidoControl.negociacaoPedido.valorTotalNegociado}">
+                           <f:convertNumber pattern="###,##0.00" />
+                        </h:outputText>
+                     </p:column>
+
+                     <p:column>
+                        <h:outputText value="Saldo Remanescente" style="font-weight: bold;" />
+                        <a:newLine />
+                        <h:outputText value="#{NegociacaoPedidoControl.negociacaoPedido.saldoRemanescenteNegociacao}">
+                           <f:convertNumber pattern="###,##0.00" />
+                        </h:outputText>
+                     </p:column>
+
+                  </p:row>
+
+                  <p:row>
+                     <p:column>
+                        <h:outputText value="Forma de Pagamento" style="font-weight: bold;" />
+                        <a:newLine />
+                        <p:selectOneMenu value="#{NegociacaoPedidoControl.formaPagamentoSelecionada}" style="width:80%;">
+                           <f:selectItem itemLabel="" itemValue="" />
+                           <f:selectItems value="#{NegociacaoPedidoControl.formasDePagamento}" />
+                        </p:selectOneMenu>
+                     </p:column>
+
+                     <p:column>
+                        <h:outputText value="Valor da Operação" style="font-weight: bold;" />
+                        <a:newLine />
+                        <p:inputText id="inputValorOperacao" placeholder="100.00" value="#{NegociacaoPedidoControl.formaPagamento.valor}" style="width:74%;">
+                           <f:convertNumber pattern="###,##0.00" />
+                        </p:inputText>
                      </p:column>
                   </p:row>
+
                   <p:row>
-                     <p:column colspan="10">
-                        <h:outputLabel for="descricaoProduto" value="Descrição" />
+                     <p:column>
+                        <h:outputText value="Data de Vencimento" style="font-weight:bold;" />
                         <a:newLine />
-                        <p:inputText id="descricaoProduto" value="#{ProdutoControl.produto.descricao}" placeholder="Nome/Descrição do Produto" style="width: 495px;" />
+                        <p:calendar value="#{NegociacaoPedidoControl.formaPagamento.dataVencimento}" pattern="dd/MM/yyyy" mindate="#{NegociacaoPedidoControl.dataMinimaVencimento}" style="width:80%;" />
+                     </p:column>
+
+                     <p:column>
+                        <h:outputText value="Parcelamento" style="font-weight:bold;" />
+                        <a:newLine />
+                        <p:inputText id="informacaoParcelamento" placeholder="0/15/30/45" value="#{NegociacaoPedidoControl.informacaoParcelamento}" />
+                     </p:column>
+
+                     <p:column>
+                        <a:newLine />
+                        <p:commandButton icon="ui-icon-plus" value="Adicionar" actionListener="#{NegociacaoPedidoControl.adicionarFormaPagamento}" update="faturamentoGrid" style="width:80%;" />
                      </p:column>
                   </p:row>
+
                   <p:row>
-                     <p:column style="width:200px !important;">
-                        <h:outputLabel for="codigoProduto" value="Código" />
-                        <a:newLine />
-                        <p:inputText id="codigoProduto" value="#{ProdutoControl.produto.codigo}" placeholder="Código do Produto" style="width: 200px;" />
-                     </p:column>
-                     <p:column>
-                        <h:outputLabel for="selecionarMedida" value="Unidade de Medida" />
-                        <a:newLine />
-                        <p:autoComplete id="selecionarMedida" dropdown="true" value="#{ProdutoControl.produto.unidadeMedida}" var="medida" completeMethod="#{ProdutoControl.listarUnidadeDeMedida()}"
-                           converter="objectConverter" itemLabel="#{medida.descricao}" itemValue="#{medida}" placeholder="Unidades de Medida" forceSelection="true">
-                           <p:column>
-                              <p:outputLabel value="#{medida.descricao} - #{medida.sigla}" />
+                     <p:column colspan="5">
+                        <p:dataTable id="listaPedidosFaturamento" value="#{NegociacaoPedidoControl.negociacaoPedido.pedidos}" var="pedido" selectionMode="single"
+                           selection="#{NegociacaoPedidoControl.pedidoSelecionado}" styleClass="tabViewStyle" rowKey="#{pedido.id}">
+
+                           <p:column width="25%" headerText="Pedido">
+                              <h:outputText value="#{pedido.empresa.pessoa.nome}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
                            </p:column>
-                        </p:autoComplete>
-                        <a:newLine />
-                     </p:column>
-                  </p:row>
-                  <p:row>
-                     <p:column>
-                        <h:outputText value="Valor Atual: " />
-                        <p:commandLink action="#{ProdutoControl.trocarTab(2)}" update=":formCorpo:produtoTabview">
-                           <h:outputText value="#{ProdutoControl.valorProdutoConsultado.valorVenda}">
-                              <f:convertNumber pattern="###,##0.00" />
-                           </h:outputText>
-                        </p:commandLink>
-                     </p:column>
-                     <p:column>
-                        <h:outputText value="Quantidade Total: " />
-                        <p:commandLink action="#{ProdutoControl.trocarTab(1)}" update=":formCorpo:produtoTabview">
-                           <h:outputText value="#{ProdutoControl.quantidadeTotal}" />
-                        </p:commandLink>
+
+                           <p:column width="15%" headerText="Valor">
+                              <h:outputText value="#{pedido.total}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column width="20%" headerText="Valor Negociado">
+                              <h:outputText value="#{pedido.pagamento.valorNegociado}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column width="20%" headerText="Saldo Devedor">
+                              <h:outputText value="#{pedido.saldoRemanescentePedido}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column width="5%">
+                              <p:rowToggler id="toggleFormasPagamento" />
+                           </p:column>
+
+                           <p:rowExpansion>
+
+                              <p:dataTable id="listaFormasPagamento" value="#{pedido.pagamento.formasPagamento}" var="formaPagamento"
+                                 emptyMessage="Não foram adicionadas formas de pagamento a este pedido!" styleClass="dataTableStyle">
+
+                                 <p:column headerText="Data Vencimento" sortBy="#{formaPagamento.dataVencimento}">
+                                    <h:outputText value="#{formaPagamento.dataVencimento}">
+                                       <f:convertDateTime pattern="dd/MM/yy" />
+                                    </h:outputText>
+                                 </p:column>
+
+                                 <p:column headerText="Forma Pagamento">
+                                    <h:outputText value="#{formaPagamento.instrumentoRecebimento.descricao}" />
+                                 </p:column>
+
+                                 <p:column headerText="Valor">
+                                    <h:outputText value="#{formaPagamento.valor}">
+                                       <f:convertNumber pattern="###,##0.00" />
+                                    </h:outputText>
+                                 </p:column>
+
+                                 <p:column value="Remover">
+                                    <p:commandButton icon="ui-icon-trash" id="excluirFormaPagamentoButton" update="formCorpo:listaPedidosFaturamento"
+                                       actionListener="#{NegociacaoPedidoControl.removerFormaPagamento(pedido, formaPagamento)}" />
+                                 </p:column>
+
+                                 <f:facet name="footer">
+                                    <h:outputText value=" " />
+                                 </f:facet>
+
+                              </p:dataTable>
+
+                           </p:rowExpansion>
+
+                        </p:dataTable>
+
                      </p:column>
                   </p:row>
                </p:panelGrid>
             </p:tab>
-            <p:tab id="quantidade" title="Quantidade">
-               <p:panelGrid id="quantidadePanel">
+
+            <p:tab title="Confirmação">
+               <a:field spaceLeft="1%">
+                  <p:panelGrid id="gridTopDialog3" styleClass="semBorda">
+                     <p:row>
+                        <p:column>
+                           <p:commandButton value="Fechar" onclick="PF('formFinalizarNegociacao').hide();" icon="ui-icon-cancel" />
+                        </p:column>
+                        <p:column>
+                           <p:commandButton value="Encaminhar ao Caixa" actionListener="#{NegociacaoPedidoControl.encaminharNegociacaoAoCaixa}" update=":formCorpo:pedidoGrid"
+                              onsuccess="PF('formFinalizarNegociacao').hide();" />
+                        </p:column>
+                     </p:row>
+                  </p:panelGrid>
+               </a:field>
+               <a:newLine />
+               <p:panelGrid id="gridDeConfirmação" styleClass="comBorda" style="width:600px; background-color:#F9FAFB">
                   <p:row>
-                     <p:column style="width: 275px !important">
-                        <h:outputLabel for="codigoPdt" value="Código: " />
-                        <h:outputText id="codigoPdt" value="#{ProdutoControl.produto.codigo}" />
-                     </p:column>
-                     <p:column colspan="2">
-                        <h:outputLabel value="Descrição: " />
-                        <h:outputText value="#{ProdutoControl.produto.descricao}" />
+                     <p:column>
+                        <h:outputText value="Confirmar Pedido(s) do cliente: #{NegociacaoPedidoControl.negociacaoPedido.cliente.nome}" />
                      </p:column>
                   </p:row>
                   <p:row>
-                     <p:column colspan="10">
-                        <p:panel id="panelQtd" header="Alterar quantidade em estoque" style="border-radius: 0px;" styleClass="semBorda">
-                           <p:panelGrid id="panelQtdEstoqueAlteracao" style="width: 100% !important;">
-                              <p:row>
-                                 <p:column style="padding:0px;">
-                                    <h:outputLabel for="quantidadeProduto" value="Quantidade" />
-                                    <a:newLine />
-                                    <p:inputText id="quantidadeProduto" value="#{ProdutoControl.quantidade}" style="width: 200px;" />
-                                 </p:column>
+                     <p:column>
+                        <p:dataTable id="listaDePedidos" value="#{NegociacaoPedidoControl.negociacaoPedido.pedidos}" var="pedido" styleClass="dataTableStyle">
+
+                           <p:column headerText="Nº Pedido" style="width:15%;" styleClass="d">
+                              <h:outputText value="#{pedido.id}" />
+                           </p:column>
+
+                           <p:column headerText="Empresa">
+                              <h:outputText value="#{pedido.empresa.pessoa.nome}" styleClass="e" />
+                           </p:column>
+
+                           <p:column headerText="Valor" style="width:15%;" styleClass="d">
+                              <h:outputText value="#{pedido.total}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column headerText="Frete" style="width:15%;" styleClass="d">
+                              <h:outputText value="#{pedido.frete.valorFrete}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column headerText="Forma de Pagamento" style="width:35%;" styleClass="e">
+                              <p:dataTable id="listaFormasPagamento" value="#{pedido.pagamento.formasPagamento}" var="formaPagamento" styleClass="table-no-header">
+
                                  <p:column>
-                                    <h:outputLabel for="completeEstoqueProduto" value="Estoque" />
-                                    <a:newLine />
-                                    <p:autoComplete id="completeEstoqueProduto" dropdown="true" scrollHeight="180" value="#{ProdutoControl.estoque}" var="e"
-                                       completeMethod="#{ProdutoControl.completeEstoqueProduto}" converter="objectConverter" itemLabel="#{e.descricao}" itemValue="#{e}" forceSelection="true">
-                                       <p:column>
-                                          <h:outputText value="#{e.descricao}" />
-                                       </p:column>
-                                    </p:autoComplete>
+                                    <h:outputText value="#{formaPagamento.instrumentoRecebimento.descricao}" />
                                  </p:column>
-                                 <p:column style="text-align: right !important; padding: 0px;">
-                                    <a:newLine />
-                                    <p:commandButton value="Alterar" action="#{ProdutoControl.alterarEstoqueProduto}" update="@all" />
-                                 </p:column>
-                              </p:row>
-                           </p:panelGrid>
-                        </p:panel>
-                     </p:column>
-                  </p:row>
-                  <p:row>
-                     <p:column colspan="2">
-                        <p:dataTable id="listaEstoqueProduto" value="#{ProdutoControl.estoquesProdutos}" var="ep" emptyMessage="O produto '#{p.descricao}' não foi cadastrado em nenhum estoque.">
 
-                           <p:column sortBy="#{ep.estoque.descricao}">
-                              <f:facet name="header">
-                                 <h:outputText value="Descrição" />
-                              </f:facet>
-                              <h:outputText value="#{ep.estoque.descricao}" />
-                           </p:column>
-
-                           <p:column sortBy="#{ep.quantidade}">
-                              <f:facet name="header">
-                                 <h:outputText value="Quantidade" />
-                              </f:facet>
-                              <h:outputText value="#{ep.quantidade}" />
-                           </p:column>
-
-                           <p:column sortBy="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}">
-                              <f:facet name="header">
-                                 <h:outputText value="Empresa" />
-                              </f:facet>
-                              <h:outputText value="#{ep.estoque.pessoaEmpresa.empresa.pessoa.nome}" />
+                              </p:dataTable>
                            </p:column>
 
                         </p:dataTable>
                      </p:column>
                   </p:row>
+
                </p:panelGrid>
             </p:tab>
+         </p:wizard>
 
-            <p:tab id="preco" title="Preço">
-               <p:panelGrid id="precoPanel">
-                  <p:row>
-                     <p:column style="width: 275px !important">
-                        <h:outputLabel value="Código: " />
-                        <h:outputText value="#{ProdutoControl.produto.codigo}" />
-                     </p:column>
-                     <p:column>
-                        <h:outputLabel value="Descrição: " />
-                        <h:outputText value="#{ProdutoControl.produto.descricao}" />
-                     </p:column>
-                  </p:row>
-                  <p:row>
-                     <p:column>
-                        <h:outputLabel for="valorCompraProduto" value="Valor de Compra" />
-                        <a:newLine />
-                        <p:inputText id="valorCompraProduto" value="#{ProdutoControl.valorProdutoConsultado.valorCompra}" placeholder="Preço de Compra" style="width: 200px;">
-                           <f:convertNumber pattern="###,##0.00" />
-                        </p:inputText>
-                     </p:column>
-                     <p:column>
-                        <h:outputLabel for="valorVendaProduto" value="Valor de Venda" />
-                        <a:newLine />
-                        <p:inputText id="valorVendaProduto" value="#{ProdutoControl.valorProdutoConsultado.valorVenda}" placeholder="Preço de Venda" style="width: 200px;">
-                           <f:convertNumber pattern="###,##0.00" />
-                        </p:inputText>
-                     </p:column>
-                  </p:row>
-                  <p:row>
-                     <p:column colspan="2">
-                        <p:dataTable id="alteracoes" value="#{ProdutoControl.alteracoesValorProduto}" var="avp">
-                           <p:column headerText="Valor de Compra">
-                              <h:outputText value="#{avp.valorCompra}">
-                                 <f:convertNumber pattern="###,##0.00" />
-                              </h:outputText>
-                           </p:column>
+      </p:dialog>
 
-                           <p:column headerText="Valor de Venda">
-                              <h:outputText value="#{avp.valorVenda}">
-                                 <f:convertNumber pattern="###,##0.00" />
-                              </h:outputText>
-                           </p:column>
+      <p:dialog widgetVar="dialogCadastroRapidoCliente" id="dialogCadastroRapidoCliente" closable="false" resizable="false" header="Cadastro Rápido de Cliente">
+         <div id="topMenu" align="center">
+            <p:panelGrid id="gridTopDialog" styleClass="semBorda">
+               <p:row>
+                  <p:column>
+                     <p:commandButton value="Cancelar" onclick="PF('formCadastroRapidoCliente').hide();" icon="ui-icon-cancel" />
+                  </p:column>
+                  <p:column>
+                     <p:commandButton value="Limpar" type="reset" actionListener="#{NegociacaoPedidoControl.limparClienteCadastroRapido}" />
+                  </p:column>
+                  <p:column>
+                     <p:commandButton value="Cadastrar" actionListener="#{NegociacaoPedidoControl.salvarCliente}" oncomplete="PF('dialogCadastroRapidoCliente').hide();" />
+                  </p:column>
+               </p:row>
+            </p:panelGrid>
+         </div>
+         <a:newLine />
+         <p:panelGrid id="panelCadastroRapidoCliente" styleClass="semBorda">
+            <p:row>
+               <p:column styleClass="d">
+                  <h:outputText value="CPF/CNPJ: " />
+               </p:column>
+               <p:column colspan="3" styleClass="e">
+                  <p:inputText title="CPF/CNPJ" placeholder="CPF/CNPJ" value="#{NegociacaoPedidoControl.cliente.cpfCnpj}" />
+               </p:column>
+            </p:row>
+            <p:row>
+               <p:column styleClass="d">
+                  <h:outputText value="Nome / Razão Social: " />
+               </p:column>
+               <p:column colspan="3" styleClass="e">
+                  <p:inputText title="Nome / Razão Social" placeholder="Nome / Razão Social" value="#{NegociacaoPedidoControl.cliente.nome}" />
+               </p:column>
+            </p:row>
 
-                           <p:column headerText="Data da Alteração">
-                              <h:outputText value="#{avp.data}">
-                                 <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-                              </h:outputText>
-                           </p:column>
+            <p:row>
+               <p:column styleClass="d">
+                  <h:outputText value="CEP: " />
+               </p:column>
+               <p:column>
+                  <p:inputText title="CEP" placeholder="74000000" value="#{NegociacaoPedidoControl.cliente.cep}" />
+               </p:column>
+            </p:row>
 
-                           <p:column headerText="Alterado por">
-                              <h:outputText value="#{avp.usuario.login}" />
-                           </p:column>
-                        </p:dataTable>
-                     </p:column>
-                  </p:row>
-               </p:panelGrid>
-            </p:tab>
-         </p:tabView>
+            <p:row>
+               <p:column styleClass="c" colspan="5">
+                  <h:outputText value="*Favor completar cadastro posteriormente*" style="color:#716E69;" />
+               </p:column>
+            </p:row>
+
+         </p:panelGrid>
       </p:dialog>
 
    </ui:define>

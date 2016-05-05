@@ -14,5 +14,6 @@ public interface PessoaEmpresaDao extends Persistencia<PessoaEmpresa>{
    List<PessoaEmpresa> listarPorEmpresaCliente(EmpresaCliente empresaCliente);
 
    PessoaEmpresa consultarPorPessoaAndEmpresa(Pessoa pessoa, EmpresaCliente empresa);
-
+   
+   List<PessoaEmpresa> consultarEmpresasVinculadas(EmpresaCliente empresaCliente);
 }
