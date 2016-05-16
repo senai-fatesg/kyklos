@@ -7,30 +7,40 @@
 	xmlns:a="http://www.ambientinformatica.com.br/jsf2"
 	xmlns:p="http://primefaces.org/ui">
 	<ui:define name="corpo">
+
+<h:head>
+	<link href="css/styles.css" type="text/css" rel="stylesheet" />
+</h:head>
 		
 		
 		<p:fieldset>
 		
  			<p:panel id="pnl" header="Acesso Rápido">
-        		<h:panelGrid columns="5" cellpadding="3" >
+        		<h:panelGrid columns="5" cellpadding="5" >
         			<p:commandLink action="pedidoLista?faces-redirect=true" title="Pedido" >
-    					<p:graphicImage value="img/pedido.png" width="75"/>
+    					<p:graphicImage value="img/pedido.png" width="80"/>
+    					<pre>Pedido</pre>
     				</p:commandLink>
+    				
             		
             		<p:commandLink action="produto?faces-redirect=true" title="Produto" >
-    					<p:graphicImage value="img/produto.png" width="75"/>
+    					<p:graphicImage value="img/produto.png" width="80"/>
+    					<pre>Produto</pre>
     				</p:commandLink>
     				
     				<p:commandLink action="estoque?faces-redirect=true" title="Estoque" >
-    					<p:graphicImage value="img/estoque.png" width="75"/>
+    					<p:graphicImage value="img/estoque.png" width="80"/>
+    					<pre>Estoque</pre>
     				</p:commandLink>
     			
     				<p:commandLink action="transportadora?faces-redirect=true" title="Transportadora" >
-    					<p:graphicImage value="img/transporte.png" width="75"/>
+    					<p:graphicImage value="img/transporte.png" width="80"/>
+    					<pre>Transport.</pre>
     				</p:commandLink>
     			
     				<p:commandLink action="pessoa?faces-redirect=true" title="Pessoa" >
-    					<p:graphicImage value="img/pessoa.png" width="75"/>
+    					<p:graphicImage value="img/pessoa.png" width="80"/>
+    					<pre>Pessoa</pre>
     				</p:commandLink>
     			</h:panelGrid>
         	</p:panel>
