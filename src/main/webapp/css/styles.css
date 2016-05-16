@@ -160,20 +160,24 @@ html{
 
 .header-topo {
 	 
-	height: 60px; 
-	max-height: 80px;
+	height: 45px; 
+	max-height: 50px;
 	padding-left: 0px; padding-right: 0px;
 	 
-	padding-bottom: 30px;
-	margin-top: -20px;
-	margin-bottom: 5px;
- 	background: #E1F5C4 url("../img/bg-recicle-pattern.png"); /*repeat-y top left;
- 	/* background-image: url("../imagens/topo-pattern.png"); */''
+	padding-bottom: 20px;
+	margin-top: 0px;
+	margin-bottom: 1px;
+ 	background: #E1F5C4 url("../img/bg.png");
  	border-bottom: 1px solid #658A2D;
 }
 
-.star { background-image: url("img/truck.png"); 
+pre {
+	color: black;
+	text-align: center;
+	font-family: inherit;
+	font-size: 13px;
 }
+
 
 
 
