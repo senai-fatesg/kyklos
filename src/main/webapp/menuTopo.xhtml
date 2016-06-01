@@ -5,19 +5,25 @@
 	<ui:insert name="header">
 		<div id="header">
 			<div id="headerLeft" style="height: 30px; background-color: rgb(4,127,40)">
-				<div style="float: left;">
-		         	<font face="Arial Narrow"><h3>Empresa: </h3></font>
-		        </div>
+				
 		         <div style="float: left;">
-			         <a:field spaceLeft="4px">
+			         <a:field spaceLeft="4px" >
+			         
 				         <p:autoComplete id="empresa" size="20" dropdown="true" rendered="#{usuarioLogadoControl.variasEmpresas}" converter="objectConverter" value="#{usuarioLogadoControl.empresaUsuario}"
 				             var="e" itemValue="#{e}" itemLabel="#{e.empresa.nome}" completeMethod="#{usuarioLogadoControl.completeEmpresa}" style="height: 18px">
 				             <p:ajax event="itemSelect" update="@all" />
 				         </p:autoComplete>
 			         </a:field>
 		         </div>
-		         <h:outputText value="#{usuarioLogadoControl.empresaUsuario.empresa.pessoa.nome}" rendered="#{!usuarioLogadoControl.variasEmpresas}" style="height: 30px; width: 100px;" />
-			</div>
+		         
+		         <div style="float: left;">
+		         	 <font face="Arial Narrow">
+		         	 	<h3>Empresa: <h:outputText value="#{usuarioLogadoControl.empresaUsuario.empresa.pessoa.nome}" rendered="#{!usuarioLogadoControl.variasEmpresas}" style="font-size: 15px"/></h3>
+		         	 </font>
+		         
+			
+		        </div>
+		        </div>
 		</div>
 			
 			<div class="header-topo" style="margin-top: 18px">
