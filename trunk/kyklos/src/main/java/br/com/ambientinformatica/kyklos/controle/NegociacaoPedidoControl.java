@@ -127,7 +127,8 @@ public class NegociacaoPedidoControl implements Serializable {
 		try {
 			pedido.setNumero("1");
             pedido.setCliente(cliente);
-            pedido.setEmpresa(empresa);
+            pedido.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
+            pedido.setEmpresaEmitente(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
             pedido.setVendedor(vendedor);
             pedido.setItens(itens);
 			dao.incluir(pedido);
@@ -260,6 +261,7 @@ public class NegociacaoPedidoControl implements Serializable {
 					item.setEstoque(estoque.getEstoqueProduto());
 					item.setQuantidade(estoque.getQuantidadeSelecionada());
 					pedido.addItem(item);
+					itens.add(item);
 					item = new ItemPedido();
 					negociacaoPedido.addPedido(pedido, estoque.getEstoque()
 							.getEmpresa(), usuarioLogadoControl.getEmpresaUsuario()
