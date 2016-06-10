@@ -30,7 +30,7 @@
          <p:panelGrid id="pedidoGrid" class="semBorda" style="width:100%; background-color:#F9FAFB">
             <p:row>
                <p:column style="width: 26% !important;">
-                  <p:autoComplete id="consultarCliente" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.negociacaoPedido.cliente}" var="c" itemValue="#{c}"
+                  <p:autoComplete id="consultarCliente" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.cliente}" var="c" itemValue="#{c}"
                      itemLabel="#{c.nome}" completeMethod="#{NegociacaoPedidoControl.completeCliente}" placeholder="Adicionar Cliente (Nome)" minQueryLength="2" style="width: 100% !important;"
                      inputStyle="width: 100% !important; text-align: center;">
                      <p:ajax event="itemSelect" update="formCorpo" />
