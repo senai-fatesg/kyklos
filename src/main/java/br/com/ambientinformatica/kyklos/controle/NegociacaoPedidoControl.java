@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Scope;
 import br.com.ambientinformatica.ambientjsf.util.UtilFaces;
 import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.kyklos.dto.EstoqueProdutoDto;
+import br.com.ambientinformatica.kyklos.entidade.EmpresaCliente;
 import br.com.ambientinformatica.kyklos.entidade.EnumStatusPedido;
 import br.com.ambientinformatica.kyklos.entidade.EstoqueProduto;
 import br.com.ambientinformatica.kyklos.entidade.ItemPedido;
@@ -81,6 +82,8 @@ public class NegociacaoPedidoControl implements Serializable {
 	private Pessoa cliente = new Pessoa();
 
 	private Vendedor vendedor = new Vendedor();
+	
+	private EmpresaCliente empresa = new EmpresaCliente();
 
 	private String buscaText;
 
@@ -89,6 +92,8 @@ public class NegociacaoPedidoControl implements Serializable {
 	private Date dataFinal;
 
 	private List<Pedido> pedidosFiltro = new ArrayList<Pedido>();
+	
+	private List<ItemPedido> itens = new ArrayList<ItemPedido>();
 
 	private List<Pedido> pedidosSelecionados = new ArrayList<Pedido>();
 
@@ -120,19 +125,12 @@ public class NegociacaoPedidoControl implements Serializable {
 
 	public void salvarPedido() {
 		try {
-
-			// Pessoa pessoa = new Pessoa();
-			// PessoaNegImpl pessoaNeg = new PessoaNegImpl();
-			// pessoa = pessoaNeg.consultar("04340219118");
-			// if (pessoa.getId() == null) {
-			// UtilFaces.addMensagemFaces("CPF/CNPJ não cadastrado.");
-			//
-			// pedido.setId(1);
 			pedido.setNumero("1");
-			// pedido.setCliente(pessoa);
-
+            pedido.setCliente(cliente);
+            pedido.setEmpresa(empresa);
+            pedido.setVendedor(vendedor);
+            pedido.setItens(itens);
 			dao.incluir(pedido);
-			// }
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
