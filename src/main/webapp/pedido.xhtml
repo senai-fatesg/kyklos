@@ -17,14 +17,9 @@
                      <p:commandButton title="Consultar Pedidos" value="Buscar" icon="ui-icon-search" onclick="document.location.href='pedidoLista.xhtml'" />
                   </p:column>
                   <p:column>
-                     <p:commandButton title="Salvar Pedido" value="Salvar" icon="ui-icon-disk" />
+                     <p:commandButton title="Salvar Pedido" value="Salvar" actionListener="#{NegociacaoPedidoControl.salvarPedido}" icon="ui-icon-disk" />
                   </p:column>
-                  <p:column>
-                     <p:commandButton id="freteButton" value="Frete" icon="ui-icon-suitcase" onclick="PF('formFinalizarNegociacao').show();" />
-                  </p:column>
-                  <p:column>
-                     <p:commandButton id="encaminharButton" value="Encaminhar" onclick="PF('formFinalizarNegociacao').show();" icon="ui-icon-cart" />
-                  </p:column>
+                  
                </p:row>
             </p:panelGrid>
          </a:field>
@@ -36,7 +31,7 @@
             <p:row>
                <p:column style="width: 26% !important;">
                   <p:autoComplete id="consultarCliente" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.negociacaoPedido.cliente}" var="c" itemValue="#{c}"
-                     itemLabel="#{c.nome}" completeMethod="#{NegociacaoPedidoControl.completeCliente}" placeholder="Adicionar Cliente (Nome)" minQueryLength="3" style="width: 100% !important;"
+                     itemLabel="#{c.nome}" completeMethod="#{NegociacaoPedidoControl.completeCliente}" placeholder="Adicionar Cliente (Nome)" minQueryLength="2" style="width: 100% !important;"
                      inputStyle="width: 100% !important; text-align: center;">
                      <p:ajax event="itemSelect" update="formCorpo" />
 
@@ -139,6 +134,10 @@
                <p:column>
                   <h:outputText id="statusPedido" value="#{NegociacaoPedidoControl.pedido.status}" />
                </p:column>
+               
+               
+               
+                
             </p:row>
 
             <p:row>
@@ -193,8 +192,8 @@
                         </p:dataTable>
                         <p:confirmDialog header="Confirmação" message="Deseja realmente remover este pedido?" severity="alert" widgetVar="confirmarRemoverPedido" resizable="false">
 
-                           <p:commandButton id="simButton1" value="Sim" actionListener="#{NegociacaoPedidoControl.removerPedido}" onclick="PF('confirmarRemoverPedido').hide();"
-                              styleClass="ui-confirmdialog-yes" update="formCorpo" icon="ui-icon-check">
+                           <p:commandButton id="simButton1" value="Sim" actionListener="#{NegociacaoPedidoControl.removerProduto}" onclick="PF('confirmarRemoverPedido').hide();"
+                              styleClass="ui-confirmdialog-yes" update=":formCorpo:pedidoTab" icon="ui-icon-check">
                               <f:param name="pedidoAExcluir" value="#{pedido}"></f:param>
 
                            </p:commandButton>
@@ -233,7 +232,7 @@
                   rendered="#{not NegociacaoPedidoControl.modoEdicao}" onclick="PF('formProdutoNegocio').hide();">
                </p:commandButton>
 
-               <p:commandButton value="Salvar" update=":formCorpo:pedidoTab" icon="ui-icon-disk" rendered="#{NegociacaoPedidoControl.modoEdicao}" onclick="PF('formProdutoNegocio').hide();">
+               <p:commandButton value="Salvar" actionListener="#{NegociacaoPedidoControl.salvarPedido}" update=":formCorpo:pedidoTab" icon="ui-icon-disk">
                </p:commandButton>
 
                <p:commandButton value="Cancelar" update=":formCorpo:pedidoTab" type="reset" icon="ui-icon-cancel" onclick="PF('formProdutoNegocio').hide();" />
@@ -339,283 +338,6 @@
 
          </h:panelGroup>
 
-      </p:dialog>
-
-      <p:dialog id="formFinalizarNegociacao" header="Opções de Frete - #{NegociacaoPedidoControl.negociacaoPedido.cliente.nome}" widgetVar="formFinalizarNegociacao" showEffect="puff"
-         hideEffect="scale" closable="false" resizable="false" width="800px" height="730px" style="text-align:center;">
-         <h:form id="formFreteEPagamento">
-
-            <p:growl id="growl" sticky="true" showDetail="true" />
-
-            <p:wizard id="finalizarWizard" showNavBar="true" showStepStatus="true" nextLabel="Próximo" backLabel="Voltar">
-
-               <p:tab id="frete" title="Opções de Frete">
-                  <a:field spaceLeft="1%">
-                     <p:panelGrid id="gridTopDialog1" styleClass="semBorda">
-                        <p:row>
-                           <p:column>
-                              <p:commandButton value="Cancelar" onclick="PF('formFinalizarNegociacao').hide()" icon="ui-icon-cancel" />
-                           </p:column>
-                           <p:column>
-                              <p:commandButton value="Limpar" type="reset" icon="ui-icon-trash" />
-                           </p:column>
-                           <p:column>
-                              <p:commandButton value="Salvar" icon="ui-icon-disk" />
-                           </p:column>
-                        </p:row>
-                     </p:panelGrid>
-                  </a:field>
-                  <a:newLine />
-                  <a:newLine />
-                  <p:panelGrid id="panelFrete" styleClass="semBorda" style="width:590px;">
-                     <p:row>
-                        <p:column class="col-md-3" styleClass="e">
-                           <p:selectOneMenu id="selectOneEndereco" style="width:100%;">
-                              <f:selectItem itemLabel="Endereços Cadastrados" />
-                           </p:selectOneMenu>
-                        </p:column>
-                        <p:column class="col-md-3">
-                           <p:commandButton value="Vincular Endereço ao Cliente" icon="ui-icon-home" />
-                        </p:column>
-                     </p:row>
-                     <p:row>
-                        <p:column class="col-md-3" style="width:159px;" styleClass="e">
-                           <h:outputText value="CEP" />
-                           <a:newLine />
-                           <p:inputMask id="inputCEP" mask="99.999-999" style="height: 15px; width:150px;" />
-                        </p:column>
-                        <p:column class="col-md-3" styleClass="e">
-                           <a:newLine />
-                           <p:commandButton id="buscarCepButton" value="Buscar" icon="ui-icon-search" style="width:100%;" />
-                        </p:column>
-                        <p:column class="col-md-3" styleClass="e">
-                           <p:outputLabel value="Logradouro:" />
-                           <a:newLine />
-                           <p:inputText id="logradouroInfo" value="Rua S 3 Qd S 11" disabled="true" />
-                        </p:column>
-                        <p:column class="col-md-3" styleClass="e">
-                           <p:outputLabel value="Nº:" />
-                           <a:newLine />
-                           <p:inputText id="numeroInfo" value="419" style="width: 65px;" />
-                        </p:column>
-                     </p:row>
-
-                     <p:row>
-                        <p:column styleClass="e">
-                           <p:outputLabel value="Pedido" />
-                           <a:newLine />
-                           <p:selectOneMenu value="#{NegociacaoPedidoControl.pedido}" style="width:160px;">
-                              <f:selectItem itemLabel="" itemValue="" />
-                              <f:selectItems value="#{NegociacaoPedidoControl.negociacaoPedido.pedidos}" var="pedidos" itemLabel="#{pedidos.empresa.pessoa.nome}" itemValue="#{pedidos}" />
-                           </p:selectOneMenu>
-                        </p:column>
-                        <p:column styleClass="e">
-                           <a:newLine />
-                           <p:commandButton id="adicionarFreteButton" icon="ui-icon-plus" value="Adicionar" style="width:100%;" />
-                        </p:column>
-                        <p:column styleClass="e">
-                           <p:outputLabel value="Bairro:" />
-                           <a:newLine />
-                           <p:inputText id="bairroInfo" value="Setor Bela Vista" disabled="true" />
-                        </p:column>
-                        <p:column styleClass="e">
-                           <p:outputLabel value="CEP:" />
-                           <a:newLine />
-                           <p:inputText id="cepInfo" value="74.823-440" disabled="true" style="width: 65px;" />
-                        </p:column>
-                     </p:row>
-
-                     <p:row>
-                        <p:column class="col-md-3" rowspan="2">
-                           <p:dataTable id="listaTransportadoras" widgetVar="transportadora" value="#{NegociacaoPedidoControl.transportadoras}" style="width:100%;">
-                              <f:facet name="header">
-                                 <p:outputLabel value="Transportadoras" />
-                              </f:facet>
-
-                              <p:column class="col-md-3" headerText="Transportadora">
-
-                              </p:column>
-
-                              <p:column class="col-md-3" headerText="Prazo" >
-
-                              </p:column>
-
-                              <p:column class="col-md-3" headerText="Valor">
-
-                              </p:column>
-                           </p:dataTable>
-                        </p:column>
-                        <p:column class="col-md-3" styleClass="e">
-                           <p:outputLabel value="Complemento:" />
-                           <a:newLine />
-                           <p:inputText id="complementoInfo" value="Apto 303 Residencial Novità" style="width:250px;" />
-                        </p:column>
-                     </p:row>
-
-                     <p:row>
-                        <p:column styleClass="e">
-                           <p:outputLabel value="Município:" />
-                           <a:newLine />
-                           <p:inputText id="municipioInfo" value="Goiânia" disabled="true" />
-                        </p:column>
-                        <p:column styleClass="e">
-                           <p:outputLabel value="UF:" />
-                           <a:newLine />
-                           <p:inputText id="ufInfo" value="GO" disabled="true" style="width: 65px;" />
-                        </p:column>
-                     </p:row>
-
-                     <p:row>
-                        <p:column colspan="10">
-                           <p:dataTable id="listaDeFretes" styleClass="tabViewStyle">
-                              <f:facet name="header">
-                                 <p:outputLabel value="Fretes Selecionados" />
-                              </f:facet>
-                              <p:column headerText="Transportadora"></p:column>
-                              <p:column headerText="Pedido"></p:column>
-                              <p:column headerText="Valor do Frete" style="width:80px;"></p:column>
-                              <p:column headerText="Tipo" style="width:80px;"></p:column>
-                              <p:column headerText="Prazo" style="width:60px;"></p:column>
-                           </p:dataTable>
-                        </p:column>
-                     </p:row>
-                  </p:panelGrid>
-               </p:tab>
-
-               <p:tab id="formasDePagamento" title="Forma de Pagamento">
-
-                  <a:field spaceLeft="1%">
-                     <p:panelGrid id="gridTopDialog2" styleClass="semBorda">
-                        <p:row>
-                           <p:column>
-                              <p:commandButton value="Cancelar" onclick="PF('formFinalizarNegociacao').hide();" icon="ui-icon-cancel"/>
-                           </p:column>
-                           <p:column>
-                              <p:commandButton value="Limpar" type="reset" icon="ui-icon-trash" />
-                           </p:column>
-                        </p:row>
-                     </p:panelGrid>
-                  </a:field>
-                  <a:newLine />
-                  <p:panelGrid id="faturamentoGrid" class="comBorda" style="width:590px; background-color:#F9FAFB">
-                     <p:row>
-                        <p:column>
-                           <h:outputText value="Valor Total da Negociação" style="font-weight: bold;" />
-                           <a:newLine />
-                           <h:outputText value="OUTPUT HERE" />
-                        </p:column>
-
-                        <p:column>
-                           <h:outputText value="Valor Pago" style="font-weight: bold;" />
-                           <a:newLine />
-                           <h:outputText value="OUTPUT HERE" />
-                        </p:column>
-
-                        <p:column colspan="2">
-                           <h:outputText value="Saldo" style="font-weight: bold;" />
-                           <a:newLine />
-                           <h:outputText value="OUTPUT HERE" />
-                        </p:column>
-                     </p:row>
-
-                     <p:row>
-                        <p:column style="width: 160px;">
-                           <h:outputText value="Forma de Pagamento" style="font-weight: bold;" />
-                           <a:newLine />
-                           <p:selectOneMenu id="selecionarFormasDePagamento" style="width:100%;">
-                              <f:selectItem itemLabel="Selecionar" itemValue="null" />
-                              <f:selectItem itemLabel="Dinheiro" itemValue="dinheiro" />
-                              <f:selectItem itemLabel="Cheque" itemValue="cheque" />
-                           </p:selectOneMenu>
-                        </p:column>
-
-                        <p:column style="width: 160px;">
-                           <h:outputText value="Valor da Operação" style="font-weight: bold;" />
-                           <a:newLine />
-                           <p:inputText id="inputValorOperacao" placeholder="100.00" style="height:15px; width: 150px;" />
-                        </p:column>
-
-                        <p:column style="padding: 2px;" colspan="2">
-                           <h:outputText value=" " />
-                           <a:newLine />
-                           <p:commandButton icon="ui-icon-plus" value="Adicionar" />
-                        </p:column>
-                     </p:row>
-
-                     <p:row>
-                        <p:column colspan="10">
-                           <p:dataTable id="formasDePagamentoTable" styleClass="dataTableStyle" value="#{NegociacaoPedidoControl.formasDePagamentoSelecionadas}" var="fp">
-                              <p:column headerText="Forma de Pagamento" style="width:159px;" styleClass="e">
-                                 <h:outputText value="OUTPUT HERE" />
-                              </p:column>
-
-                              <p:column headerText="Valor da Operação" style="width:160px;" styleClass="e">
-                                 <h:outputText value="OUTPUT HERE" />
-                              </p:column>
-
-                              <p:column headerText="Opções" styleClass="e">
-                                 <h:outputText value="EDIT / REMOVE (Buttons)" />
-                              </p:column>
-                           </p:dataTable>
-                        </p:column>
-                     </p:row>
-                  </p:panelGrid>
-               </p:tab>
-
-               <p:tab title="Confirmação">
-                  <a:field spaceLeft="1%">
-                     <p:panelGrid id="gridTopDialog3" styleClass="semBorda">
-                        <p:row>
-                           <p:column>
-                              <p:commandButton value="Cancelar" onclick="PF('formFinalizarNegociacao').hide();" icon="ui-icon-cancel" />
-                           </p:column>
-                           <p:column>
-                              <p:commandButton value="Encaminhar ao Caixa" />
-                           </p:column>
-                        </p:row>
-                     </p:panelGrid>
-                  </a:field>
-                  <a:newLine />
-                  <p:panelGrid id="gridDeConfirmação" styleClass="comBorda" style="width:600px; background-color:#F9FAFB">
-                     <p:row>
-                        <p:column>
-                           <h:outputText value="Confirmar Pedido(s) do cliente: #{NegociacaoPedidoControl.negociacaoPedido.cliente.nome}" />
-                        </p:column>
-                     </p:row>
-                     <p:row>
-                        <p:column>
-                           <p:dataTable id="listaDePedidos" value="#{NegociacaoPedidoControl.negociacaoPedido.pedidos}" var="ped" styleClass="dataTableStyle">
-                              
-                              <p:column headerText="Nº Pedido" style="width:15%;" styleClass="d">
-                                 <p:outputLabel value="#{ped.numero}" />
-                              </p:column>
-
-                              <p:column headerText="Empresa">
-                                 <p:outputLabel value="#{ped.empresa.pessoa.nome}" styleClass="e" />
-                              </p:column>
-
-                              <p:column headerText="Valor" style="width:15%;" styleClass="d">
-                                 <p:outputLabel value="R$ TESTE" />
-                              </p:column>
-
-                              <p:column headerText="Frete" style="width:15%;" styleClass="d">
-                                 <p:outputLabel value="R$ TESTE" />
-                              </p:column>
-
-                              <p:column headerText="Forma de Pagamento" style="width:35%;" styleClass="e">
-                                 <p:dataList value="#{NegociacaoPedidoControl.negociacaoPedido.pedidos}" var="ped2" styleClass="datalist-noborder">
-                                    <p:outputLabel value="#{ped2.empresa.pessoa.nome}" />
-                                 </p:dataList>
-                              </p:column>
-
-                           </p:dataTable>
-                        </p:column>
-                     </p:row>
-                  </p:panelGrid>
-               </p:tab>
-            </p:wizard>
-
-         </h:form>
       </p:dialog>
 
       <p:dialog widgetVar="dialogCadastroRapidoCliente" id="dialogCadastroRapidoCliente" closable="false" resizable="false" header="Cadastro Rápido de Cliente">

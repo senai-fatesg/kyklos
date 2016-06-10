@@ -33,7 +33,7 @@ public class PedidoDaoJpa extends PersistenciaJpa<Pedido> implements PedidoDao{
    }
    
    @SuppressWarnings("unchecked")
-   public List<Pedido> listarPedidoPorAtributo(EmpresaCliente empresa, String numero , Date dataInicio, Date dataFim, Pessoa cliente, Vendedor vendedor, List <EnumStatusPedido> statusPedidoSelecionados){
+   public List<Pedido> listarPedidoPorAtributo(EmpresaCliente empresa, String numero, Date dataInicio, Date dataFim, Pessoa cliente, Vendedor vendedor, List <EnumStatusPedido> statusPedidoSelecionados){
       try {
          Query query = em.createQuery("select p from Pedido p left join fetch cliente c "
                + " where p.empresa = (:empresa) "

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -39,7 +38,7 @@ public class Pedido {
    @SequenceGenerator(name="pedido_seq", sequenceName="pedido_seq", allocationSize=1, initialValue=1)
    private Integer id;
 
-   @Column(nullable=false)
+   //@Column(nullable=false)
    private String numero;
 
    @Enumerated(EnumType.STRING)
@@ -64,8 +63,8 @@ public class Pedido {
    @JoinColumn(name="pedido_id")
    private List<ItemPedido> itens = new ArrayList<ItemPedido>();
 
-   @ManyToOne(optional=false)
-   private Frete frete;
+//   @ManyToOne(optional=false)
+//   private Frete frete;
    
    public Set<EstoqueProduto> getEstoques(){
       Set<EstoqueProduto> estoques = new HashSet<EstoqueProduto>();
@@ -79,14 +78,7 @@ public class Pedido {
       itens.add(item);
    }
 
-   public String getNumero() {
-      return numero;
-   }
-
-   public void setNumero(String numero) {
-      this.numero = numero;
-   }
-
+  
    public Date getData() {
       return data;
    }
@@ -126,8 +118,30 @@ public class Pedido {
    public EmpresaCliente getEmpresaEmitente() {
       return empresaEmitente;
    }
+   
+   
 
-   public void setEmpresaEmitente(EmpresaCliente empresaEmitente) {
+   public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public void setStatus(EnumStatusPedido status) {
+		this.status = status;
+	}
+
+	public void setItens(List<ItemPedido> itens) {
+		this.itens = itens;
+	}
+
+	public void setEmpresaEmitente(EmpresaCliente empresaEmitente) {
       this.empresaEmitente = empresaEmitente;
    }
 
@@ -147,12 +161,6 @@ public class Pedido {
       return subtotalPedido;
    }
 
-	public Frete getFrete() {
-		return frete;
-	}
-
-	public void setFrete(Frete frete) {
-		this.frete = frete;
-	}
+	
 
 }
