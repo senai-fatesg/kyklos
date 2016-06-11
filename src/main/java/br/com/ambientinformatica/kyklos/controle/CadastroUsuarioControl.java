@@ -10,10 +10,12 @@ import org.springframework.context.annotation.Scope;
 
 import br.com.ambientinformatica.ambientjsf.util.UtilFaces;
 import br.com.ambientinformatica.kyklos.entidade.EmpresaCliente;
+import br.com.ambientinformatica.kyklos.entidade.EmpresaUsuario;
 import br.com.ambientinformatica.kyklos.entidade.PedidoException;
 import br.com.ambientinformatica.kyklos.entidade.PessoaEmpresa;
 import br.com.ambientinformatica.kyklos.entidade.Usuario;
 import br.com.ambientinformatica.kyklos.persistencia.EmpresaClienteDao;
+import br.com.ambientinformatica.kyklos.persistencia.EmpresaUsuarioDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
 import br.com.ambientinformatica.kyklos.persistencia.UsuarioDao;
 
@@ -29,6 +31,9 @@ public class CadastroUsuarioControl implements Serializable{
    @Autowired
    private UsuarioDao usuarioDao;
 
+   @Autowired
+   private EmpresaUsuarioDao empresaUsuarioDao;
+   
    @Autowired
    private PessoaEmpresaDao pessoaEmpresaDao;
    
@@ -65,8 +70,13 @@ public class CadastroUsuarioControl implements Serializable{
             PessoaEmpresa pessoaEmpresa = new PessoaEmpresa();
             pessoaEmpresa.setEmpresa(empresaClienteConsultada);
             pessoaEmpresa.setPessoa(empresaClienteConsultada.getPessoa());
-            
             pessoaEmpresaDao.incluir(pessoaEmpresa);
+            
+            
+            EmpresaUsuario empresaUsuario = new EmpresaUsuario();
+            empresaUsuario.setEmpresa(empresaClienteConsultada);
+            empresaUsuario.setUsuario(usuario);
+            empresaUsuarioDao.incluir(empresaUsuario);
             
             empresaCliente = new EmpresaCliente();
             UtilFaces.addMensagemFaces("Cadastro realizado com Sucesso! O link de ativação de cadastro foi enviado para o seu e-mail!");
