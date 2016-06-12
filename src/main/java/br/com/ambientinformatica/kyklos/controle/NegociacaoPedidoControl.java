@@ -125,6 +125,7 @@ public class NegociacaoPedidoControl implements Serializable {
 		      ped.setVendedor(vendedor);
 		      numerarItens();
 		      pedidoDao.incluir(ped);
+		      UtilFaces.addMensagemFaces("Pedido salvo com sucesso");
 		   }
 		} catch (Exception ex) {
 			ex.printStackTrace();
