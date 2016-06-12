@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Scope;
 import br.com.ambientinformatica.ambientjsf.util.UtilFaces;
 import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.kyklos.dto.EstoqueProdutoDto;
-import br.com.ambientinformatica.kyklos.entidade.EmpresaCliente;
 import br.com.ambientinformatica.kyklos.entidade.EnumStatusPedido;
 import br.com.ambientinformatica.kyklos.entidade.EstoqueProduto;
 import br.com.ambientinformatica.kyklos.entidade.ItemPedido;
@@ -26,10 +25,8 @@ import br.com.ambientinformatica.kyklos.entidade.PedidoException;
 import br.com.ambientinformatica.kyklos.entidade.Produto;
 import br.com.ambientinformatica.kyklos.entidade.ValorProduto;
 import br.com.ambientinformatica.kyklos.entidade.Vendedor;
-import br.com.ambientinformatica.kyklos.negocio.PessoaNegImpl;
 import br.com.ambientinformatica.kyklos.persistencia.EstoqueProdutoDao;
 import br.com.ambientinformatica.kyklos.persistencia.PedidoDao;
-import br.com.ambientinformatica.kyklos.persistencia.PedidoDaoJpa;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
 import br.com.ambientinformatica.kyklos.persistencia.ProdutoDao;
@@ -83,8 +80,6 @@ public class NegociacaoPedidoControl implements Serializable {
 
 	private Vendedor vendedor = new Vendedor();
 	
-	private EmpresaCliente empresa = new EmpresaCliente();
-
 	private String buscaText;
 
 	private Date dataInicial;
@@ -109,8 +104,6 @@ public class NegociacaoPedidoControl implements Serializable {
 
 	private boolean modoEdicao;
 
-	PedidoDao dao = new PedidoDaoJpa();
-
 	private boolean gridEstoqueExterno;
 
 	private List<EnumStatusPedido> statusPedidoSelecionados = new ArrayList<EnumStatusPedido>();
@@ -125,18 +118,28 @@ public class NegociacaoPedidoControl implements Serializable {
 
 	public void salvarPedido() {
 		try {
-			pedido.setNumero("1");
-            pedido.setCliente(cliente);
-            pedido.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
-            pedido.setEmpresaEmitente(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
-            pedido.setVendedor(vendedor);
-            pedido.setItens(itens);
-			dao.incluir(pedido);
+		   for(Pedido ped : negociacaoPedido.getPedidos()){
+		      ped.setCliente(cliente);
+		      ped.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
+		      ped.setEmpresaEmitente(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
+		      ped.setVendedor(vendedor);
+		      numerarItens();
+		      pedidoDao.incluir(ped);
+		   }
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 
+	public void numerarItens(){
+	   int numero = 0;
+	   for(Pedido ped : negociacaoPedido.getPedidos()){
+	      for(ItemPedido item : ped.getItens()){
+	         item.setNumeroItem(++numero);
+	      }
+	   }
+	}
+	
 	public void selecionarProduto(SelectEvent event) throws PedidoException {
 		try {
 			modoEdicao = false;
@@ -220,11 +223,10 @@ public class NegociacaoPedidoControl implements Serializable {
 	public void adicionarProduto(ActionEvent event) throws PedidoException {
 		try {
 			boolean existePedido = false;
-
-			estoqueSelecionado.addAll(estoqueExternoSelecionado);
-
+//
+//			estoqueSelecionado.addAll(estoqueExternoSelecionado);
+//
 			for (EstoqueProdutoDto estoque : estoqueSelecionado) {
-
 				ValorProduto valorProduto = valorProdutoDao
 						.consultarValorAtual(produto);
 				if (valorProduto != null) {
@@ -238,21 +240,14 @@ public class NegociacaoPedidoControl implements Serializable {
 
 				for (Pedido pedido : negociacaoPedido.getPedidos()) {
 					for (EstoqueProduto estoqueDoPedido : pedido.getEstoques()) {
-						if (estoque
-								.getEstoque()
-								.getPessoaEmpresa()
-								.getEmpresa()
-								.getId()
-								.equals(
-										estoqueDoPedido.getEstoque().getPessoaEmpresa()
-												.getEmpresa().getId())) {
+					   if (estoque.getEstoque().getPessoaEmpresa().getEmpresa().getId().equals(estoqueDoPedido.getEstoque().getPessoaEmpresa().getEmpresa().getId())) {
 							item.setProduto(produto);
 							item.setEstoque(estoque.getEstoqueProduto());
 							item.setQuantidade(estoque.getQuantidadeSelecionada());
 							pedido.addItem(item);
 							item = new ItemPedido();
 							existePedido = true;
-						}
+					   }
 					}
 				}
 				if (!existePedido) {
@@ -508,14 +503,6 @@ public class NegociacaoPedidoControl implements Serializable {
 
 	public void setPedidoDao(PedidoDao pedidoDao) {
 		this.pedidoDao = pedidoDao;
-	}
-
-	public PedidoDao getDao() {
-		return dao;
-	}
-
-	public void setDao(PedidoDao dao) {
-		this.dao = dao;
 	}
 
 }
