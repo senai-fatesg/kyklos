@@ -9,7 +9,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
 import br.com.ambientinformatica.util.Entidade;
@@ -23,9 +22,6 @@ public class Frete  extends Entidade implements Serializable{
 	@GeneratedValue(generator="frete_seq", strategy=GenerationType.SEQUENCE)
 	@SequenceGenerator(name="frete_seq", sequenceName="frete_seq", allocationSize=1, initialValue=1)
 	private Integer id;
-	
-	@ManyToOne(optional=true)
-	private Transportadora transportadora;
 
 	@Enumerated(EnumType.STRING)
 	private EnumTipoFrete fretePorContaDe;
@@ -45,14 +41,6 @@ public class Frete  extends Entidade implements Serializable{
 	@Override
 	public Integer getId() {
 		return this.id;
-	}
-
-	public Transportadora getTransportadora() {
-		return transportadora;
-	}
-
-	public void setTransportadora(Transportadora transportadora) {
-		this.transportadora = transportadora;
 	}
 
 	public EnumTipoFrete getFretePorContaDe() {
