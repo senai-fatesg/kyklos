@@ -46,7 +46,7 @@ public class Pedido {
 
    @Temporal(TemporalType.DATE)
    private Date data = new Date();
-
+   
    @ManyToOne(optional=false)
    private EmpresaCliente empresa;
 

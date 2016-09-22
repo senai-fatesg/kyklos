@@ -134,15 +134,11 @@
                <p:column>
                   <h:outputText id="statusPedido" value="#{NegociacaoPedidoControl.pedido.status}" />
                </p:column>
-               
-               
-               
-                
             </p:row>
 
             <p:row>
                <p:column colspan="10">
-                  <p:tabView id="pedidoTab" class="semBorda" dynamic="true" cache="true" value="#{NegociacaoPedidoControl.negociacaoPedido.pedidos}" var="pedido" styleClass="tabViewStyle">
+                  <p:tabView id="pedidoTab" class="semBorda" dynamic="true" cache="true" value="#{PedidoControl.pedidos}" var="pedido" styleClass="tabViewStyle">
 
                      <p:ajax event="tabClose" oncomplete="PF('confirmarRemoverPedido').show();" update="formCorpo" />
 
