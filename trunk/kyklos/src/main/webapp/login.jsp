@@ -14,7 +14,7 @@
 			document.getElementById("usuario").focus();
 		}
 	</script>
-<title>Login</title>
+<title>Kyklos | Login</title>
 </head>
 <body>
 
@@ -23,14 +23,15 @@
 	<div class="container-fluid">
 	
 	<div id="loginbox" style="margin-top: -15px;margin-left: -7px">
-		<img src="img/logoPrimaria.png" width="185" />
+		<!-- <img src="img/logoPrimaria.png" width="185" /> -->
 	</div>
-		<div id="loginbox" style="margin-top: -65px;"
+	<!-- <div id="loginbox" style="margin-top: -65px;" -->
+		<div id="loginbox" style="margin-top: 65px;"
 			class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
 			<div class="panel panel-info">
 			
 				<div class="panel-heading" style="background-color: rgb(0,220,99)">
-					<div class="panel-title">Kyklos | Login</div>
+					<div class="panel-title">Fazer Login</div>
 					<div
 						style="float: right; font-size: 80%; position: relative; top: -10px">
 						<a href="#">Esqueceu a senha?</a>
