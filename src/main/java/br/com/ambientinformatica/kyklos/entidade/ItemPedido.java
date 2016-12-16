@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Version;
 
 import br.com.ambientinformatica.util.Entidade;
 
@@ -40,9 +39,6 @@ public class ItemPedido extends Entidade{
    @Column(nullable=false)
    private BigDecimal valorUnitario;
    
-   @Version
-   private Long versao;
-
    public Produto getProduto() {
       return produto;
    }
