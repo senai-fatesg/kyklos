@@ -15,14 +15,12 @@ import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.kyklos.entidade.EmpresaCliente;
 import br.com.ambientinformatica.kyklos.entidade.EmpresaUsuario;
 import br.com.ambientinformatica.kyklos.entidade.Estoque;
-import br.com.ambientinformatica.kyklos.entidade.EstoqueProduto;
 import br.com.ambientinformatica.kyklos.entidade.ItemPedido;
 import br.com.ambientinformatica.kyklos.entidade.Pedido;
 import br.com.ambientinformatica.kyklos.entidade.PedidoException;
 import br.com.ambientinformatica.kyklos.entidade.Produto;
 import br.com.ambientinformatica.kyklos.entidade.Usuario;
 import br.com.ambientinformatica.kyklos.persistencia.EstoqueDao;
-import br.com.ambientinformatica.kyklos.persistencia.EstoqueProdutoDao;
 import br.com.ambientinformatica.kyklos.persistencia.MunicipioDao;
 import br.com.ambientinformatica.kyklos.persistencia.PedidoDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
@@ -53,9 +51,6 @@ public class PedidoNegImpl implements PedidoNeg{
 
    @Autowired
    private EstoqueDao estoqueDao;
-
-   @Autowired
-   private EstoqueProdutoDao estoqueProdutoDao;
 
    @SuppressWarnings("resource")
    @Transactional(rollbackFor=PedidoException.class)
@@ -186,7 +181,7 @@ public class PedidoNegImpl implements PedidoNeg{
                      linha = sc.nextLine();
                   }
                   produto.setDescricao(linha.substring(23, 56).trim());
-                  produto.setEmpresa(empresa);
+//                  produto.setEmpresa(empresa);
                   produto.setUnidadeMedida(unidadeMedidaDao.consultarPorSigla(linha.substring(63, 65).toUpperCase()));
 
                   produtoDao.incluir(produto);
@@ -203,37 +198,21 @@ public class PedidoNegImpl implements PedidoNeg{
                itemPedido.setValorUnitario(new BigDecimal(linha.substring(69, 75).replace(",", ".").trim()));
                itemPedido.setProduto(produtoConsultado);
                Date dataInicioReserva = new Date();
-               itemPedido.setDataInicioReserva(dataInicioReserva);
 
                Calendar cal = Calendar.getInstance();
                cal.setTime(dataInicioReserva);
                cal.add(Calendar.DATE, 1); // Add 1 dia
                dataInicioReserva = cal.getTime();
-               itemPedido.setDataFimReserva(dataInicioReserva);
 
-               EstoqueProduto estoqueProduto = new EstoqueProduto();
                Estoque estoque = estoqueDao.consultarPorEstoquePadrao(empresa);
                if(estoque == null){
                   estoque = new Estoque();
                   estoque.setDescricao("Estoque Físico - " + empresa.getPessoa().getNome());
-                  estoque.setEmpresa(empresa);
-                  estoque.setEndereco(empresa.getPessoa().getEnderecoCompleto());
-                  estoque.setPadrao(true);
-                  estoque.setPessoaEmpresa(pessoaEmpresaDao.consultarPorCpfOuCnpj(empresa.getPessoa()));
                   estoqueDao.incluir(estoque);
 
                }
 
-               estoqueProduto = estoqueProdutoDao.consultarPorEstoque(estoque);
-               if(estoqueProduto == null){     
-                  estoqueProduto = new EstoqueProduto();
-                  estoqueProduto.setData(new Date());
-                  estoqueProduto.setEstoque(estoque);
-                  estoqueProduto.setProduto(produtoConsultado);
-                  estoqueProduto.setQuantidade(itemPedido.getQuantidade());
-                  estoqueProdutoDao.incluir(estoqueProduto);
-               }
-               itemPedido.setEstoque(estoqueProduto);
+//               itemPedido.setEstoque(estoque);
                itemPedido.setUsuario(usuario);
                
                pedido.getItens().add(itemPedido);

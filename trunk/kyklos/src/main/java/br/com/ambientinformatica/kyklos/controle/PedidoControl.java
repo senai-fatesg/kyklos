@@ -9,22 +9,17 @@ import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
-import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 import br.com.ambientinformatica.ambientjsf.util.UtilFaces;
 import br.com.ambientinformatica.corporativo.entidade.Pessoa;
-import br.com.ambientinformatica.kyklos.dto.EstoqueProdutoDto;
 import br.com.ambientinformatica.kyklos.entidade.EnumStatusPedido;
-import br.com.ambientinformatica.kyklos.entidade.EstoqueProduto;
 import br.com.ambientinformatica.kyklos.entidade.ItemPedido;
 import br.com.ambientinformatica.kyklos.entidade.Pedido;
-import br.com.ambientinformatica.kyklos.entidade.PedidoException;
 import br.com.ambientinformatica.kyklos.entidade.Produto;
 import br.com.ambientinformatica.kyklos.entidade.ValorProduto;
 import br.com.ambientinformatica.kyklos.entidade.Vendedor;
-import br.com.ambientinformatica.kyklos.persistencia.EstoqueProdutoDao;
 import br.com.ambientinformatica.kyklos.persistencia.PedidoDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
@@ -43,9 +38,6 @@ public class PedidoControl implements Serializable {
 
 	@Autowired
 	private PessoaEmpresaDao pessoaEmpresaDao;
-
-	@Autowired
-	private EstoqueProdutoDao estoqueProdutoDao;
 
 	@Autowired
 	private PedidoDao pedidoDao;
@@ -88,14 +80,6 @@ public class PedidoControl implements Serializable {
 
 	private List<Pedido> pedidosSelecionados = new ArrayList<Pedido>();
 
-	private List<EstoqueProdutoDto> listaEstoque = new ArrayList<EstoqueProdutoDto>();
-
-	private List<EstoqueProdutoDto> listaEstoqueExterno = new ArrayList<EstoqueProdutoDto>();
-
-	private List<EstoqueProdutoDto> estoqueExternoSelecionado = new ArrayList<EstoqueProdutoDto>();
-
-	private EstoqueProduto estoque = new EstoqueProduto();
-
 	private Pedido pedidoExcluir;
 
 	private boolean modoEdicao;
@@ -107,8 +91,6 @@ public class PedidoControl implements Serializable {
 	private List<String> transportadoras = new ArrayList<String>();
 
 	private List<String> transportadorasSelecionadas = new ArrayList<String>();
-
-	private List<EstoqueProdutoDto> estoqueSelecionado = new ArrayList<EstoqueProdutoDto>();
 
 	private List<String> formasDePagamentoSelecionadas = new ArrayList<String>();
 
@@ -135,36 +117,36 @@ public class PedidoControl implements Serializable {
 		}
 	}
 
-	public void selecionarProduto(SelectEvent event) throws PedidoException {
-		try {
-			modoEdicao = false;
-			item = new ItemPedido();
-			listaEstoque = new ArrayList<EstoqueProdutoDto>();
-			listaEstoqueExterno = new ArrayList<EstoqueProdutoDto>();
-			Produto produto = (Produto) event.getObject();
-			item.setProduto(produto);
-			listaEstoque = EstoqueProdutoDto
-					.converterEstoqueProduto(estoqueProdutoDao
-							.listarPorEmpresa(usuarioLogadoControl
-									.getEmpresaUsuario().getEmpresa(), produto));
-			for (EstoqueProdutoDto e : listaEstoque) {
-				if (e.getEstoque()
-						.getPessoaEmpresa()
-						.getPessoa()
-						.equals(usuarioLogadoControl.getEmpresaUsuario()
-								.getEmpresa().getPessoa())) {
-					gridEstoqueExterno = false;
-				} else {
-					listaEstoqueExterno.add(e);
-					gridEstoqueExterno = true;
-				}
-			}
-			listaEstoque.removeAll(listaEstoqueExterno);
-
-		} catch (PedidoException e) {
-			UtilFaces.addMensagemFaces(e);
-		}
-	}
+//	public void selecionarProduto(SelectEvent event) throws PedidoException {
+//		try {
+//			modoEdicao = false;
+//			item = new ItemPedido();
+//			listaEstoque = new ArrayList<EstoqueProdutoDto>();
+//			listaEstoqueExterno = new ArrayList<EstoqueProdutoDto>();
+//			Produto produto = (Produto) event.getObject();
+//			item.setProduto(produto);
+//			listaEstoque = EstoqueProdutoDto
+//					.converterEstoqueProduto(estoqueProdutoDao
+//							.listarPorEmpresa(usuarioLogadoControl
+//									.getEmpresaUsuario().getEmpresa(), produto));
+//			for (EstoqueProdutoDto e : listaEstoque) {
+//				if (e.getEstoque()
+//						.getPessoaEmpresa()
+//						.getPessoa()
+//						.equals(usuarioLogadoControl.getEmpresaUsuario()
+//								.getEmpresa().getPessoa())) {
+//					gridEstoqueExterno = false;
+//				} else {
+//					listaEstoqueExterno.add(e);
+//					gridEstoqueExterno = true;
+//				}
+//			}
+//			listaEstoque.removeAll(listaEstoqueExterno);
+//
+//		} catch (PedidoException e) {
+//			UtilFaces.addMensagemFaces(e);
+//		}
+//	}
 
 	public void salvarCliente() {
 		Pessoa clienteConsultado = pessoaDao.consultarPorCpfCnpj(cliente
@@ -206,53 +188,53 @@ public class PedidoControl implements Serializable {
 				.getEmpresaUsuario().getEmpresa(), vendedorNome);
 	}
 
-	public void adicionarProduto(ActionEvent event) throws PedidoException {
-		try {
-			//
-			// estoqueSelecionado.addAll(estoqueExternoSelecionado);
-			//
-			for (EstoqueProdutoDto estoque : estoqueSelecionado) {
-				ValorProduto valorProduto = valorProdutoDao
-						.consultarValorAtual(produto);
-				if (valorProduto != null) {
-					item.setValorUnitario(valorProduto.getValorVenda());
-				} else {
-					throw new PedidoException(
-							String.format(
-									"O produto %s não possui valor de venda cadastrado. Vá na tela de configuração do produto e cadastre.",
-									produto.getDescricao()));
-				}
-
-				for (EstoqueProduto estoqueDoPedido : pedido.getEstoques()) {
-					if (estoque
-							.getEstoque()
-							.getPessoaEmpresa()
-							.getEmpresa()
-							.getId()
-							.equals(estoqueDoPedido.getEstoque()
-									.getPessoaEmpresa().getEmpresa().getId())) {
-						item.setProduto(produto);
-						item.setEstoque(estoque.getEstoqueProduto());
-						item.setQuantidade(estoque.getQuantidadeSelecionada());
-						pedido.addItem(item);
-						item = new ItemPedido();
-					}
-				}
-				item.setProduto(produto);
-				item.setEstoque(estoque.getEstoqueProduto());
-				item.setQuantidade(estoque.getQuantidadeSelecionada());
-				pedido.addItem(item);
-				itens.add(item);
-				item = new ItemPedido();
-			}
-			produto = new Produto();
-			estoqueSelecionado = new ArrayList<EstoqueProdutoDto>();
-			estoqueExternoSelecionado = new ArrayList<EstoqueProdutoDto>();
-		} catch (Exception e) {
-			UtilFaces.addMensagemFaces(e);
-		}
-
-	}
+//	public void adicionarProduto(ActionEvent event) throws PedidoException {
+//		try {
+//			//
+//			// estoqueSelecionado.addAll(estoqueExternoSelecionado);
+//			//
+//			for (EstoqueProdutoDto estoque : estoqueSelecionado) {
+//				ValorProduto valorProduto = valorProdutoDao
+//						.consultarValorAtual(produto);
+//				if (valorProduto != null) {
+//					item.setValorUnitario(valorProduto.getValorVenda());
+//				} else {
+//					throw new PedidoException(
+//							String.format(
+//									"O produto %s não possui valor de venda cadastrado. Vá na tela de configuração do produto e cadastre.",
+//									produto.getDescricao()));
+//				}
+//
+//				for (EstoqueProduto estoqueDoPedido : pedido.getEstoques()) {
+//					if (estoque
+//							.getEstoque()
+//							.getPessoaEmpresa()
+//							.getEmpresa()
+//							.getId()
+//							.equals(estoqueDoPedido.getEstoque()
+//									.getPessoaEmpresa().getEmpresa().getId())) {
+//						item.setProduto(produto);
+//						item.setEstoque(estoque.getEstoqueProduto());
+//						item.setQuantidade(estoque.getQuantidadeSelecionada());
+//						pedido.addItem(item);
+//						item = new ItemPedido();
+//					}
+//				}
+//				item.setProduto(produto);
+//				item.setEstoque(estoque.getEstoqueProduto());
+//				item.setQuantidade(estoque.getQuantidadeSelecionada());
+//				pedido.addItem(item);
+//				itens.add(item);
+//				item = new ItemPedido();
+//			}
+//			produto = new Produto();
+//			estoqueSelecionado = new ArrayList<EstoqueProdutoDto>();
+//			estoqueExternoSelecionado = new ArrayList<EstoqueProdutoDto>();
+//		} catch (Exception e) {
+//			UtilFaces.addMensagemFaces(e);
+//		}
+//
+//	}
 
 	public void removerProduto() {
 		try {
@@ -330,39 +312,6 @@ public class PedidoControl implements Serializable {
 		this.produto = produto;
 	}
 
-	public List<EstoqueProdutoDto> getListaEstoque() {
-		return listaEstoque;
-	}
-
-	public void setListaEstoque(List<EstoqueProdutoDto> listaEstoque) {
-		this.listaEstoque = listaEstoque;
-	}
-
-	public List<EstoqueProdutoDto> getListaEstoqueExterno() {
-		return listaEstoqueExterno;
-	}
-
-	public void setListaEstoqueExterno(
-			List<EstoqueProdutoDto> listaEstoqueExterno) {
-		this.listaEstoqueExterno = listaEstoqueExterno;
-	}
-
-	public EstoqueProduto getEstoque() {
-		return estoque;
-	}
-
-	public void setEstoque(EstoqueProduto estoque) {
-		this.estoque = estoque;
-	}
-
-	public List<EstoqueProdutoDto> getEstoqueSelecionado() {
-		return estoqueSelecionado;
-	}
-
-	public void setEstoqueSelecionado(List<EstoqueProdutoDto> estoqueSelecionado) {
-		this.estoqueSelecionado = estoqueSelecionado;
-	}
-
 	public List<String> getFormasDePagamentoSelecionadas() {
 		return formasDePagamentoSelecionadas;
 	}
@@ -370,15 +319,6 @@ public class PedidoControl implements Serializable {
 	public void setFormasDePagamentoSelecionadas(
 			List<String> formasDePagamentoSelecionadas) {
 		this.formasDePagamentoSelecionadas = formasDePagamentoSelecionadas;
-	}
-
-	public List<EstoqueProdutoDto> getEstoqueExternoSelecionado() {
-		return estoqueExternoSelecionado;
-	}
-
-	public void setEstoqueExternoSelecionado(
-			List<EstoqueProdutoDto> estoqueExternoSelecionado) {
-		this.estoqueExternoSelecionado = estoqueExternoSelecionado;
 	}
 
 	public boolean isModoEdicao() {

@@ -1,7 +1,5 @@
 package br.com.ambientinformatica.kyklos.negocio;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +69,6 @@ public class PessoaNegImpl implements PessoaNeg{
       pessoaEmpresa = pessoaEmpresaDao.consultarPorPessoaAndEmpresa(pessoa, usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
       if(pessoaEmpresa == null){
          pessoaEmpresa = new PessoaEmpresa();
-         pessoaEmpresa.setData(new Date());
          pessoaEmpresa.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
          pessoaEmpresa.setPessoa(pessoa);
       }

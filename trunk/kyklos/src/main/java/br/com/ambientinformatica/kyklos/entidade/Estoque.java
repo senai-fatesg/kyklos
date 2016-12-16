@@ -7,77 +7,42 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
 import br.com.ambientinformatica.util.Entidade;
 
 @Entity
-public class Estoque extends Entidade implements Serializable{
-   
-   private static final long serialVersionUID = 1L;
+public class Estoque extends Entidade implements Serializable {
 
-   @Id
-   @GeneratedValue(generator="estoque_seq", strategy=GenerationType.SEQUENCE)
-   @SequenceGenerator(name="estoque_seq", sequenceName="estoque_seq", allocationSize=1, initialValue=1)
-   private Long id;
-   
-   @ManyToOne(optional=false)
-   private EmpresaCliente empresa;
-   
-   @ManyToOne(optional=false)
-   private PessoaEmpresa pessoaEmpresa;
-   
-   private boolean padrao;
-   
-   @Column(nullable=false)
-   private String descricao;
-   
-   private String endereco;
-   
-   public EmpresaCliente getEmpresa() {
-      return empresa;
-   }
+	private static final long serialVersionUID = 1L;
 
-   public void setEmpresa(EmpresaCliente empresa) {
-      this.empresa = empresa;
-   }
+	@Id
+	@GeneratedValue(generator = "estoque_seq", strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = "estoque_seq", sequenceName = "estoque_seq", allocationSize = 1, initialValue = 1)
+	private Long id;
 
-   public String getDescricao() {
-      return descricao;
-   }
+	@Column(nullable = false)
+	private String nome;
 
-   public void setDescricao(String descricao) {
-      this.descricao = descricao;
-   }
+	private String descricao;
 
-   public String getEndereco() {
-      return endereco;
-   }
+	public String getNome() {
+		return nome;
+	}
 
-   public void setEndereco(String endereco) {
-      this.endereco = endereco;
-   }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-   public Long getId() {
-      return id;
-   }
+	public String getDescricao() {
+		return descricao;
+	}
 
-   public boolean isPadrao() {
-      return padrao;
-   }
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
 
-   public void setPadrao(boolean padrao) {
-      this.padrao = padrao;
-   }
-
-   public PessoaEmpresa getPessoaEmpresa() {
-      return pessoaEmpresa;
-   }
-
-   public void setPessoaEmpresa(PessoaEmpresa pessoaEmpresa) {
-      this.pessoaEmpresa = pessoaEmpresa;
-   }
-
-   
+	public Long getId() {
+		return id;
+	}
 }

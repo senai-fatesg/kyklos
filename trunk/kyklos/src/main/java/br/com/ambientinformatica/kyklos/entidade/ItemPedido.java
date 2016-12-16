@@ -1,7 +1,6 @@
 package br.com.ambientinformatica.kyklos.entidade;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import br.com.ambientinformatica.util.Entidade;
@@ -34,30 +31,6 @@ public class ItemPedido extends Entidade{
    @Column(length=500)
    private String observacao;
 
-   /**
-    * Estoque do qual o produto será separado
-    */
-   @ManyToOne(optional=false)
-   private EstoqueProduto estoque;
-
-   /**
-    * Data inicial da reserva do estoque.
-    * Normalmente esta data inicia com a inclusao do item no orçamento
-    */
-   @Temporal(TemporalType.TIMESTAMP)
-   private Date dataInicioReserva;
-
-   /**
-    * Data final da reserva do estoque.
-    * A partir desta data, o item não impacta no estoque (reservando quantidade)
-    */
-   @Temporal(TemporalType.TIMESTAMP)
-   private Date dataFimReserva;
-
-   /**
-    * Usuario que adicionou o item. 
-    * Necessário para identificar o responsavel pela reserva de estoque
-    */
    @ManyToOne
    private Usuario usuario;
 
@@ -104,30 +77,6 @@ public class ItemPedido extends Entidade{
 
    public Integer getId() {
       return id;
-   }
-
-   public EstoqueProduto getEstoque() {
-      return estoque;
-   }
-
-   public void setEstoque(EstoqueProduto estoque) {
-      this.estoque = estoque;
-   }
-
-   public Date getDataInicioReserva() {
-      return dataInicioReserva;
-   }
-
-   public void setDataInicioReserva(Date dataInicioReserva) {
-      this.dataInicioReserva = dataInicioReserva;
-   }
-
-   public Date getDataFimReserva() {
-      return dataFimReserva;
-   }
-
-   public void setDataFimReserva(Date dataFimReserva) {
-      this.dataFimReserva = dataFimReserva;
    }
 
    public Usuario getUsuario() {
