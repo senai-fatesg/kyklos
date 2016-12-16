@@ -29,7 +29,7 @@ public class MovimentacaoEstoque {
    private BigDecimal quantidade;
    
    @Column(nullable=false)
-   private Date data;
+   private Date data = new Date();
    
    @ManyToOne(optional=false)
    private Usuario usuario;
@@ -60,10 +60,6 @@ public class MovimentacaoEstoque {
 
    public Date getData() {
       return data;
-   }
-
-   public void setData(Date data) {
-      this.data = data;
    }
 
    public Usuario getUsuario() {

@@ -121,9 +121,9 @@ public class EstoqueControl implements Serializable{
    
    public void salvar(){
       try {
-         estoque.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
-         estoque.setPadrao(estoquePadrao);
-         estoque.setPessoaEmpresa(pessoaEmpresa);
+//         estoque.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
+//         estoque.setPadrao(estoquePadrao);
+//         estoque.setPessoaEmpresa(pessoaEmpresa);
          estoqueDao.incluir(estoque);
          estoque = new Estoque();
          UtilFaces.addMensagemFaces("Novo Estoque Cadastrado!");

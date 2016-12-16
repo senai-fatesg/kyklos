@@ -3,9 +3,7 @@ package br.com.ambientinformatica.kyklos.entidade;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -38,7 +36,6 @@ public class Pedido {
    @SequenceGenerator(name="pedido_seq", sequenceName="pedido_seq", allocationSize=1, initialValue=1)
    private Integer id;
 
-   //@Column(nullable=false)
    private String numero;
 
    @Enumerated(EnumType.STRING)
@@ -63,21 +60,10 @@ public class Pedido {
    @JoinColumn(name="pedido_id")
    private List<ItemPedido> itens = new ArrayList<ItemPedido>();
 
-//   @ManyToOne(optional=false)
-//   private Frete frete;
-   
-   public Set<EstoqueProduto> getEstoques(){
-      Set<EstoqueProduto> estoques = new HashSet<EstoqueProduto>();
-      for (ItemPedido itemPedido : itens) {
-         estoques.add(itemPedido.getEstoque());
-      }
-      return estoques;
-   }
 
    public void addItem(ItemPedido item){
       itens.add(item);
    }
-
   
    public Date getData() {
       return data;
