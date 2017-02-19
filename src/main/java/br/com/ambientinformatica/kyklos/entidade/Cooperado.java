@@ -19,8 +19,8 @@ public class Cooperado implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator = "empresacliente_seq", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "empresacliente_seq", sequenceName = "empresacliente_seq", allocationSize = 1, initialValue = 1)
+	@GeneratedValue(generator = "coopeardo_seq", strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = "coopeardo_seq", sequenceName = "coopeardo_seq", allocationSize = 1, initialValue = 1)
 	private Integer id;
 
 	@OneToOne(cascade = CascadeType.ALL)
