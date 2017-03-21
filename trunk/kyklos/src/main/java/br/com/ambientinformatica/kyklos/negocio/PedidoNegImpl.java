@@ -15,18 +15,21 @@ import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.kyklos.entidade.EmpresaCliente;
 import br.com.ambientinformatica.kyklos.entidade.EmpresaUsuario;
 import br.com.ambientinformatica.kyklos.entidade.Estoque;
+import br.com.ambientinformatica.kyklos.entidade.EstoqueProduto;
 import br.com.ambientinformatica.kyklos.entidade.ItemPedido;
 import br.com.ambientinformatica.kyklos.entidade.Pedido;
-import br.com.ambientinformatica.kyklos.entidade.PedidoException;
 import br.com.ambientinformatica.kyklos.entidade.Produto;
 import br.com.ambientinformatica.kyklos.entidade.Usuario;
 import br.com.ambientinformatica.kyklos.persistencia.EstoqueDao;
+import br.com.ambientinformatica.kyklos.persistencia.EstoqueProdutoDao;
 import br.com.ambientinformatica.kyklos.persistencia.MunicipioDao;
 import br.com.ambientinformatica.kyklos.persistencia.PedidoDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
 import br.com.ambientinformatica.kyklos.persistencia.ProdutoDao;
 import br.com.ambientinformatica.kyklos.persistencia.UnidadeMedidaDao;
+import br.com.ambientinformatica.kyklos.util.KyklosException;
+import br.com.ambientinformatica.util.UtilTexto;
 
 @Service("pedidoNeg")
 public class PedidoNegImpl implements PedidoNeg{
@@ -52,38 +55,42 @@ public class PedidoNegImpl implements PedidoNeg{
    @Autowired
    private EstoqueDao estoqueDao;
 
+   @Autowired
+   private EstoqueProdutoDao estoqueProdutoDao;
+
    @SuppressWarnings("resource")
-   @Transactional(rollbackFor=PedidoException.class)
-   public Pedido converterArquivoEmPedido(String arquivo, EmpresaUsuario empresaUsuario) throws PedidoException {
+   @Transactional(rollbackFor=KyklosException.class)
+   public Pedido converterArquivoEmPedido(String arquivo, EmpresaUsuario empresaUsuario) throws KyklosException {
       Scanner sc = new Scanner(arquivo);
       String linha = sc.nextLine();
       Pedido pedido = new Pedido();
 
       if(arquivo == null || arquivo.isEmpty()){
-         throw new PedidoException("O arquivo no pode estar vazio");
+         throw new KyklosException("O arquivo no pode estar vazio");
       }
       if(linha.contains("Orçamento")){
-         pedido.setNumero(linha.substring(59, 71).trim());
-         Pedido pedidoConsultado = pedidoDao.consultarPorNumero(empresaUsuario.getEmpresa(), pedido.getNumero());
+    	  //TODO fazer igual para os demais
+         pedido.setNumeroPedidoExterno(Long.parseLong(UtilTexto.removerCaracteresNaoAlfaNumericos(linha.substring(59, 71).trim())));
+         Pedido pedidoConsultado = pedidoDao.consultarPorNumeroPedidoExterno(empresaUsuario.getEmpresa(), pedido.getNumeroPedidoExterno());
          if(pedidoConsultado == null){
             pedido = validarPedido(pedido, arquivo);
             pedido = validarCliente(pedido, arquivo, empresaUsuario.getEmpresa());
             pedido = validarItemPedido(pedido, arquivo, empresaUsuario.getEmpresa(), empresaUsuario.getUsuario());
          }else{
-            throw new PedidoException("Pedido já importado!");
+            throw new KyklosException("Pedido já importado!");
          }
       }
       return pedido;
    }
 
    @SuppressWarnings("resource")
-   private Pedido validarPedido(Pedido pedido, String arquivo) throws PedidoException {
+   private Pedido validarPedido(Pedido pedido, String arquivo) throws KyklosException {
       Scanner sc = new Scanner(arquivo);
       String linha = sc.nextLine();
       while(sc.hasNextLine()){
          try {
-            if(pedido.getNumero() == null && linha.contains("Orçamento")){
-               pedido.setNumero(linha.substring(59, 71).trim());
+            if(pedido.getNumeroPedidoExterno() == null && linha.contains("Orçamento")){
+               pedido.setNumeroPedidoExterno(new Long(UtilTexto.removerCaracteresNaoAlfaNumericos(linha.substring(59, 71).trim())));
             }
             if(linha.contains("/")){
                int ponteiroData = linha.indexOf('/');
@@ -98,7 +105,7 @@ public class PedidoNegImpl implements PedidoNeg{
             }
             linha = sc.nextLine();
          } catch (ParseException e) {
-            throw new PedidoException("O arquivo possui um campo data inválido. " + e.getMessage(), e);
+            throw new KyklosException("O arquivo possui um campo data inválido. " + e.getMessage(), e);
          }
       }
 
@@ -106,7 +113,7 @@ public class PedidoNegImpl implements PedidoNeg{
    }
 
    @SuppressWarnings("resource")
-   private Pedido validarCliente(Pedido pedido, String arquivo, EmpresaCliente empresa) throws PedidoException {
+   private Pedido validarCliente(Pedido pedido, String arquivo, EmpresaCliente empresa) throws KyklosException {
       try{
          Pessoa clienteConsultado = null;
          String cpfCnpjCliente = null;
@@ -155,14 +162,14 @@ public class PedidoNegImpl implements PedidoNeg{
          }
 
       }catch(Exception e){
-         throw new PedidoException(e.getMessage(), e);
+         throw new KyklosException(e.getMessage(), e);
       }
       return pedido;
    }
 
 
    @SuppressWarnings({ "resource" })
-   private Pedido validarItemPedido(Pedido pedido, String arquivo, EmpresaCliente empresa, Usuario usuario) throws PedidoException {
+   private Pedido validarItemPedido(Pedido pedido, String arquivo, EmpresaCliente empresa, Usuario usuario) throws KyklosException {
       try{
          Scanner sc = new Scanner(arquivo);   
          String linha = sc.nextLine();
@@ -170,9 +177,8 @@ public class PedidoNegImpl implements PedidoNeg{
 
             while(linha.contains("AT-")){
                Produto produto = new Produto();
-               ItemPedido itemPedido = new ItemPedido();
 
-               itemPedido.setNumeroItem(Integer.parseInt(linha.substring(1, 5).trim()));
+               Integer numeroItem = Integer.parseInt(linha.substring(1, 5).trim());
                produto.setCodigo(linha.substring(5, 12).trim());
                Produto produtoConsultado = produtoDao.consultarPorCodigo(empresa, produto.getCodigo());
 
@@ -181,13 +187,15 @@ public class PedidoNegImpl implements PedidoNeg{
                      linha = sc.nextLine();
                   }
                   produto.setDescricao(linha.substring(23, 56).trim());
-//                  produto.setEmpresa(empresa);
+                  produto.setEmpresa(empresa);
                   produto.setUnidadeMedida(unidadeMedidaDao.consultarPorSigla(linha.substring(63, 65).toUpperCase()));
 
                   produtoDao.incluir(produto);
                   produtoConsultado = produto;
                }
-
+               ItemPedido itemPedido = new ItemPedido(pedido, produtoConsultado);
+               itemPedido.setNumeroItem(numeroItem);
+               
                if (linha.length() < 60) {
                   linha = sc.nextLine();
                }
@@ -198,21 +206,36 @@ public class PedidoNegImpl implements PedidoNeg{
                itemPedido.setValorUnitario(new BigDecimal(linha.substring(69, 75).replace(",", ".").trim()));
                itemPedido.setProduto(produtoConsultado);
                Date dataInicioReserva = new Date();
+               itemPedido.setDataInicioReserva(dataInicioReserva);
 
                Calendar cal = Calendar.getInstance();
                cal.setTime(dataInicioReserva);
                cal.add(Calendar.DATE, 1); // Add 1 dia
                dataInicioReserva = cal.getTime();
+               itemPedido.setDataFimReserva(dataInicioReserva);
 
+               EstoqueProduto estoqueProduto = new EstoqueProduto();
                Estoque estoque = estoqueDao.consultarPorEstoquePadrao(empresa);
                if(estoque == null){
                   estoque = new Estoque();
                   estoque.setDescricao("Estoque Físico - " + empresa.getPessoa().getNome());
+                  estoque.setEndereco(empresa.getPessoa().getEnderecoCompleto());
+                  estoque.setPadrao(true);
+                  estoque.setPessoaEmpresa(pessoaEmpresaDao.consultarPorCpfOuCnpj(empresa.getPessoa()));
                   estoqueDao.incluir(estoque);
 
                }
 
-//               itemPedido.setEstoque(estoque);
+               estoqueProduto = estoqueProdutoDao.consultarPorEstoque(estoque);
+               if(estoqueProduto == null){     
+                  estoqueProduto = new EstoqueProduto();
+                  estoqueProduto.setData(new Date());
+                  estoqueProduto.setEstoque(estoque);
+                  estoqueProduto.setProduto(produtoConsultado);
+                  estoqueProduto.setQuantidade(itemPedido.getQuantidade());
+                  estoqueProdutoDao.incluir(estoqueProduto);
+               }
+               itemPedido.setEstoque(estoqueProduto);
                itemPedido.setUsuario(usuario);
                
                pedido.getItens().add(itemPedido);
@@ -222,7 +245,7 @@ public class PedidoNegImpl implements PedidoNeg{
          }
          pedido.setEmpresa(empresa);
       }catch(Exception e){
-         throw new PedidoException(e.getMessage(), e);
+         throw new KyklosException(e.getMessage(), e);
       }
       return pedido;
    }

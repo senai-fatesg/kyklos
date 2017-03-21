@@ -6,23 +6,10 @@ import br.com.ambientinformatica.jpa.persistencia.Persistencia;
 import br.com.ambientinformatica.kyklos.entidade.UnidadeMedida;
 
 public interface UnidadeMedidaDao extends Persistencia<UnidadeMedida> {
-	
-   public UnidadeMedida consultarPorSigla(String sigla);
 
-   public List<UnidadeMedida> consultarUnidadesAtivas();
-	
-   public List<UnidadeMedida> listarUnidadesPorSigla(String sigla);
-	
-   public List<UnidadeMedida> listarPorDescricao(String descricao);
+   UnidadeMedida consultarPorSigla(String sigla);
    
-   public List<UnidadeMedida> listarUnidadesPorSiglaOuDescricao(String descricaoESiglaConsulta);
-   
-   public List<String> listarTodosStatus();
+   List<UnidadeMedida> consultarTodasUnidadesDeMedida();
 
-   public void excluirPorId(UnidadeMedida unidadeMedida) throws Exception;
-   
-
-
-	
-
+   List<UnidadeMedida> consultarPorSiglaOuDescricao(String siglaOuDescricao);
 }

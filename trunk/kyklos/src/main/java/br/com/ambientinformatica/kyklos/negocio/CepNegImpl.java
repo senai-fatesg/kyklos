@@ -7,24 +7,24 @@ import org.springframework.stereotype.Service;
 
 import br.com.ambientinformatica.kyklos.dto.Cep;
 import br.com.ambientinformatica.kyklos.entidade.EnumParametro;
-import br.com.ambientinformatica.kyklos.entidade.Parametro;
-import br.com.ambientinformatica.kyklos.persistencia.ParametroDao;
+import br.com.ambientinformatica.kyklos.entidade.ParametroSistema;
+import br.com.ambientinformatica.kyklos.persistencia.ParametroSistemaDao;
 import br.com.ambientinformatica.kyklos.util.UtilServico;
 
 @Service("cepNeg")
-public class CepNegImpl implements CepNeg{
+public class CepNegImpl implements CepNeg {
 
    @Autowired
-   ParametroDao parametroDao;
+   ParametroSistemaDao parametroDao;
 
    @Override
-   public Cep consultar(String cep) throws Exception{
-      try{
-         Parametro parametroUrl = parametroDao.consultarPorChave(EnumParametro.URL_TOTH.getDescricao());
+   public Cep consultar(String cep) {
+      try {
+         ParametroSistema parametroUrl = parametroDao.consultarPorChave(EnumParametro.URL_TOTH.getDescricao());
          String url = String.format("%s/services/cepservice/consultarcep/%s", parametroUrl.getValor(), cep);
          return UtilServico.consultarGet(url, Cep.class);
-      }catch(NoResultException e){
-         throw new Exception("Nenhum resultado encontrado.");
+      } catch (NoResultException e) {
+         throw new NoResultException("Nenhum resultado encontrado.");
       }
    }
 

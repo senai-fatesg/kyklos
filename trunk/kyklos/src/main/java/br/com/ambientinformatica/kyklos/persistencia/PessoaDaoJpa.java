@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.jpa.persistencia.PersistenciaJpa;
+import br.com.ambientinformatica.kyklos.util.KyklosException;
 
 @Repository("pessoaDao")
 public class PessoaDaoJpa extends PersistenciaJpa<Pessoa> implements PessoaDao{
@@ -37,14 +38,28 @@ public class PessoaDaoJpa extends PersistenciaJpa<Pessoa> implements PessoaDao{
    
    @SuppressWarnings("unchecked")
    public List<Pessoa> listarPessoasPorNome(String nome){
-	   try {
-		   Query query = em.createQuery("select p from Pessoa p"
-				   + " where UPPER(p.nome) like UPPER(:nome)");
-		   query.setParameter("nome", "%" + nome + "%");
-		   query.setMaxResults(25);
-		   return query.getResultList();
-	   } catch ( NoResultException e ) {  
-		   return null;  
-	   }
+      try {
+         Query query = em.createQuery("select p from Pessoa p"
+               + " where UPPER(p.nome) like UPPER(:nome)");
+         query.setParameter("nome", "%" + nome + "%");
+         query.setMaxResults(25);
+         return query.getResultList();
+      } catch ( NoResultException e ) {  
+         return null;  
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public List<Pessoa> listarPessoasPorNomeOuCnpj(String nomeCnpj) throws KyklosException {
+      try{
+         Query query = em.createQuery("select p from Pessoa p where UPPER(p.nome) like UPPER(:nome) or p.cpfCnpj like :cpfCnpj");
+         query.setParameter("nome", "%" + nomeCnpj + "%");
+         query.setParameter("cpfCnpj", nomeCnpj+"%");
+         query.setMaxResults(15);
+         return query.getResultList();
+      }catch(NoResultException nre){
+         throw new KyklosException("Nenhum Resultado encontrado.");
+      }
    }
 }

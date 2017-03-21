@@ -17,13 +17,13 @@ import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.jpa.exception.PersistenciaException;
 import br.com.ambientinformatica.kyklos.entidade.EmpresaCliente;
 import br.com.ambientinformatica.kyklos.entidade.Estoque;
-import br.com.ambientinformatica.kyklos.entidade.PedidoException;
 import br.com.ambientinformatica.kyklos.entidade.PessoaEmpresa;
 import br.com.ambientinformatica.kyklos.negocio.PessoaNeg;
 import br.com.ambientinformatica.kyklos.persistencia.EstoqueDao;
-import br.com.ambientinformatica.kyklos.persistencia.ParametroDao;
+import br.com.ambientinformatica.kyklos.persistencia.ParametroSistemaDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
+import br.com.ambientinformatica.kyklos.util.KyklosException;
 
 @Named("EstoqueControl")
 @Scope("conversation")
@@ -45,28 +45,30 @@ public class EstoqueControl implements Serializable{
 
    @Autowired
    private PessoaNeg pessoaNeg;
-   
+
    @Autowired
-   private ParametroDao parametroDao;
-   
+   private ParametroSistemaDao parametroDao;
+
    private List<Estoque> listaEstoques = new ArrayList<Estoque>(); 
 
    private PessoaEmpresa pessoaEmpresa;
 
    private Pessoa pessoa = new Pessoa();
-   
+
    private Estoque estoque = new Estoque();
 
    private EmpresaCliente empresaCliente;
 
    private String descricao;
-   
+
    private boolean estoquePadrao;
 
    private boolean novaEmpresa = false;
-   
+
    private String uf = "";
    
+   private String cpfCnpj = "";
+
    public void limpar(){
       listaEstoques = new ArrayList<Estoque>();
       estoque = new Estoque();
@@ -76,12 +78,12 @@ public class EstoqueControl implements Serializable{
    public void novaEmpresa(ActionEvent actionEvent) {
       novaEmpresa = true;
       pessoa = new Pessoa();
-  }
-   
-   public void incluirPessoa(){
-      
    }
-   
+
+   public void incluirPessoa(){
+
+   }
+
    public void cadastrar(){
       novaEmpresa = false;
       limpar();
@@ -94,20 +96,27 @@ public class EstoqueControl implements Serializable{
    }
 
    public void consultar(){
-      listaEstoques = estoqueDao.listarPorDescricao(descricao);
+      try {
+         List<PessoaEmpresa> pessoas = pessoaEmpresaDao.consultarEmpresasVinculadas(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
+         listaEstoques = estoqueDao.listarPorDescricaoEPessoa(descricao, pessoas);
+         
+      } catch (KyklosException e) {
+         e.printStackTrace();
+      }
    }
 
    public void consultarPessoa(){
       try {
-         pessoa = pessoaNeg.consultar(pessoa.getCpfCnpj());
-      } catch (PedidoException e) {
+         pessoa = pessoaNeg.consultar(cpfCnpj);
+      } catch (KyklosException e) {
          UtilFaces.addMensagemFaces("Erro ao consultar.");
          UtilFaces.addMensagemFaces(e.getMessage());
       }
    }
-   
+
    public void salvarPessoa(ActionEvent actionEvent){
       try {
+         pessoa.setCpfCnpj(cpfCnpj);
          pessoa.setMunicipio(pessoa.getMunicipio());
          pessoaNeg.salvar(pessoa, usuarioLogadoControl);
          pessoa = new Pessoa();
@@ -118,12 +127,11 @@ public class EstoqueControl implements Serializable{
          UtilFaces.addMensagemFaces("Erro ao salvar registro.");
       }
    }
-   
+
    public void salvar(){
       try {
-//         estoque.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
-//         estoque.setPadrao(estoquePadrao);
-//         estoque.setPessoaEmpresa(pessoaEmpresa);
+         estoque.setPadrao(estoquePadrao);
+         estoque.setPessoaEmpresa(pessoaEmpresa);
          estoqueDao.incluir(estoque);
          estoque = new Estoque();
          UtilFaces.addMensagemFaces("Novo Estoque Cadastrado!");
@@ -199,5 +207,13 @@ public class EstoqueControl implements Serializable{
    public List<SelectItem> getUfs() {
       return new ArrayList<SelectItem>(UtilFaces.getListEnum(EnumUf.values()));
    }
-   
+
+   public String getCpfCnpj() {
+      return cpfCnpj;
+   }
+
+   public void setCpfCnpj(String cpfCnpj) {
+      this.cpfCnpj = cpfCnpj;
+   }
+
 }

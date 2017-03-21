@@ -11,8 +11,8 @@ import org.springframework.stereotype.Repository;
 import br.com.ambientinformatica.jpa.persistencia.PersistenciaJpa;
 import br.com.ambientinformatica.kyklos.entidade.EmpresaCliente;
 import br.com.ambientinformatica.kyklos.entidade.Estoque;
-import br.com.ambientinformatica.kyklos.entidade.PedidoException;
 import br.com.ambientinformatica.kyklos.entidade.PessoaEmpresa;
+import br.com.ambientinformatica.kyklos.util.KyklosException;
 
 @Repository("estoqueDao")
 public class EstoqueDaoJpa extends PersistenciaJpa<Estoque> implements EstoqueDao{
@@ -31,30 +31,8 @@ public class EstoqueDaoJpa extends PersistenciaJpa<Estoque> implements EstoqueDa
    }
 
    @SuppressWarnings("unchecked")
-   public List<Estoque> listarPorEmpresaCliente(EmpresaCliente empresa) {
-      try{
-         Query query = em.createQuery("select e from Estoque e where e.empresa = :empresa");
-         query.setParameter("empresa", empresa);
-         return query.getResultList();
-      }catch(NoResultException nre){
-         return null;
-      }
-   }
-
-   @SuppressWarnings("unchecked")
-   public List<Estoque> listarPorDescricao(String descricao) {
-      try{
-         Query query = em.createQuery("select e from Estoque e where upper(e.descricao) like :descricao");
-         query.setParameter("descricao", "%"+descricao.toUpperCase()+"%");
-         return query.getResultList();
-      }catch(NoResultException nre){
-         return null;
-      }
-   }
-
-   @SuppressWarnings("unchecked")
    @Override
-   public List<Estoque> listarPorDescricaoEPessoa(String descricao, List<PessoaEmpresa> pessoas) throws PedidoException {
+   public List<Estoque> listarPorDescricaoEPessoa(String descricao, List<PessoaEmpresa> pessoas) throws KyklosException {
       try{
          List<Estoque> estoques = new ArrayList<Estoque>();
          Query query;
@@ -69,5 +47,4 @@ public class EstoqueDaoJpa extends PersistenciaJpa<Estoque> implements EstoqueDa
          return null;
       }
    }
-   
 }

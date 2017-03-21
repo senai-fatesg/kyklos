@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 import br.com.ambientinformatica.ambientjsf.util.UtilFaces;
+import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.kyklos.entidade.EmpresaUsuario;
 import br.com.ambientinformatica.kyklos.entidade.EnumPapelUsuario;
 import br.com.ambientinformatica.kyklos.entidade.Usuario;
 import br.com.ambientinformatica.kyklos.persistencia.EmpresaUsuarioDao;
 import br.com.ambientinformatica.kyklos.persistencia.PapelUsuarioDao;
+import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.UsuarioDao;
 
 @Named("UsuarioControl")
@@ -34,6 +36,9 @@ public class UsuarioControl implements Serializable{
    @Autowired
    private UsuarioDao usuarioDao;
 
+   @Autowired
+   private PessoaDao pessoaDao;
+   
    @Autowired
    private PapelUsuarioDao papelUsuarioDao;
    
@@ -85,13 +90,18 @@ public class UsuarioControl implements Serializable{
       login = usuario.getLogin();
       consultar();
       if(usuario == null){
+         Pessoa pessoa = new Pessoa();
+         pessoa.setNome(nome);
+         pessoa.setEmail(login);
+         pessoaDao.incluir(pessoa);
+         
          usuario = new Usuario();
          usuario.setAtivo(true);
          usuario.setDataAlteracaoSenha(new Date());
          usuario.setDataCriacao(new Date());
          usuario.setSenhaNaoCriptografada("123456");
-         usuario.setNome(nome);
          usuario.setLogin(login);
+         usuario.setPessoa(pessoa);
          usuarioDao.incluir(usuario);
          for(EnumPapelUsuario papelSelecionado : papeisUsuario.getTarget()){
             usuario.addPapel(papelSelecionado);

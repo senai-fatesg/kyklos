@@ -9,17 +9,14 @@
 </style>
    </ui:define>
    <ui:define name="corpo">
-
       <div class="screenHeader">
-         <a:field spaceLeft="1%">
-            <p:panelGrid id="gridTop" styleClass="semBorda">
-               <p:row>
-                  <p:column>
-                     <p:commandButton class="cadastraButton" value="Cadastrar" action="#{EstoqueControl.cadastrar}" update="formEstoque" oncomplete="PF('formEstoque').show();" icon="ui-icon-plusthick" />
-                  </p:column>
-               </p:row>
-            </p:panelGrid>
-         </a:field>
+         <p:panelGrid id="gridTop" styleClass="semBorda">
+            <p:row>
+               <p:column>
+                  <p:commandButton class="cadastraButton" value="Cadastrar" action="#{EstoqueControl.cadastrar}" update="formEstoque" oncomplete="PF('formEstoque').show();" icon="ui-icon-plusthick" />
+               </p:column>
+            </p:row>
+         </p:panelGrid>
       </div>
 
       <div class="contentField">
@@ -31,7 +28,7 @@
                      <p:inputText id="textBox" class="searchBar" placeholder="Descrição" update="@all" value="#{EstoqueControl.descricao}">
                      </p:inputText>
                   </p:column>
-                  <p:column style="text-align:left;">
+                  <p:column colspan="2" style="text-align:left;">
                      <p:commandButton class="listaButton" actionListener="#{EstoqueControl.consultar}" ajax="false" value="" icon="ui-icon-search" update="@all" />
                   </p:column>
                </p:row>
@@ -39,8 +36,7 @@
             </p:panelGrid>
          </p:panel>
 
-         <p:dataTable id="tableEstoque" value="#{EstoqueControl.listaEstoques}" var="e"
-          emptyMessage="Nenhum estoque cadastrado.">
+         <p:dataTable id="tableEstoque" value="#{EstoqueControl.listaEstoques}" var="e">
             <p:column headerText="Empresa">
                <h:outputText value="#{e.pessoaEmpresa.pessoa.nome}" />
             </p:column>
@@ -95,7 +91,7 @@
          <p:panel id="panelPessoaEmpresa" widgetVar="panelPessoaEmpresa" header="Dados da Pessoa" style="width:99%" toggleable="true" rendered="#{EstoqueControl.novaEmpresa eq true}">
             <p:panelGrid>
                <a:field label="CPF ou CNPJ" spaceLeft="5px" width="130px">
-                  <p:inputText value="#{EstoqueControl.pessoa.cpfCnpj}" style="width:130px;" />
+                  <p:inputText value="#{EstoqueControl.cpfCnpj}" style="width:130px;" />
                </a:field>
 
                <a:field label="UF" spaceLeft="15px" width="170px">

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
+
+   <ui:define name="cabecalho">
+      <style>
+.ui-autocomplete-input {
+   width: 170px !important;
+}
+</style>
+   </ui:define>
+
+   <ui:define name="corpo">
+
+      <div class="screenHeader">
+         <p:panelGrid id="gridTop" styleClass="semBorda">
+            <p:row>
+               <p:column>
+                  <p:commandButton value="Cadastrar" actionListener="#{TransportadoraControl.criarTransportadora}" update="formTransportadora" oncomplete="PF('formTransportadora').show();"
+                     icon="ui-icon-plusthick" />
+               </p:column>
+            </p:row>
+         </p:panelGrid>
+      </div>
+
+      <div class="contentField">
+         <p:panel header="Buscar / Filtros" toggleable="true" id="filtrosjs" widgetVar="filtrosjs" toggleOrientation="vertical">
+
+            <p:panelGrid styleClass="semBorda" style="width:100%;">
+               <p:row>
+                  <p:column style="text-align: right; width:60%">
+                     <p:inputText id="textBox" class="searchBar" value="#{TransportadoraControl.buscaText}" placeholder="Transportadora" spaceLeft="10px">
+                        <f:ajax event="change" actionListener="#{TransportadoraControl.listarTransportadoras}" />
+                     </p:inputText>
+                  </p:column>
+                  <p:column style="text-align:left;">
+                     <p:commandButton class="listaButton" actionListener="#{TransportadoraControl.listarTransportadoras}" ajax="false" value="" icon="ui-icon-search" update="listaDeTransportadoras" />
+                  </p:column>
+               </p:row>
+            </p:panelGrid>
+
+         </p:panel>
+         <p:dataTable id="listaDeTransportadoras" value="#{TransportadoraControl.listaTransportadoras}" var="t">
+            <p:column headerText="Razão Social" style="width:30%;">
+               <h:outputText value="#{t.razaoSocial}" />
+            </p:column>
+            <p:column headerText="CPF/CNPJ" style="width:20%;">
+               <h:outputText value="#{t.cpfCnpj}" />
+            </p:column>
+            <p:column headerText="Endereço">
+               <h:outputText value="#{t.endereco.logradouro}, #{t.endereco.numero} - #{t.endereco.bairro}" />
+            </p:column>
+         </p:dataTable>
+
+      </div>
+
+      <p:dialog header="Cadastro de Transportadora" widgetVar="formTransportadora" id="formTransportadora" showEffect="puff" hideEffect="scale" width="350px" height="390px" resizable="false">
+         <div id="topMenu" align="center">
+            <a:field spaceLeft="1%">
+               <p:panelGrid id="gridTopDialog" styleClass="semBorda">
+                  <p:row>
+                     <p:column>
+                        <p:commandButton value="Cancelar" icon="ui-icon-cancel" onclick="PF('formTransportadora').hide();" />
+                     </p:column>
+                     <p:column>
+                        <p:commandButton value="Limpar" type="reset" icon="ui-icon-trash" />
+                     </p:column>
+                     <p:column>
+                        <p:commandButton value="Salvar" actionListener="#{TransportadoraControl.salvarTransportadora}" update="formTransportadora" icon="ui-icon-disk" />
+                     </p:column>
+                  </p:row>
+               </p:panelGrid>
+            </a:field>
+         </div>
+
+         <a:newLine />
+
+         <p:tabView id="tabviewCadastroTransportadora" activeIndex="#{TransportadoraControl.activeIndex}" styleClass="semBorda" cache="true">
+            <p:tab title="Informações Gerais">
+               <p:panelGrid id="cadastroTransportadoraPanel" styleClass="semBorda">
+                  <p:row>
+                     <p:column>
+                        <h:outputText value="CPF/CNPJ" />
+                        <a:newLine />
+                        <p:inputText value="#{TransportadoraControl.cpfCnpjTransportadora}" placeholder="CPF/CNPJ" style="width:150px;" />
+                     </p:column>
+                     <p:column>
+                        <a:newLine />
+                        <p:commandButton value="Consultar" actionListener="#{TransportadoraControl.consultarCpfCnpj}" icon="ui-icon-search" update="cadastroTransportadoraPanel" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column colspan="3">
+                        <h:outputText value="Razão Social" />
+                        <a:newLine />
+                        <p:inputText value="#{TransportadoraControl.transportadora.razaoSocial}" placeholder="Razão Social" style="width:96%;" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column colspan="3">
+                        <h:outputText value="Inscrição Estadual" />
+                        <a:newLine />
+                        <p:inputText value="#{TransportadoraControl.transportadora.inscricaoEstadual}" placeholder="Inscrição Estadual" style="width:96%;" />
+                     </p:column>
+                  </p:row>
+               </p:panelGrid>
+            </p:tab>
+            <p:tab title="Endereço">
+               <p:panelGrid id="enderecoTransportadoraPanel">
+                  <p:row>
+                     <p:column colspan="3">
+                        <h:outputText value="Descrição" />
+                        <a:newLine />
+                        <p:inputText id="inputDescricaoTransportadora" value="#{TransportadoraControl.transportadora.endereco.descricaoEndereco}" placeholder="Descrição" style="width:92.7%;" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column>
+                        <h:outputText value="CEP" />
+                        <a:newLine />
+                        <p:inputMask id="inputCepTransportadora" value="#{TransportadoraControl.cepTransportadora}" mask="99.999-999" style="width:150px;" />
+                     </p:column>
+                     <p:column>
+                        <a:newLine />
+                        <p:commandButton value="Buscar" actionListener="#{TransportadoraControl.consultarCep}" icon="ui-icon-search" update="enderecoTransportadoraPanel" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column>
+                        <h:outputText value="Logradouro:" />
+                        <a:newLine />
+                        <p:inputText id="logradouroTransportadora" disabled="true" value="#{TransportadoraControl.transportadora.endereco.logradouro}" style="width:150px;" />
+                     </p:column>
+                     <p:column>
+                        <h:outputText value="Nº:" />
+                        <a:newLine />
+                        <p:inputText id="numeroTransportadora" value="#{TransportadoraControl.transportadora.endereco.numero}" style="width: 65px;" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column>
+                        <h:outputText value="Bairro:" />
+                        <a:newLine />
+                        <p:inputText id="bairroTransportadora" disabled="true" value="#{TransportadoraControl.transportadora.endereco.bairro}" style="width:150px;" />
+                     </p:column>
+                     <p:column>
+                        <h:outputText value="CEP:" />
+                        <a:newLine />
+                        <p:inputText id="cepTransportadora" disabled="true" value="#{TransportadoraControl.transportadora.endereco.cep}" style="width: 65px;" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column colspan="2">
+                        <h:outputText value="Complemento:" />
+                        <a:newLine />
+                        <p:inputText id="complementoTransportadora" value="#{TransportadoraControl.transportadora.endereco.complemento}" style="width:94%;" />
+                     </p:column>
+                  </p:row>
+                  <p:row>
+                     <p:column>
+                        <h:outputText value="Município:" />
+                        <a:newLine />
+                        <p:inputText id="municipioTransportadora" disabled="true" value="#{TransportadoraControl.transportadora.endereco.municipio.descricao}" style="width:150px;" />
+                     </p:column>
+                     <p:column>
+                        <h:outputText value="UF:" />
+                        <a:newLine />
+                        <p:inputText id="ufTransportadora" disabled="true" value="#{TransportadoraControl.transportadora.endereco.municipio.uf}" style="width: 65px;" />
+                     </p:column>
+                  </p:row>
+               </p:panelGrid>
+            </p:tab>
+         </p:tabView>
+      </p:dialog>
+
+   </ui:define>
+
+</ui:composition>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
+
+   <ui:define name="cabecalho">
+      <style>
+.ui-autocomplete-input {
+   width: 283px !important;
+}
+</style>
+   </ui:define>
+
+   <ui:define name="corpo">
+      <div class="screenHeader">
+         <p:panelGrid id="gridTop" styleClass="semBorda">
+            <p:row>
+               <p:column>
+                  <p:commandButton value="Cadastrar" update="cadastroContaCorrenteDialog" oncomplete="PF('cadastroContaCorrenteDialog').show();"
+                     actionListener="#{ContaCorrenteControl.limparContaCorrente}" icon="ui-icon-plusthick" />
+               </p:column>
+            </p:row>
+         </p:panelGrid>
+      </div>
+
+      <div class="contentField">
+         <p:panel header="Busca / Filtros" toggleable="true" id="filtrosjs" widgetVar="filtrosjs" toggleOrientation="vertical">
+
+            <p:panelGrid styleClass="semBorda" style="width:100%;">
+               <p:row>
+                  <p:column style="text-align: right; width:60%">
+                     <p:inputText id="textBox" class="searchBar" value="#{ContaCorrenteControl.buscaText}" placeholder="Conta Corrente (Nº Conta / Nome Banco)" spaceLeft="10px">
+                        <f:ajax event="change" actionListener="#{ContaCorrenteControl.listarContaCorrente}" update="form" />
+                     </p:inputText>
+                  </p:column>
+                  <p:column style="text-align:left;">
+                     <p:commandButton class="listaButton" actionListener="#{ContaCorrenteControl.listarContaCorrente}" update="form, textBox" ajax="false" value="" icon="ui-icon-search" />
+                  </p:column>
+               </p:row>
+            </p:panelGrid>
+
+         </p:panel>
+
+         <p:dataTable id="contaCorrenteTable" value="#{ContaCorrenteControl.listaContasCorrente}" var="cc">
+
+            <p:column width="10%" sortBy="#{cc.id}" headerText="Código" styleClass="d">
+               <h:outputText value="#{cc.id}" />
+            </p:column>
+
+            <p:column headerText="Banco" styleClass="e">
+               <h:outputText value="#{cc.banco.nome}" />
+            </p:column>
+
+            <p:column width="8%" headerText="Agência">
+               <h:outputText value="#{cc.agencia}" />
+            </p:column>
+
+            <p:column width="8%" headerText="Conta">
+               <h:outputText value="#{cc.numeroConta}" />
+            </p:column>
+
+            <p:column width="8%" headerText="Editar" styleClass="e">
+
+               <p:commandButton id="editButton" class="tableButton" icon="ui-icon-pencil" oncomplete="PF('cadastroContaCorrenteDialog').show();"
+                  actionListener="#{ContaCorrenteControl.acionarModoEdicao(cc)}" update=":formCorpo:cadastroContaCorrenteDialog">
+                  <f:setPropertyActionListener value="#{cc}" target="#{ContaCorrenteControl.contaCorrente}" />
+               </p:commandButton>
+
+            </p:column>
+
+         </p:dataTable>
+
+      </div>
+
+      <p:dialog header="Cadastro de Conta Corrente" widgetVar="cadastroContaCorrenteDialog" id="cadastroContaCorrenteDialog" showEffect="puff" hideEffect="scale" height="45%" resizable="false">
+
+         <p:ajax event="close" listener="#{ContaCorrenteControl.limparContaCorrente}" update=":formCorpo:contaCorrenteTable" />
+
+         <div id="topMenu" align="center">
+            <p:panelGrid id="gridTopDialog" styleClass="semBorda">
+               <p:row>
+                  <p:column>
+                     <p:commandButton value="Fechar" actionListener="#{ContaCorrenteControl.limparContaCorrente}" update=":formCorpo:cadastroContaCorrenteDialog" icon="ui-icon-close" />
+                  </p:column>
+                  <p:column rendered="#{ContaCorrenteControl.edicaoContaCorrente == false}">
+                     <p:commandButton value="Salvar" actionListener="#{ContaCorrenteControl.cadastrarContaCorrente()}" onclick="PF(cadastroContaCorrenteDialog).hide()"
+                        update=":formCorpo:contaCorrenteTable" icon="ui-icon-disk" />
+                  </p:column>
+                  <p:column rendered="#{ContaCorrenteControl.edicaoContaCorrente == true}">
+                     <p:commandButton value="Salvar Alterações" actionListener="#{ContaCorrenteControl.editarContaCorrente()}" onclick="PF(cadastroContaCorrenteDialog).hide()"
+                        update=":formCorpo:contaCorrenteTable" icon="ui-icon-disk" />
+                  </p:column>
+               </p:row>
+            </p:panelGrid>
+         </div>
+
+         <a:newLine />
+
+         <p:panelGrid id="cadastroContaCorrenteGrid" styleClass="semBorda">
+
+            <p:row>
+               <p:column>
+                  <h:outputText value="Conta Corrente" styleClass="faturamentoText" />
+               </p:column>
+            </p:row>
+
+            <p:row>
+               <p:column colspan="2">
+                  <p:autoComplete id="consultarBanco" dropdown="true" converter="objectConverter" value="#{ContaCorrenteControl.contaCorrente.banco}" var="banco" itemValue="#{banco}"
+                     itemLabel="#{banco.nome}" completeMethod="#{FaturamentoListaControl.completeBanco}" placeholder="Adicionar Banco">
+                     <p:column>
+                        <p:outputLabel value="#{banco.codigo} - #{banco.nome}" />
+                     </p:column>
+                  </p:autoComplete>
+               </p:column>
+            </p:row>
+
+            <p:row>
+               <p:column>
+                  <p:inputText value="#{ContaCorrenteControl.contaCorrente.agencia}" placeholder="Nº Agência" />
+               </p:column>
+               <p:column>
+                  <p:inputText value="#{ContaCorrenteControl.contaCorrente.numeroConta}" placeholder="Nº Conta" />
+               </p:column>
+            </p:row>
+
+            <p:row>
+               <p:column colspan="2">
+                  <h:outputText value="Conta Contábil (Conta cadastrada pelo Financeiro)" />
+                  <a:newLine />
+                  <p:inputText value="#{ContaCorrenteControl.contaCorrente.contaContabil}" placeholder="Código conta contábil" style="width:312px;"/>
+               </p:column>
+            </p:row>
+
+            <p:row>
+               <p:column colspan="2">
+                  <h:outputText value="Conta possui Contrato de Boleto Bancário?" />
+                  <p:spacer width="10px" />
+                  <p:selectBooleanButton id="contratoBoletoBancarioButton" value="#{ContaCorrenteControl.contaContratoBoletoBancario}" onLabel="Sim" offLabel="Não" disabled="false" style="width:74px;"/>
+               </p:column>
+            </p:row>
+
+         </p:panelGrid>
+      </p:dialog>
+
+   </ui:define>
+
+</ui:composition>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
+
+   <ui:define name="corpo">
+
+      <div class="screenHeader">
+         <p:panelGrid id="gridTop" styleClass="semBorda">
+            <p:row>
+               <p:column>
+               </p:column>
+            </p:row>
+         </p:panelGrid>
+      </div>
+
+      <div class="contentField">
+         <p:panel header="Buscar / Filtros" toggleable="true" id="filtrosjs" widgetVar="filtrosjs" toggleOrientation="vertical">
+            <p:panelGrid style="width:100%; text-align: center;" styleClass="semBorda">
+               <p:row>
+                  <p:column colspan="2" style="text-align: right; width:60%">
+                     <p:inputText id="textBox" class="searchBar" placeholder="Número do Pedido" />
+                  </p:column>
+                  <p:column colspan="2" style="text-align:left;">
+                     <p:commandButton class="listaButton" actionListener="#{FaturamentoListaControl.listarPedidos}" update=":formCorpo:listaPedidos" icon="ui-icon-search" />
+                  </p:column>
+               </p:row>
+
+               <p:row style="border: 1px solid #DDDDDD !important;">
+                  <p:column>
+                     <p:outputLabel for="dataInicial" value="Período" />
+                     <a:newLine />
+                     <p:calendar id="dataInicial" value="#{FaturamentoListaControl.dataInicial}" pattern="dd/MM/yyyy" placeholder="Data Inicial" mask="true" />
+                     <h:outputText value=" - " />
+                     <p:calendar id="dataFinal" value="#{FaturamentoListaControl.dataFinal}" pattern="dd/MM/yyyy" placeholder="Data Final" mask="true" />
+                  </p:column>
+
+                  <p:column>
+                     <p:outputLabel for="completeCliente" value="Cliente" />
+                     <a:newLine />
+                     <p:autoComplete id="completeCliente" size="20" dropdown="false" converter="objectConverter" value="#{FaturamentoListaControl.cliente}" var="cliente" itemValue="#{cliente}"
+                        itemLabel="#{cliente.nome}" completeMethod="#{FaturamentoListaControl.completeCliente}" placeholder="Consultar por Cpf ou Cnpj)" minQueryLength="3"
+                        style="width: 100% !important;" inputStyle="width: 90% !important; text-align: center;">
+                        <p:ajax event="itemSelect" update="formCorpo" />
+
+                        <p:column>
+                           <p:outputLabel value="#{cliente.cpfCnpj} - #{cliente.nome}" />
+                        </p:column>
+                     </p:autoComplete>
+                  </p:column>
+
+                  <p:column class="panelGrid">
+                     <p:outputLabel for="completeVendedor" value="Vendedor" />
+                     <a:newLine />
+                     <p:autoComplete id="completeVendedor" size="20" dropdown="false" converter="objectConverter" value="#{FaturamentoListaControl.vendedor}" var="vendedor" itemValue="#{vendedor}"
+                        itemLabel="#{vendedor.pessoa.nome}" completeMethod="#{FaturamentoListaControl.completeVendedor}" placeholder="Consultar por CPF/CNPJ ou Nome" style="width: 100% !important;"
+                        inputStyle="width: 90% !important; text-align: center; align: left;">
+                        <p:ajax event="itemSelect" update="formCorpo" />
+
+                        <p:column>
+                           <p:outputLabel value="#{vendedor.pessoa.cpfCnpj} - #{vendedor.pessoa.nome}" />
+                        </p:column>
+                     </p:autoComplete>
+                  </p:column>
+               </p:row>
+
+            </p:panelGrid>
+         </p:panel>
+
+         <p:dataTable id="listaPedidos" value="#{FaturamentoListaControl.pedidos}" var="pedido" styleClass="semBorda" selectionMode="single" selection="#{FaturamentoListaControl.pedidoSelecionado}"
+            rowKey="#{pedido}">
+
+            <p:ajax event="rowSelect" listener="#{FaturamentoListaControl.selecionarPedido}" oncomplete="PF('espelhoPedidoDialog').show();" update=":formCorpo:espelhoPedidoDialog" />
+
+            <p:column headerText="Data" width="15%" styleClass="d" sortable="true" sortBy="#{pedido.data}">
+               <h:outputText value="#{pedido.data}">
+                  <f:convertDateTime pattern="dd/MM/yy" />
+               </h:outputText>
+            </p:column>
+
+            <p:column width="25%" headerText="Cliente">
+               <h:outputText value="#{pedido.cliente.nome}" />
+            </p:column>
+
+            <p:column headerText="Vendedor">
+               <h:outputText value="#{pedido.vendedor.pessoa.nome}" />
+            </p:column>
+
+            <p:column width="10%" styleClass="d">
+               <p:commandButton id="faturarPedidoButtonLista" action="#{FaturamentoListaControl.abrirPedido}" ajax="false" value="Faturar" icon="ui-icon-check">
+                  <f:setPropertyActionListener target="#{FaturamentoListaControl.pedidoSelecionado}" value="#{pedido}" />
+               </p:commandButton>
+            </p:column>
+         </p:dataTable>
+
+      </div>
+
+      <p:dialog id="espelhoPedidoDialog" widgetVar="espelhoPedidoDialog" width="960" height="580">
+
+         <p:ajax event="close" listener="#{FaturamentoListaControl.limparPedidoSelecionado}" update=":formCorpo:listaPedidos" />
+
+         <p:panelGrid id="gridTopDialog" styleClass="semBorda">
+            <p:row>
+               <p:column>
+                  <p:commandButton value="fechar" icon="ui-icon-cancel" onclick="PF('espelhoPedidoDialog').hide();" />
+               </p:column>
+               <p:column>
+               </p:column>
+            </p:row>
+         </p:panelGrid>
+
+         <a:newLine />
+
+         <p:panelGrid styleClass="semBorda">
+
+            <p:row>
+               <p:column styleClass="pedInfoLabel">
+                  <p:outputLabel value="Cliente:" style="font-weight: bold;" />
+               </p:column>
+
+               <p:column styleClass="pedInfo">
+                  <p:inputText disabled="true" value="#{FaturamentoListaControl.pedidoSelecionado.cliente.nome}" style="width:98%;" />
+               </p:column>
+
+               <p:column styleClass="pedInforLabel">
+
+               </p:column>
+
+               <p:column styleClass="pedInfoLabel2">
+                  <p:outputLabel for="numeroPedido" value="Nº: " style="font-weight: bold;" />
+               </p:column>
+
+               <p:column colspan="2">
+                  <h:outputText id="numeroPedido" value="#{FaturamentoListaControl.pedidoSelecionado.id}" />
+               </p:column>
+
+            </p:row>
+            <p:row>
+               <p:column styleClass="pedInfoLabel">
+                  <p:outputLabel value="Vendedor:" style="font-weight: bold;" />
+               </p:column>
+
+               <p:column styleClass="pedInfo">
+                  <p:inputText disabled="true" value="#{FaturamentoListaControl.pedidoSelecionado.vendedor.pessoa.nome}" style="width:98%;" />
+               </p:column>
+
+               <p:column>
+               </p:column>
+
+               <p:column styleClass="pedInfoLabel2">
+                  <p:outputLabel for="dataEmissao" value="Emissão:" style="font-weight: bold;" />
+               </p:column>
+
+               <p:column colspan="2">
+                  <h:outputText id="dataEmissao" value="#{NegociacaoPedidoControl.pedido.data}">
+                     <f:convertDateTime pattern="dd/MM/yy" />
+                  </h:outputText>
+               </p:column>
+            </p:row>
+
+            <p:row>
+               <p:column styleClass="d">
+               </p:column>
+
+               <p:column style="width:2% !important;">
+               </p:column>
+
+               <p:column styleClass="pedInfoLabel">
+               </p:column>
+
+               <p:column styleClass="pedInfoLabel2">
+                  <p:outputLabel for="statusPedido" value="Status:" style="font-weight: bold;" />
+               </p:column>
+
+               <p:column>
+                  <h:outputText id="statusPedido" value="#{FaturamentoListaControl.pedidoSelecionado.status}" />
+               </p:column>
+            </p:row>
+
+            <p:row>
+               <p:column colspan="2">
+                  <h:outputText value="Formas de Pagamento" styleClass="faturamentoText" />
+               </p:column>
+            </p:row>
+
+
+            <p:row>
+               <p:column colspan="5">
+                  <p:dataTable id="formasPagamentoTable" value="#{FaturamentoListaControl.pedidoSelecionado.pagamento.formasPagamento}" var="formaPagamento" styleClass="dataTableStyle">
+
+                     <f:facet name="header">
+                        <h:outputText value="Resumo: Formas de Pagamento" />
+                     </f:facet>
+
+                     <p:column headerText="Vencimento" sortBy="#{formaPagamento.dataVencimento}" styleClass="d" style="width:15%;">
+                        <h:outputText value="#{formaPagamento.dataVencimento}">
+                           <f:convertDateTime pattern="dd/MM/yy" />
+                        </h:outputText>
+                     </p:column>
+
+                     <p:column headerText="Descrição" styleClass="e">
+                        <h:outputText value="#{formaPagamento.instrumentoRecebimento.descricao}" />
+                     </p:column>
+
+                     <p:column headerText="Valor" styleClass="d" style="width: 20%;">
+                        <h:outputText value="#{formaPagamento.valor}">
+                           <f:convertNumber pattern="###,##0.00" />
+                        </h:outputText>
+                     </p:column>
+
+                  </p:dataTable>
+
+               </p:column>
+
+            </p:row>
+
+            <p:row>
+               <p:column colspan="2">
+                  <h:outputText value="Itens" styleClass="faturamentoText" />
+               </p:column>
+            </p:row>
+
+            <p:row>
+
+               <p:column colspan="5">
+                  <p:dataTable id="itensTable" value="#{FaturamentoListaControl.pedidoSelecionado.itens}" var="item" styleClass="dataTableStyle" rowIndexVar="rowIndex">
+
+                     <p:column width="8%" headerText="Nº" styleClass="d">
+                        <h:outputText value="#{rowIndex + 1}" />
+                     </p:column>
+
+                     <p:column width="8%" styleClass="e" headerText="Código">
+                        <h:outputText value="#{item.produto.codigo}" />
+                     </p:column>
+
+                     <p:column styleClass="e" headerText="Descrição">
+                        <h:outputText value="#{item.produto.descricao}" />
+                     </p:column>
+
+                     <p:column width="9%" styleClass="d" headerText="Valor Unitário">
+                        <h:outputText value="#{item.valorUnitario}">
+                           <f:convertNumber pattern="###,##0.00" />
+                        </h:outputText>
+                     </p:column>
+
+                     <p:column width="8%" styleClass="d" headerText="Qtd.">
+                        <h:outputText value="#{item.quantidade}">
+                           <f:convertNumber pattern="###,##0.####" />
+                        </h:outputText>
+                     </p:column>
+
+                     <p:column width="8%" styleClass="d" headerText="Total">
+                        <h:outputText value="#{item.valorTotal}">
+                           <f:convertNumber pattern="###,##0.00" />
+                        </h:outputText>
+                     </p:column>
+
+                  </p:dataTable>
+               </p:column>
+
+            </p:row>
+
+         </p:panelGrid>
+
+      </p:dialog>
+
+   </ui:define>
+</ui:composition>

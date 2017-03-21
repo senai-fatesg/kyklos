@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+
+   <ui:define name="cabecalho">
+      <style>
+.ui-autocomplete-input {
+	width: 402px !important;
+}
+</style>
+   </ui:define>
+
+   <ui:define name="corpo">
+      <div class="screenHeader">
+         <p:panelGrid id="gridTop" styleClass="semBorda">
+            <p:row>
+               <p:column>
+                  <p:commandButton value="Salvar" actionListener="#{PainelEmpresaControl.salvarDadosEmpresa}" icon="ui-icon-disk" update="@all" />
+               </p:column>
+            </p:row>
+         </p:panelGrid>
+      </div>
+
+      <div class="contentField">
+
+         <p:tabView id="tabviewPainelEmpresa">
+
+            <p:tab id="tab1" title="Dados Gerais">
+
+               <p:panel id="panelPessoaJuridica" header="Pessoa Jurídica">
+                  <a:field label="CNPJ" width="130px">
+                     <p:inputText value="#{PainelEmpresaControl.empresaCliente.pessoa.cpfCnpj}" style="width:130px;" />
+                  </a:field>
+                  <a:field label="UF" spaceLeft="15px" width="170px">
+                     <p:selectOneMenu value="#{PainelEmpresaControl.empresaCliente.pessoa.municipio.uf}" style="width:170px;">
+                        <f:selectItem itemLabel="" itemValue="" />
+                        <f:selectItems value="#{PainelEmpresaControl.ufs}" />
+                     </p:selectOneMenu>
+                  </a:field>
+                  <a:field spaceLeft="15px" width="110px">
+                     <p:commandButton id="btnConsultarPessoa" value="Consultar" icon="ui-icon-search" style="margin:0; width:110px" actionListener="#{PainelEmpresaControl.consultarDadosEmpresa}" update="@all" />
+                  </a:field>
+                  <a:newLine />
+                  <a:field label="Razão Social" width="431px">
+                     <p:inputText value="#{PainelEmpresaControl.empresaCliente.pessoa.nome}" style="width:431px;" />
+                  </a:field>
+                  <a:newLine />
+                  <a:field label="Nome Fantasia" width="431px">
+                     <p:inputText value="#{PainelEmpresaControl.empresaCliente.pessoa.nomeFantasia}" style="width:431px;" />
+                  </a:field>
+                  <a:newLine />
+                  <a:field label="Inscrição Estadual" width="208px">
+                     <p:inputText id="inscricaoEstadual" value="#{PainelEmpresaControl.empresaCliente.pessoa.inscricaoEstadual}" style="width:208px;" />
+                  </a:field>
+                  <a:field label="Inscrição Municipal" spaceLeft="15px" width="208px">
+                     <p:inputText id="inscricaoMunicipal" value="#{PainelEmpresaControl.empresaCliente.pessoa.inscricaoMunicipal}" style="width:208px;" />
+                  </a:field>
+                  <a:newLine />
+               </p:panel>
+
+               <p:panel id="panelEndereco" header="Endereço">
+                  <a:field label="CEP" width="108px">
+                     <p:inputText id="cep" value="#{PainelEmpresaControl.empresaCliente.pessoa.cep}" style="width:108px;" />
+                  </a:field>
+                  <a:field spaceLeft="15px">
+                     <p:commandButton id="btnConsultarCep" value="Consultar" icon="ui-icon-search" style="margin:0;" actionListener="#{PainelEmpresaControl.consultarCep}" update=":formCorpo:tabviewPainelEmpresa:panelEndereco" />
+                  </a:field>
+                  <a:newLine />
+                  <a:field label="Logradouro" width="366px">
+                     <p:inputText id="logradouro" value="#{PainelEmpresaControl.empresaCliente.pessoa.logradouro}" style="width: 366px;" />
+                  </a:field>
+                  <a:field label="Número" spaceLeft="15px" width="50px">
+                     <p:inputText id="numero" value="#{PainelEmpresaControl.empresaCliente.pessoa.numero}" style="width:50px" />
+                  </a:field>
+                  <a:newLine />
+                  <a:field label="Complemento" width="208px">
+                     <p:inputText id="complemento" value="#{PainelEmpresaControl.empresaCliente.pessoa.complemento}" style="width:208px;" />
+                  </a:field>
+                  <a:field label="Bairro" spaceLeft="15px" width="208">
+                     <p:inputText id="bairro" value="#{PainelEmpresaControl.empresaCliente.pessoa.bairro}" style="width:208px;" />
+                  </a:field>
+                  <a:newLine />
+                  <a:field label="Municipio" for="consParceiro" width="431px">
+                     <p:autoComplete id="dd" dropdown="true" scrollHeight="180" value="#{PainelEmpresaControl.empresaCliente.pessoa.municipio}" var="m" completeMethod="#{PainelEmpresaControl.completeMunicipio}" converter="objectConverter" itemLabel="#{m.descricao}, #{m.uf}" itemValue="#{m}" placeholder="Goiânia, GO" forceSelection="true">
+                        <p:column>
+                           <h:outputText value="#{m.descricao}, #{m.uf}" />
+                        </p:column>
+                     </p:autoComplete>
+                  </a:field>
+                  <a:newLine />
+               </p:panel>
+
+               <p:panel id="panelContato" header="Contato">
+                  <a:field label="Telefone" width="134px">
+                     <p:inputText id="telefone" value="#{PainelEmpresaControl.empresaCliente.pessoa.telefone}" style="width:134px" />
+                  </a:field>
+                  <a:field label="Celular" spaceLeft="15px" width="134px">
+                     <p:inputText id="celular" value="#{PainelEmpresaControl.empresaCliente.pessoa.celular}" style="width:134px" />
+                  </a:field>
+                  <a:field label="Fax" spaceLeft="15px" width="133px">
+                     <p:inputText id="fax" value="#{PainelEmpresaControl.empresaCliente.pessoa.fax}" style="width:133px" />
+                  </a:field>
+                  <a:newLine />
+                  <a:field label="Email" width="431px">
+                     <p:inputText id="email" value="#{PainelEmpresaControl.empresaCliente.pessoa.email}" style="width:431px;" />
+                  </a:field>
+                  <a:newLine />
+               </p:panel>
+
+            </p:tab>
+
+            <p:tab id="tab2" title="Dados Fiscais">
+               <p:panel id="crtPanel">
+
+                  <a:field label="CNAE">
+                     <p:inputText value="#{PainelEmpresaControl.empresaCliente.cnae}" />
+                  </a:field>
+
+                  <a:field label="Equiparação Contribuinte" spaceLeft="15px">
+                     <p:selectOneMenu value="#{PainelEmpresaControl.empresaCliente.equiparacao}" style="width:450px;">
+                        <f:selectItems value="#{PainelEmpresaControl.equiparacoesContribuinte}" />
+                     </p:selectOneMenu>
+                  </a:field>
+                  <a:newLine /><a:newLine />
+
+                  <a:field label="CRT">
+                     <p:selectOneButton value="#{PainelEmpresaControl.empresaCliente.crt}">
+                        <f:selectItems value="#{PainelEmpresaControl.CRTs}" />
+                     </p:selectOneButton>
+                  </a:field>
+                  <a:newLine /><a:newLine />
+
+                  <a:field label="Possui Regime Especial?">
+                     <p:selectBooleanButton id="regimeEspecialBooleanButton" value="#{PainelEmpresaControl.possuiRegimeEspecial}" onLabel="Sim" offLabel="Não" style="width:60px" />
+                  </a:field>
+                  <a:newLine /><a:newLine />
+
+                  <a:field label="Regimes Especiais">
+                     <p:selectOneMenu value="#{PainelEmpresaControl.regimeEspecialSelecionado}" style="width:600px;">
+                        <f:selectItem itemLabel="" itemValue="" />
+                        <f:selectItems value="#{PainelEmpresaControl.regimesEspeciais}" />
+                     </p:selectOneMenu>
+                  </a:field>
+
+                  <a:field spaceLeft="15px">
+                     <p:commandButton value="Adicionar Regime Especial" icon="ui-icon-plusthick" actionListener="#{PainelEmpresaControl.adicionarRegimeEspecial}" update="regimeEspecialTable" />
+                  </a:field>
+                  <a:newLine /><a:newLine />
+                  
+                  <p:dataTable id="regimeEspecialTable" value="#{PainelEmpresaControl.empresaCliente.regimesEspeciais}" var="re" rendered="#{PainelEmpresaControl.possuiRegimeEspecial == true}">
+                     <p:column headerText="Descrição">
+                        <h:outputText value="#{re.regimeEspecial.descricao}" />                  
+                     </p:column>
+                  </p:dataTable>
+               </p:panel>
+               <a:newLine />
+               
+               <p:panel id="parametroPanel">
+                  <p:panelGrid id="parametroEmpresaGrid" styleClass="semBorda">
+
+                     <p:row>
+                        <p:column>
+                           <h:outputText value="Chave" />
+                           <a:newLine />
+                           <p:inputText id="chaveInput" value="#{PainelEmpresaControl.parametroEmpresa.chave}" />
+                        </p:column>
+
+                        <p:column>
+                           <h:outputText value="Valor" />
+                           <a:newLine />
+                           <p:inputText id="valorInput" value="#{PainelEmpresaControl.parametroEmpresa.valor}" />
+                        </p:column>
+
+                        <p:column rendered="#{PainelEmpresaControl.parametroEmpresa.id == null}">
+                           <a:newLine />
+                           <p:commandButton value="Inserir Parâmetro" icon="ui-icon-plusthick" update="formCorpo:tabviewPainelEmpresa:parametroPanel" actionListener="#{PainelEmpresaControl.salvarParametroEmpresa}" />
+                        </p:column>
+
+                        <p:column rendered="#{PainelEmpresaControl.parametroEmpresa.id != null}">
+                           <a:newLine />
+                           <p:commandButton value="Salvar Alteração" icon="ui-icon-disk" update="formCorpo:tabviewPainelEmpresa:parametroPanel" actionListener="#{PainelEmpresaControl.salvarParametroEmpresa}" />
+                        </p:column>
+
+                        <p:column>
+                           <a:newLine />
+                           <p:commandButton value="Limpar" icon="ui-icon-arrowrefresh-1-n" update="formCorpo:tabviewPainelEmpresa:parametroPanel" actionListener="#{PainelEmpresaControl.limparParametroEmpresa}" />
+                        </p:column>
+                     </p:row>
+
+                  </p:panelGrid>
+
+                  <a:newLine />
+                  <p:dataTable id="parametrosEmpresaTable" var="parametroEmpresa" value="#{PainelEmpresaControl.listaParametroEmpresa}" selection="#{PainelEmpresaControl.parametroEmpresaSelecionado}" rowKey="#{parametroEmpresa.id}" selectionMode="single">
+
+                     <p:ajax event="rowSelect" update="formCorpo:tabviewPainelEmpresa:parametroPanel" listener="#{PainelEmpresaControl.selecionarParametroEmpresa}" />
+
+                     <f:facet name="header">
+                        <p:outputLabel value="Parâmetros da Empresa" />
+                     </f:facet>
+
+                     <p:column headerText="Chave">
+                        <h:outputText value="#{parametroEmpresa.chave}" />
+                     </p:column>
+
+                     <p:column headerText="Valor">
+                        <h:outputText value="#{parametroEmpresa.valor}" />
+                     </p:column>
+
+                     <p:column width="8%" styleClass="c" headerText="Opções">
+                        <p:commandButton actionListener="#{PainelEmpresaControl.removerParametroEmpresa(parametroEmpresa)}" icon="ui-icon-trash" update="formCorpo:tabviewPainelEmpresa:parametroPanel" />
+                     </p:column>
+
+
+                  </p:dataTable>
+               </p:panel>
+
+            </p:tab>
+
+         </p:tabView>
+
+      </div>
+
+   </ui:define>
+</ui:composition>

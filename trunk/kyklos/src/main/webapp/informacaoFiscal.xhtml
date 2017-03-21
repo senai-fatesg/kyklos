@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+	<ui:define name="cabecalho">
+		<style>
+.ui-autocomplete-input {
+	width: 232px !important;
+}
+</style>
+	</ui:define>
+	<ui:define name="corpo">
+
+		<div class="screenHeader"></div>
+
+		<div class="contentField">
+
+			<p:panelGrid id="informacaoFiscalGrid" styleClass="semBorda">
+
+				<p:row>
+					<p:column>
+
+						<h:outputText value="Informações Fiscais" styleClass="faturamentoText" />
+
+					</p:column>
+
+					<p:column colspan="4">
+
+						<p:commandButton value="Buscar" icon="ui-icon-search" actionListener="#{InformacaoFiscalControl.listarInformacoesFiscais}" update=":formCorpo:informacoesFiscaisTable" style="width:150px;" />
+
+						<p:spacer width="20px" />
+						<p:commandButton id="salvarInformacaoFiscalButton" icon="ui-icon-disk" value="Salvar" actionListener="#{InformacaoFiscalControl.salvarInformacoesFiscais}" rendered="#{not InformacaoFiscalControl.modoEdicao}"
+							update=":formCorpo:informacaoFiscalGrid" style="width:150px;" />
+
+						<p:commandButton id="salvarAlteracoesInformacaoFiscalButton" icon="ui-icon-disk" value="Salvar Alterações" actionListener="#{InformacaoFiscalControl.editarInformacoesFiscais}" rendered="#{InformacaoFiscalControl.modoEdicao}" update=":formCorpo"
+							style="width:150px;" />
+
+						<p:spacer width="20px" />
+						<p:commandButton id="limparInformacaoFiscalButton" value="Limpar" update=":formCorpo:informacaoFiscalGrid" actionListener="#{InformacaoFiscalControl.limparInformacoesFiscais}" style="width:150px;" />
+
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column>
+
+						<p:outputLabel value="Produto: " />
+						<a:newLine />
+						<p:autoComplete id="consultarProduto" size="20" converter="objectConverter" value="#{InformacaoFiscalControl.informacaoFiscal.produto}" var="p" itemValue="#{p}" itemLabel="#{p.descricao}"
+							completeMethod="#{InformacaoFiscalControl.completeProduto}" placeholder="Produto (Nome/Código)" minQueryLength="3" dropdown="true">
+
+							<p:column>
+								<p:outputLabel value="#{p.codigo} - #{p.descricao}" />
+							</p:column>
+
+						</p:autoComplete>
+
+					</p:column>
+
+					<p:column>
+
+						<p:outputLabel value="Grupo de Diferença Social: " />
+						<a:newLine />
+						<p:autoComplete id="consultarGrupoDiferencaSocial" size="20" converter="objectConverter" value="#{InformacaoFiscalControl.informacaoFiscal.grupoDiferencaFiscal}" var="gdf" itemValue="#{gdf}" itemLabel="#{gdf.descricao}"
+							completeMethod="#{InformacaoFiscalControl.completeGrupoDiferencaFiscal}" dropdown="true" placeholder="Grupo Diferenca Fiscal (Descrição)">
+
+							<p:column>
+								<p:outputLabel value="#{gdf.descricao}" />
+							</p:column>
+
+						</p:autoComplete>
+
+					</p:column>
+
+					<p:column>
+
+						<p:outputLabel value="CFOP: " />
+						<a:newLine />
+						<p:autoComplete id="consultarCfop" size="20" converter="objectConverter" value="#{InformacaoFiscalControl.informacaoFiscal.cfop}" var="cfop" itemValue="#{cfop}" itemLabel="#{cfop.descricao}"
+							completeMethod="#{InformacaoFiscalControl.completeCfop}" dropdown="true" placeholder="CFOP (Numero)">
+
+							<p:column>
+								<p:outputLabel value="#{cfop.cfop} - #{cfop.descricao}" />
+							</p:column>
+
+						</p:autoComplete>
+
+					</p:column>
+
+					<p:column>
+
+						<h:outputText value="Contribuinte?" />
+						<a:newLine />
+						<p:selectBooleanButton offLabel="Não" onLabel="Sim" value="#{InformacaoFiscalControl.informacaoFiscal.contribuinte}" style="width:80px;" />
+
+					</p:column>
+
+				</p:row>
+
+				<p:row>
+					<p:column>
+
+						<p:outputLabel value="UF de Origem: " />
+						<a:newLine />
+						<p:selectOneMenu value="#{InformacaoFiscalControl.informacaoFiscal.ufOrigem}" style="width: 268px;">
+							<f:selectItem itemLabel="" itemValue="" />
+							<f:selectItems value="#{InformacaoFiscalControl.ufs}" />
+						</p:selectOneMenu>
+
+					</p:column>
+
+					<p:column>
+
+						<p:outputLabel value="UF de Destino: " />
+						<a:newLine />
+						<p:selectOneMenu value="#{InformacaoFiscalControl.informacaoFiscal.ufDestino}" style="width: 268px;">
+							<f:selectItem itemLabel="" itemValue="" />
+							<f:selectItems value="#{InformacaoFiscalControl.ufs}" />
+						</p:selectOneMenu>
+
+					</p:column>
+
+					<p:column>
+
+						<p:outputLabel value="NCM: " />
+						<a:newLine />
+						<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.ncm}" placeholder="Nº NCM" style="width: 260px;" />
+
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column rendered="#{InformacaoFiscalControl.crtEmpresaCliente == 3}">
+						<p:fieldset legend="ICMS" style="margin-bottom:20px">
+
+							<p:panelGrid id="icmsGrid" styleClass="semBorda">
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="CST: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.cstIcms}" placeholder="0" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Alíquota: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.aliquotaIcms}" placeholder="0.00" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Base de Cálculo: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.baseCalculoIcms}" placeholder="0.00" />
+									</p:column>
+								</p:row>
+
+							</p:panelGrid>
+
+						</p:fieldset>
+
+					</p:column>
+					<p:column rendered="#{InformacaoFiscalControl.crtEmpresaCliente != 3}">
+						<p:fieldset legend="Código Situação Tributária" style="margin-bottom:20px">
+
+							<p:panelGrid id="csosnGrid" styleClass="semBorda">
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="CSO" />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.csosn}" placeholder="0" />
+									</p:column>
+								</p:row>
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Alíquota: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.aliquotaIcms}" placeholder="0.00" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Base de Cálculo: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.porcentagemBaseCalculoIcms}" placeholder="0.00" />
+									</p:column>
+								</p:row>
+							</p:panelGrid>
+						</p:fieldset>
+					</p:column>
+					<p:column>
+						<p:fieldset legend="IPI" style="margin-bottom:20px">
+
+							<p:panelGrid id="ipiGrid" styleClass="semBorda">
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="CST: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.cstIpi}" placeholder="0" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Alíquota: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.aliquotaIpi}" placeholder="0.00" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Base de Cálculo: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.porcentagemBaseCalculoIpi}" placeholder="0.00" />
+									</p:column>
+								</p:row>
+
+							</p:panelGrid>
+
+						</p:fieldset>
+
+					</p:column>
+
+					<p:column>
+
+						<p:fieldset legend="cofins" style="margin-bottom:20px">
+
+							<p:panelGrid id="cofinsGrid" styleClass="semBorda">
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="CST: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.cstCofins}" placeholder="0" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Alíquota: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.aliquotaCofins}" placeholder="0.00" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Base de Cálculo: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.porcentagemBaseCalculoCofins}" placeholder="0.00" />
+									</p:column>
+								</p:row>
+
+							</p:panelGrid>
+						</p:fieldset>
+
+					</p:column>
+
+					<p:column>
+
+						<p:fieldset legend="PIS" style="margin-bottom:20px">
+
+							<p:panelGrid id="pisGrid" styleClass="semBorda">
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="CST: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.cstPis}" placeholder="0" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Alíquota: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.aliquotaPis}" placeholder="0.00" />
+									</p:column>
+								</p:row>
+
+								<p:row>
+									<p:column>
+										<p:outputLabel value="Base de Cálculo: " />
+									</p:column>
+									<p:column>
+										<p:inputText value="#{InformacaoFiscalControl.informacaoFiscal.porcentagemBaseCalculoPis}" placeholder="0.00" />
+									</p:column>
+								</p:row>
+
+							</p:panelGrid>
+
+						</p:fieldset>
+
+					</p:column>
+				</p:row>
+
+			</p:panelGrid>
+
+			<p:dataTable id="informacoesFiscaisTable" value="#{InformacaoFiscalControl.informacoesFiscais}" var="informacaoFiscal" selectionMode="single" rowKey="#{informacaoFiscal}" selection="#{InformacaoFiscalControl.informacaoFiscalSelecionada}">
+
+				<p:ajax event="rowSelect" listener="#{InformacaoFiscalControl.selecionarInformacaoFiscal}" update=":formCorpo:informacaoFiscalGrid" />
+
+				<p:column headerText="CFOP" styleClass="c" style="width:8%;">
+					<h:outputText value="#{informacaoFiscal.cfop.cfop}" />
+				</p:column>
+
+				<p:column headerText="Produto" styleClass="c">
+					<h:outputText value="#{informacaoFiscal.produto.codigo} - #{informacaoFiscal.produto.descricao}" />
+				</p:column>
+
+				<p:column headerText="UF" styleClass="c" style="width:10%;">
+					<h:outputText value="Origem: " style="font-weight: bold;" />
+					<h:outputText value="#{informacaoFiscal.ufOrigem}" />
+					<a:newLine />
+					<h:outputText value="Destino: " style="font-weight: bold;" />
+					<h:outputText value="#{informacaoFiscal.ufDestino}" />
+
+				</p:column>
+
+				<p:column headerText="Contribuinte?" styleClass="c" style="width:8%;">
+					<h:outputText value="Sim" rendered="#{informacaoFiscal.contribuinte == true}" />
+					<h:outputText value="Não" rendered="#{informacaoFiscal.contribuinte == false}" />
+				</p:column>
+
+				<p:column headerText="NCM" styleClass="c" style="width:8%;">
+					<h:outputText value="#{informacaoFiscal.ncm}" />
+				</p:column>
+
+				<p:column headerText="CSOSN" styleClass="c" rendered="#{InformacaoFiscalControl.crtEmpresaCliente == 1}">
+					<p:outputLabel value="CSOSN: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.csosn}" />
+					<a:newLine />
+					<p:outputLabel value="Alíquota: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.aliquotaIcms}" />
+					<a:newLine />
+					<p:outputLabel value="Base de Cálculo: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.porcentagemBaseCalculoIcms}" />
+				</p:column>
+
+				<p:column headerText="ICMS" styleClass="c" rendered="#{InformacaoFiscalControl.crtEmpresaCliente != 1}">
+					<p:outputLabel value="CST: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.cstIcms}" />
+					<a:newLine />
+					<p:outputLabel value="Alíquota: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.aliquotaIcms}" />
+					<a:newLine />
+					<p:outputLabel value="Base de Cálculo: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.porcentagemBaseCalculoIcms}" />
+				</p:column>
+
+				<p:column headerText="IPI" styleClass="c">
+					<p:outputLabel value="CST: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.cstIpi}" />
+					<a:newLine />
+					<p:outputLabel value="Alíquota: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.aliquotaIpi}" />
+					<a:newLine />
+					<p:outputLabel value="Base de Cálculo: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.porcentagemBaseCalculoIpi}" />
+				</p:column>
+
+				<p:column headerText="Cofins" styleClass="c">
+					<p:outputLabel value="CST: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.cstCofins}" />
+					<a:newLine />
+					<p:outputLabel value="Alíquota: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.aliquotaCofins}" />
+					<a:newLine />
+					<p:outputLabel value="Base de Cálculo: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.porcentagemBaseCalculoCofins}" />
+				</p:column>
+
+				<p:column headerText="PIS" styleClass="c">
+					<p:outputLabel value="CST: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.cstPis}" />
+					<a:newLine />
+					<p:outputLabel value="Alíquota: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.aliquotaPis}" />
+					<a:newLine />
+					<p:outputLabel value="Base de Cálculo: " style="font-weight:bold;" />
+					<p:outputLabel value="#{informacaoFiscal.porcentagemBaseCalculoPis}" />
+				</p:column>
+
+			</p:dataTable>
+
+		</div>
+
+	</ui:define>
+</ui:composition>

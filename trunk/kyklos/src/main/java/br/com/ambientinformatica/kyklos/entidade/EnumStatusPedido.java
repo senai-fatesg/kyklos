@@ -5,6 +5,7 @@ import br.com.ambientinformatica.util.IEnum;
 public enum EnumStatusPedido implements IEnum{
 
    ABERTO("Aberto"),
+   FINALIZADO("Finalizado"),
    FATURADO("Faturado"),
    ENTREGA_AUTORIZADA("Entrega Autorizada"),
    ENTREGUE("Entregue"),

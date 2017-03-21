@@ -160,7 +160,7 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   line-height: 18px;
-  color: white;
+  color: #333333;
   background-color: #ffffff;
 }
 
@@ -480,7 +480,6 @@ h2 small {
 h3 {
   font-size: 18px;
   line-height: 27px;
-  color: white;
 }
 
 h3 small {

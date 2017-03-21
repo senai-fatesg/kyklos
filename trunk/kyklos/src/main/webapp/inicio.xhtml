@@ -1,44 +1,63 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ui:composition template="template.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:a="http://www.ambientinformatica.com.br/jsf2"
-	xmlns:p="http://primefaces.org/ui">
-	<ui:define name="corpo">
+<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+   <ui:define name="cabecalho">
 
-<h:head>
-	<link href="css/styles.css" type="text/css" rel="stylesheet" />
-</h:head>
-		<p:fieldset>
- 			<p:panel id="pnl" header="Acesso Rápido">
-        		<h:panelGrid columns="5" cellpadding="5" >
-        			<p:commandLink action="pedidoLista?faces-redirect=true" title="Pedido" >
-    					<p:graphicImage value="img/pedido.png" width="80"/>
-    					<div align="center">Pedido</div>
-    				</p:commandLink>
-    				
-            		
-            		<p:commandLink action="produto?faces-redirect=true" title="Resíduo" >
-    					<p:graphicImage value="img/produto.png" width="80"/>
-    					<div align="center">Resíduo</div>
-    				</p:commandLink>
-    				
-    				<p:commandLink action="estoque?faces-redirect=true" title="Estoque" >
-    					<p:graphicImage value="img/estoque.png" width="80"/>
-    					<div align="center">Estoque</div>
-    				</p:commandLink>
-    			
-    				<p:commandLink action="pessoa?faces-redirect=true" title="Pessoa" >
-    					<p:graphicImage value="img/pessoa.png" width="80"/>
-    					<div align="center">Pessoa</div>
-    				</p:commandLink>
-    			</h:panelGrid>
-        	</p:panel>
-        	
-   		</p:fieldset>
-   		
+   </ui:define>
+   <ui:define name="corpo">
 
-	</ui:define>
+      <div class="screenHeader">
+         <h:outputText value="Home" styleClass="pageHeader" />
+      </div>
+
+      <div class="contentField">
+         <p:panelGrid styleClass="titlePanelGrid">
+            <p:row>
+               <p:column style="border-right: 1px solid #B6D4EC !important; width:33.33%; padding-right:1.5%;">
+                  <p:commandButton value="Pedidos" styleClass="titleButton" disabled="true" />
+               </p:column>
+
+               <p:column style="width:33.33%; padding-right:1.5%;">
+                  <p:commandButton value="Cadastros" styleClass="titleButton" disabled="true" />
+               </p:column>
+
+               <p:column style="border-left: 1px solid #B6D4EC !important; width:33.33%; padding-right:1.5%;">
+                  <p:commandButton value="Administração" styleClass="titleButton" disabled="true" />
+               </p:column>
+            </p:row>
+            <p:row>
+               <p:column style="border-right: 1px solid #B6D4EC !important; padding-left:3%;">
+                  <p:link value="Faturamento" href="faturamentoLista.xhtml" styleClass="titleLink" />
+                  <a:newLine />
+                  <p:link value="Novo Pedido" href="pedido.xhtml" styleClass="titleLink" />
+                  <a:newLine />
+                  <p:link value="Consultar Pedidos" href="pedidoLista.xhtml" styleClass="titleLink" />
+                  <a:newLine />
+                  <p:link value="Importar Pedidos" href="importarPedido.xhtml" styleClass="titleLink" />
+               </p:column>
+               
+               <p:column style="padding-left:3%;">
+                  <p:link value="Cadastro de Pessoa" href="pessoa.xhtml" styleClass="titleLink" />
+                  <a:newLine />
+                  <p:link value="Cadastro de Produto" href="produto.xhtml" styleClass="titleLink" />
+                  <a:newLine />
+                  <p:link value="Cadastro de Estoque" href="estoque.xhtml" styleClass="titleLink" />
+                  <a:newLine />
+                  <p:link value="Cadastro de Conta Corrente" href="contaCorrente.xhtml" styleClass="titleLink" />
+                  <a:newLine />
+                  <p:link value="Cadastro de Transportadora" href="transportadora.xhtml" styleClass="titleLink" />
+               </p:column>
+               
+               <p:column style="border-left: 1px solid #B6D4EC !important; padding-left:3%;">
+                  <p:link value="Usuário" href="usuario.xhtml" styleClass="titleLink" />
+                  <a:newLine />
+                  <p:link value="Painel da Empresa" href="painelEmpresa.xhtml" styleClass="titleLink" />
+                  <a:newLine />
+                  <p:link value="Informações Fiscais" href="informacaoFiscal.xhtml" styleClass="titleLink" />
+               </p:column>
+            </p:row>
+         </p:panelGrid>
+      </div>
+
+   </ui:define>
 </ui:composition>

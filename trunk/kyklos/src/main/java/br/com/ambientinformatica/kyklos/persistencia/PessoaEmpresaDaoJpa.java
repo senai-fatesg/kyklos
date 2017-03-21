@@ -13,16 +13,16 @@ import br.com.ambientinformatica.kyklos.entidade.EmpresaCliente;
 import br.com.ambientinformatica.kyklos.entidade.PessoaEmpresa;
 
 @Repository("pessoaEmpresaDao")
-public class PessoaEmpresaDaoJpa extends PersistenciaJpa<PessoaEmpresa> implements PessoaEmpresaDao{
+public class PessoaEmpresaDaoJpa extends PersistenciaJpa<PessoaEmpresa> implements PessoaEmpresaDao {
 
    private static final long serialVersionUID = 1L;
 
    public PessoaEmpresa consultarPorCpfOuCnpj(Pessoa pessoa) {
-      try{
+      try {
          Query query = em.createQuery("select pe from PessoaEmpresa pe where pe.pessoa.cpfCnpj = :cpfCnpj");
          query.setParameter("cpfCnpj", pessoa.getCpfCnpj());
-         return (PessoaEmpresa) query.getSingleResult();
-      }catch(NoResultException nre){
+         return (PessoaEmpresa) query.getResultList().get(0);
+      } catch (NoResultException nre) {
          return null;
       }
    }
@@ -35,16 +35,17 @@ public class PessoaEmpresaDaoJpa extends PersistenciaJpa<PessoaEmpresa> implemen
    }
 
    public PessoaEmpresa consultarPorPessoaAndEmpresa(Pessoa pessoa, EmpresaCliente empresaCliente) {
-      try{
+      try {
          Query query = em.createQuery("select pe from PessoaEmpresa pe where pe.empresa = :empresaCliente and pe.pessoa = :pessoa");
          query.setParameter("empresaCliente", empresaCliente);
          query.setParameter("pessoa", pessoa);
          return (PessoaEmpresa) query.getSingleResult();
-      }catch(NoResultException nre ){
+      } catch (NoResultException nre) {
          return null;
       }
+
    }
-   
+
    @SuppressWarnings("unchecked")
    @Override
    public List<PessoaEmpresa> consultarEmpresasVinculadas(EmpresaCliente empresaCliente) {
