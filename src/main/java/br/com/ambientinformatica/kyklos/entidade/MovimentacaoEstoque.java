@@ -25,7 +25,7 @@ public class MovimentacaoEstoque {
    @ManyToOne(optional=false)
    private Produto produto;
    
-   @Column(nullable=false)
+   @Column(precision=10,scale=2, nullable=false)
    private BigDecimal quantidade;
    
    @Column(nullable=false)
@@ -51,15 +51,19 @@ public class MovimentacaoEstoque {
    }
 
    public BigDecimal getQuantidade() {
-      return quantidade;
+      return quantidade.setScale(2, BigDecimal.ROUND_HALF_EVEN);
    }
 
    public void setQuantidade(BigDecimal quantidade) {
-      this.quantidade = quantidade;
+      this.quantidade = quantidade.setScale(2, BigDecimal.ROUND_HALF_EVEN);
    }
 
    public Date getData() {
       return data;
+   }
+
+   public void setData(Date data) {
+      this.data = data;
    }
 
    public Usuario getUsuario() {

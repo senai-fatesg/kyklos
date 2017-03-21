@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.util.AmbientValidator;
 import br.com.ambientinformatica.util.Entidade;
 import br.com.ambientinformatica.util.UtilHash;
@@ -48,7 +50,8 @@ public class Usuario extends Entidade implements Serializable{
 
    private String senha;
 
-   private String nome;
+   @ManyToOne(optional=false)
+   private Pessoa pessoa;
 
    @Temporal(TemporalType.DATE)
    private Date dataAlteracaoSenha = new Date();
@@ -81,12 +84,12 @@ public class Usuario extends Entidade implements Serializable{
       this.senha = UtilHash.gerarStringHash(senha, Algoritimo.MD5);
    }
 
-   public String getNome() {
-      return nome;
+   public Pessoa getPessoa() {
+      return pessoa;
    }
 
-   public void setNome(String nome) {
-      this.nome = nome;
+   public void setPessoa(Pessoa pessoa) {
+      this.pessoa = pessoa;
    }
 
    public Date getDataAlteracaoSenha() {

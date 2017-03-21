@@ -43,7 +43,7 @@ public class Endereco extends Entidade implements Comparable<Endereco>, Serializ
 	@ManyToOne(optional=false)
 	private Municipio municipio;
 	
-	@Column(nullable=true)
+	@Column(nullable=false)
 	private String descricaoEndereco;
         
 	public String getEnderecoCompleto(){

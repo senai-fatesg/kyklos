@@ -4,10 +4,10 @@ import br.com.ambientinformatica.util.IEnum;
 
 public enum EnumTipoFrete implements IEnum{
 
+   SEM_FRETE(9, "Sem frete", "9"),
    EMITENTE(0, "Emitente", "0"),
    DESTINATARIO(1, "Destinatário", "1"),
-   TERCEIRO(2, "Por conta de terceiros", "2"),
-   SEM_FRETE(9, "Sem frete", "9");
+   TERCEIRO(2, "Por conta de terceiros", "2");
 
    private final int codigoNfe;
    private final String descricao;

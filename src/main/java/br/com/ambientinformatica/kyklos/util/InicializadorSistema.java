@@ -8,8 +8,10 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.kyklos.entidade.EnumPapelUsuario;
 import br.com.ambientinformatica.kyklos.entidade.Usuario;
+import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.UsuarioDao;
 import br.com.ambientinformatica.util.UtilLog;
 
@@ -19,6 +21,9 @@ public class InicializadorSistema {
    @Autowired
    private UsuarioDao usuarioDao;
 
+   @Autowired
+   private PessoaDao pessoaDao;
+   
    @PostConstruct
    public void iniciar(){
       inicializarUsuarioAdmin();
@@ -28,15 +33,20 @@ public class InicializadorSistema {
       try {
          List<Usuario> usuarios = usuarioDao.listar();
          if(usuarios.isEmpty()){
-            Usuario usu = new Usuario();
-            usu.setNome("admin");
-            usu.setLogin("admin@ambientinformatica.com.br");
-            usu.setAtivo(true);
-            usu.setSenhaNaoCriptografada("123456");
-            usu.addPapel(EnumPapelUsuario.ADMIN);
-            usu.addPapel(EnumPapelUsuario.USUARIO);
-            usuarioDao.incluir(usu);
-            UtilLog.getLog().info("*** USUÁRIO admin CRIADO com a senha 123456 ***");
+            Pessoa pessoa = new Pessoa();
+            pessoa.setNome("Admin");
+            pessoa.setEmail("admin@ambientinformatica.com.br");
+            pessoaDao.incluir(pessoa);
+            
+            Usuario usuario = new Usuario();
+            usuario.setLogin(pessoa.getEmail());
+            usuario.setAtivo(true);
+            usuario.setSenhaNaoCriptografada("123456");
+            usuario.addPapel(EnumPapelUsuario.ADMIN);
+            usuario.addPapel(EnumPapelUsuario.USUARIO);
+            usuario.setPessoa(pessoa);
+            usuarioDao.incluir(usuario);
+            UtilLog.getLog().info("*** USUÁRIO admin@ambientinformatica.com.br CRIADO com a senha 123456 ***");
          }
       } catch (Exception e) {
          UtilLog.getLog().error(e.getMessage(), e);

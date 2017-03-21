@@ -9,11 +9,18 @@ import br.com.ambientinformatica.kyklos.entidade.EmpresaCliente;
 import br.com.ambientinformatica.kyklos.entidade.EnumStatusPedido;
 import br.com.ambientinformatica.kyklos.entidade.Pedido;
 import br.com.ambientinformatica.kyklos.entidade.Vendedor;
+import br.com.ambientinformatica.kyklos.util.KyklosException;
 
 public interface PedidoDao extends Persistencia<Pedido>{
 
-   Pedido consultarPorNumero(EmpresaCliente empresa, String numeroPedido);
+   public Pedido consultarPorNumeroPedidoExterno(EmpresaCliente empresa, Long numeroPedidoExterno);
    
-   List<Pedido> listarPedidoPorAtributo(EmpresaCliente empresa, String numero, Date dataInicial, Date dataFinal, Pessoa cliente, Vendedor vendedor, List<EnumStatusPedido> statusPedidoSelecionados);
+   public List<Pedido> listarPedidosAFaturar(EmpresaCliente empresa, Long numero, Date dataInicial, Date dataFinal, Pessoa cliente, Vendedor vendedor, EnumStatusPedido statusDoPedido) throws KyklosException;
    
+   public List<Pedido> listarPedidosPorAtributo(EmpresaCliente empresa, Long numeroPedidoExterno, Date dataInicial, Date dataFinal, Pessoa cliente, Vendedor vendedor, List<EnumStatusPedido> statusPedidoSelecionados) throws KyklosException;
+
+   public Long consultarUltimoNumeroPedido(EmpresaCliente empresa);
+
+   public Pedido consultarPorNumeroPedido(EmpresaCliente empresa, Pedido pedido);
+
 }

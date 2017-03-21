@@ -1,44 +1,161 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:h="http://java.sun.com/jsf/html" 
-	xmlns:f="http://java.sun.com/jsf/core" 
-	xmlns:ui="http://java.sun.com/jsf/facelets" 
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:a="http://www.ambientinformatica.com.br/jsf2">
-
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:a="http://www.ambientinformatica.com.br/jsf2">
 <h:head>
-	<title>Kyklos</title>
-	<link href="css/styles.css" type="text/css" rel="stylesheet" />
-	<link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon" />
-	<link href="css/kyklos.css" type="text/css" rel="stylesheet" />
-	<link href="css/bootstrap.css" type="text/css" rel="stylesheet" />
-	<link href="css/bootstrap-responsive.css" type="text/css" rel="stylesheet" />
-	<script src="js/kyklos.js" />
-	<ui:insert name="cabecalho" />
+   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
+   <link href="css/pedido.css" rel="stylesheet" type="text/css" />
+   <ui:insert name="cabecalho" />
 </h:head>
+<h:body>
 
-<h:body style="margin: 0px;">
-	<div id="pagewrapper">
+   <h:form id="formCorpo">
 
-		<ui:include src="/menuTopo.xhtml"/>
+      <div id="mainStruct">
 
-		<h:form id="formCorpo">
-			<p:messages autoUpdate="true" closable="true" />
-			<ui:include src="/menuUsuario.xhtml"/>
+         <div id="header">
 
-			<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
-				<p:graphicImage url="imagens/ajax.gif" />
-			</p:dialog>
+            <div id="headerLeft">
+               <p:autoComplete id="autoCompleteEmpresa" styleClass="autoCompleteEmpresa" size="20" dropdown="true" rendered="#{usuarioLogadoControl.variasEmpresas}" converter="objectConverter" value="#{usuarioLogadoControl.empresaUsuario}" var="e" itemValue="#{e}" itemLabel="Empresa: #{e.empresa.pessoa.nome}" completeMethod="#{usuarioLogadoControl.completeEmpresa}">
+                  <p:ajax event="itemSelect" update="@all" />
+               </p:autoComplete>
+               <p:commandButton styleClass="headerButton" disabled="true" value="Empresa: #{usuarioLogadoControl.empresaUsuario.empresa.pessoa.nome}" rendered="#{!usuarioLogadoControl.variasEmpresas}" />
+            </div>
 
-			<div id="main-content" style="width: 100%">
-				<ui:insert name="corpo" />
-			</div>
+            <div id="headerRight">
+               <p:commandButton type="button" styleClass="headerButton" value="Usuário: #{usuarioLogadoControl.usuario.pessoa.nome}" onclick="PF('dialogMeuCadastro').show();" icon="ui-icon-person" />
+               <p:commandButton type="button" styleClass="headerButton" value="Sair" onclick="PF('confirmDialog').show();" icon="ui-icon-extlink" />
 
-			<!-- <ui:include src="/menuRodape.jspx"/>  -->
+               <p:confirmDialog header="Confirmação" message="Tem certeza que deseja sair?" severity="alert" widgetVar="confirmDialog" resizable="false">
 
-		</h:form>
-	</div>
+                  <p:commandButton value="Sim" actionListener="document.location.href='sair.jsp';" onclick="document.location.href='sair.jsp';" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+
+                  <p:commandButton value="Não" onclick="PF('confirmDialog').hide()" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+
+               </p:confirmDialog>
+            </div>
+
+         </div>
+
+         <div id="mainMenuDiv">
+
+            <h:form id="menuForm">
+               <p:commandButton id="mainMenuButton" value="Menu" styleClass="mainMenuButton" type="button" />
+               <p:tieredMenu overlay="true" trigger="mainMenuButton" my="left top" at="left bottom">
+                  <p:menuitem value="Início" icon="ui-icon-home" url="./inicio.xhtml" />
+                  <p:separator />
+                  <p:menuitem value="Faturamento" icon="ui-icon-print" url="faturamentoLista.xhtml" />
+                  <p:menuitem value="Info Fiscal" icon="ui-icon-folder-open" url="informacaoFiscal.xhtml" />
+                  <p:submenu label="Pedidos" icon="ui-icon-newwin">
+                     <p:menuitem value="Novo Pedido" icon="ui-icon-plus" url="./pedido.xhtml" />
+                     <p:menuitem value="Consultar Pedido" icon="ui-icon-search" url="./pedidoLista.xhtml" />
+                     <p:menuitem value="Importar Pedido" icon="ui-icon-arrowthickstop-1-w" url="./importarPedido.xhtml" />
+                  </p:submenu>
+                  <p:submenu label="Cadastros" icon="ui-icon-note">
+                     <p:menuitem value="Pessoa" ajax="false" icon="ui-icon-person" url="./pessoa.xhtml" />
+                     <p:menuitem value="Produto" ajax="false" icon="ui-icon-tag" url="./produto.xhtml" />
+                     <p:menuitem value="Estoque" ajax="false" icon="ui-icon-clipboard" url="./estoque.xhtml" />
+                     <p:menuitem value="Conta Corrente" ajax="false" icon="ui-icon-calculator" url="./contaCorrente.xhtml" />
+                     <p:menuitem value="Transportadora" ajax="false" icon="ui-icon-suitcase" url="./transportadora.xhtml" />
+                  </p:submenu>
+                  <p:submenu label="Administração" icon="ui-icon-gear">
+                     <p:menuitem value="Usuário" ajax="false" icon="ui-icon-person" url="./usuario.xhtml" />
+                     <p:menuitem value="Painel da Empresa" ajax="false" icon="ui-icon-gear" url="./painelEmpresa.xhtml" />
+                     <p:menuitem value="Informações Fiscais" ajax="false" icon="ui-icon-calculator" url="./informacaoFiscal.xhtml" />
+                  </p:submenu>
+               </p:tieredMenu>
+            </h:form>
+
+         </div>
+
+         <div id="content">
+            <p:growl id="growlSistema" autoUpdate="true" />
+            <ui:insert name="corpo" />
+            <p:dialog header="Meu Cadastro" widgetVar="dialogMeuCadastro" id="dialogMeuCadastro" showEffect="puff" hideEffect="scale" resizable="false">
+               <p:tabView>
+                  <p:tab title="Dados Gerais">
+
+                     <p:panelGrid id="meuCadastroGrid" styleClass="semBorda">
+                        <p:row>
+                           <p:column colspan="2">
+                              <p:outputLabel value="Usuário: " style="font-weight:bold;" />
+                              <h:outputText value="#{usuarioLogadoControl.usuario.login}" />
+                           </p:column>
+                        </p:row>
+                        <p:row>
+                           <p:column colspan="2">
+                              <p:outputLabel value="Nome: " style="font-weight:bold;" />
+                              <p:inputText value="#{usuarioLogadoControl.usuario.pessoa.nome}" />
+                           </p:column>
+                        </p:row>
+                        <p:row>
+                           <p:column>
+                              <p:outputLabel value="Data de Cadastro" style="font-weight:bold;" />
+                              <a:newLine />
+                              <p:outputLabel value="#{usuarioLogadoControl.usuario.dataCriacao}">
+                                 <f:convertDateTime pattern="dd/MM/yyyy" />
+                              </p:outputLabel>
+                           </p:column>
+
+                           <p:column>
+                              <p:outputLabel value="Último Acesso" style="font-weight:bold;" />
+                              <a:newLine />
+                              <p:outputLabel value="#{usuarioLogadoControl.usuario.dataUltimoAcesso}">
+                                 <f:convertDateTime pattern="dd/MM/yyyy" />
+                              </p:outputLabel>
+                           </p:column>
+                        </p:row>
+                        <p:row>
+                           <p:column styleClass="d">
+                              <p:commandButton value="Cancelar" onclick="PF('dialogMeuCadastro').hide();" />
+                           </p:column>
+                           <p:column colspan="2" styleClass="e">
+                              <p:commandButton value="Alterar" actionListener="#{usuarioLogadoControl.alterar}" onclick="PF('dialogMeuCadastro').hide();" />
+                           </p:column>
+                        </p:row>
+                     </p:panelGrid>
+
+                  </p:tab>
+
+                  <p:tab title="Redefinir Senha">
+
+                     <p:panelGrid id="changePasswordGrid" styleClass="semBorda">
+                        <p:row>
+                           <p:column colspan="2">
+                              <p:outputLabel value="Digite sua senha atual" style="font-weight:bold;" />
+                              <a:newLine />
+                              <p:password value="#{usuarioLogadoControl.senhaAtual}" style="width: 220px;" />
+                           </p:column>
+                        </p:row>
+                        <p:row>
+                           <p:column colspan="2">
+                              <p:outputLabel value="Digite sua nova senha" style="font-weight:bold;" />
+                              <a:newLine />
+                              <p:password value="#{usuarioLogadoControl.novaSenha}" style="width: 220px;" />
+                           </p:column>
+                        </p:row>
+                        <p:row>
+                           <p:column colspan="2">
+                              <p:outputLabel value="Confirme sua nova senha" style="font-weight:bold;" />
+                              <a:newLine />
+                              <p:password value="#{usuarioLogadoControl.confirmacaoNovaSenha}" style="width: 220px;" />
+                           </p:column>
+                        </p:row>
+                        <p:row>
+                           <p:column colspan="2" styleClass="c">
+                              <a:newLine />
+                              <p:commandButton value="Confirmar" actionListener="#{usuarioLogadoControl.alterarSenha}" onsuccess="PF('dialogChangePassword').hide();" />
+                           </p:column>
+                        </p:row>
+                     </p:panelGrid>
+
+                  </p:tab>
+
+               </p:tabView>
+
+            </p:dialog>
+         </div>
+      </div>
+   </h:form>
 </h:body>
 </html>

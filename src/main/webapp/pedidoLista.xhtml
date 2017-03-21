@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
    xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
 
    <ui:define name="corpo">
+
+      <div class="screenHeader">
+         <p:panelGrid id="gridTop" styleClass="semBorda">
+            <p:row>
+               <p:column>
+                  <p:commandButton class="cadastraButton" value="Novo Pedido" icon="ui-icon-plusthick" onclick="document.location.href='pedido.xhtml'" />
+               </p:column>
+               <p:column>
+               </p:column>
+               <p:column>
+               </p:column>
+               <p:column>
+               </p:column>
+            </p:row>
+         </p:panelGrid>
+      </div>
+
       <div class="contentField">
-  	
+
          <p:panel header="Buscar / Filtros" toggleable="true" id="filtrosjs" widgetVar="filtrosjs" toggleOrientation="vertical" style="border-radius:0px !important;">
-			<a:field>
-                 <p:commandButton class="cadastraButton" value="Novo Pedido" icon="ui-icon-plusthick" onclick="document.location.href='pedido.xhtml'" />
-            </a:field>
+
             <p:panelGrid style="width:100%; text-align: center;" styleClass="semBorda">
                <p:row>
                   <p:column colspan="2" style="text-align: right; width:60%">
-                     <p:inputText id="textBox" class="searchBar" onkeyup="PF('pedidos').filter()" placeholder="Pedido (Número)">
-                        <f:ajax event="change" actionListener="#{NegociacaoPedidoControl.listarPedidos}" update="form" />
-                     </p:inputText>
+                     <p:inputText id="textBox" class="searchBar" placeholder="Pedido (Número)" value="#{NegociacaoPedidoControl.numeroPedidoExternoConsulta}"/>
                   </p:column>
                   <p:column colspan="2" style="text-align:left;">
-                     <p:commandButton class="listaButton" actionListener="#{NegociacaoPedidoControl.listarPedidos}" update="form, textBox" ajax="false" value="Negociação" icon="ui-icon-search" />
+                     <p:commandButton class="listaButton" actionListener="#{NegociacaoPedidoControl.listarPedidos}" update="tablePedidos" icon="ui-icon-search" />
                   </p:column>
                </p:row>
 
@@ -31,34 +45,29 @@
                   </p:column>
 
                   <p:column>
-                     <p:outputLabel for="consCliente" value="Cliente" />
-                     <a:newLine />
-                     <p:autoComplete id="consCliente" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.cliente}" var="c" itemValue="#{c}" itemLabel="#{c.nome}"
-                        completeMethod="#{NegociacaoPedidoControl.completeCliente}" placeholder="Adicionar Cliente (Nome/Código)" minQueryLength="3" style="width: 100% !important;"
-                        inputStyle="width: 90% !important; text-align: center;">
-                        <p:ajax event="itemSelect" update="formCorpo" />
+                     <p:outputLabel for="completeCliente" value="Cliente" />
+							<a:newLine />
+							<p:autoComplete id="completeCliente" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.clienteConsulta}" var="cliente" itemValue="#{cliente}" itemLabel="#{cliente.nome}"
+								completeMethod="#{NegociacaoPedidoControl.completeCliente}" placeholder="Consultar por Cpf ou Cnpj)" minQueryLength="3" style="width: 100% !important;" inputStyle="width: 90% !important; text-align: center;">
+								<p:ajax event="itemSelect" update="formCorpo" />
 
-                        <p:column>
-                           #{c.id} - #{c.nome}
-                        </p:column>
-
-                     </p:autoComplete>
+								<p:column>
+									<p:outputLabel value="#{cliente.cpfCnpj} - #{cliente.nome}" />
+								</p:column>
+							</p:autoComplete>
                   </p:column>
 
                   <p:column class="panelGrid">
-                     <p:outputLabel for="consVendedor" value="Vendedor" />
-                     <a:newLine />
-                     <p:autoComplete id="consVendedor" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.vendedor}" var="v" itemValue="#{v}"
-                        itemLabel="#{v.pessoa.nome}" completeMethod="#{NegociacaoPedidoControl.completeVendedor}" placeholder="Vendedor (Nome)" style="width: 100% !important;"
-                        inputStyle="width: 90% !important; text-align: center; align: left;">
+                    <p:outputLabel for="completeVendedor" value="Vendedor" />
+							<a:newLine />
+							<p:autoComplete id="completeVendedor" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.vendedorConsulta}" var="vendedor" itemValue="#{vendedor}" itemLabel="#{vendedor.pessoa.nome}"
+								completeMethod="#{NegociacaoPedidoControl.completeVendedor}" placeholder="Consultar por CPF/CNPJ ou Nome" style="width: 100% !important;" inputStyle="width: 90% !important; text-align: center; align: left;">
+								<p:ajax event="itemSelect" update="formCorpo" />
 
-                        <p:ajax event="itemSelect" update="formCorpo" />
-
-                        <p:column>
-                           #{v.id} - #{v.pessoa.nome}
-                        </p:column>
-
-                     </p:autoComplete>
+								<p:column>
+									<p:outputLabel value="#{vendedor.pessoa.cpfCnpj} - #{vendedor.pessoa.nome}" />
+								</p:column>
+							</p:autoComplete>
                   </p:column>
 
                   <p:column style="border-right: 1px solid #DDDDDD !important;">
@@ -74,32 +83,31 @@
             </p:panelGrid>
          </p:panel>
 
-         <p:dataTable var="ped" value="#{PedidoControl.pedidos}" widgetVar="pedidos" emptyMessage="Nenhum pedido encontrado."
-            filteredValue="#{PedidoControl.pedidosFiltro}">
+			<p:dataTable var="ped" value="#{NegociacaoPedidoControl.pedidosFiltro}" widgetVar="pedidos" id="tablePedidos" emptyMessage="Nenhum pedido encontrado." filteredValue="#{NegociacaoPedidoControl.pedidosFiltro}">
 
-            <p:column headerText="Número" filterMatchMode="contains" width="10%">
-               <h:outputText value="#{NegociacaoPedidoControl.pedido.numero}" />
-            </p:column>
+				<p:column headerText="Número" filterMatchMode="contains" width="10%">
+					<h:outputText value="#{ped.numeroPedidoExterno}" />
+				</p:column>
 
-            <p:column headerText="Data" width="16%">
-               <h:outputText value="#{NegociacaoPedidoControl.pedido.data}" />
-            </p:column>
+				<p:column headerText="Data" width="16%">
+					<h:outputText value="#{ped.data}" />
+				</p:column>
 
-            <p:column headerText="Cliente" style="width:12%;">
-               <h:outputText value="#{NegociacaoPedidoControl.pedido.cliente}" />
-            </p:column>
+				<p:column headerText="Cliente" style="width:12%;">
+					<h:outputText value="#{ped.cliente.nome}" />
+				</p:column>
 
-            <p:column headerText="Vendedor" style="width:10%;">
-               <h:outputText value="Nome" />
-            </p:column>
+				<p:column headerText="Vendedor" style="width:10%;">
+					<h:outputText value="#{ped.vendedor.pessoa.nome}" />
+				</p:column>
 
-            <p:column headerText="Status" width="10%" styleClass="c" style="width:5%;">
-               <h:outputText value="#NegociacaoPedidoControl.pedido.status" />
-            </p:column>
+				<p:column headerText="Status" width="10%" styleClass="c" style="width:5%;">
+					<h:outputText value="#{NegociacaoPedidoControl.pedido.status}" />
+				</p:column>
 
-         </p:dataTable>
+			</p:dataTable>
 
-      </div>
+		</div>
 
    </ui:define>
 

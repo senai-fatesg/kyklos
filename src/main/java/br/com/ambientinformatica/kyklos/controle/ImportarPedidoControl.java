@@ -52,7 +52,7 @@ public class ImportarPedidoControl {
    public void salvarPedido(ActionEvent actionEvent) {
       try {
          Vendedor vendedor = new Vendedor();
-         pedido.setEmpresaEmitente(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
+         pedido.setEmpresaGeradoraPedido(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
          vendedor = vendedorDao.consultarPorEmpresaEPessoa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(), usuarioLogadoControl.getEmpresaUsuario().getEmpresa().getPessoa());
          if(vendedor == null){
             vendedor = new Vendedor();   

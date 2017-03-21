@@ -21,16 +21,15 @@ public class ProdutoDaoJpa extends PersistenciaJpa<Produto> implements ProdutoDa
    public List<Produto> listarProdutos(EmpresaCliente empresa, String codigoDescricao) {
       try {
          Query query = em.createQuery("select p from Produto p"
-               + " where UPPER(p.codigo) = :codigo"
-               + " or UPPER(p.descricao) like UPPER(:descricao)"
-               + " and p.empresa = (:empresa)"
+               + " where p.empresa = :empresa "
+               + " and (UPPER(p.codigo) like UPPER(:codigo) or UPPER(p.descricao) like UPPER(:descricao))"
                + " order by codigo");
-         query.setParameter("codigo", codigoDescricao.toUpperCase());
-         query.setParameter("descricao", "%" + codigoDescricao + "%");
          query.setParameter("empresa", empresa);
+         query.setParameter("codigo", codigoDescricao + "%");
+         query.setParameter("descricao", "%" + codigoDescricao + "%");
          query.setMaxResults(100);
          return query.getResultList();
-      } catch ( NoResultException e ) {  
+      } catch ( NoResultException nre ) {  
          return null;  
       }
    }

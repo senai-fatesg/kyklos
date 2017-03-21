@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
+   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
+   <ui:define name="cabecalho">
+      <style>
+.ui-autocomplete-input {
+   width: 110px !important;
+}
+</style>
+   </ui:define>
+   <ui:define name="corpo">
+
+      <div class="screenHeader">
+         <p:panelGrid id="gridTop" styleClass="semBorda" >
+            <p:row>
+               <p:column>
+                  <p:commandButton value="Voltar" action="faturamentoLista.xhmtl?faces-redirect=true" />
+               </p:column>
+               <p:column>
+                  <p:commandButton value="Finalizar Faturamento" actionListener="#{FaturamentoListaControl.finalizarFaturamento}"
+                     rendered="#{FaturamentoListaControl.pedidoSelecionado.status == 'FINALIZADO'}" update=":formCorpo"/>
+               </p:column>
+               <p:column>
+                  <p:commandButton value="Emitir NFe" actionListener="#{FaturamentoListaControl.emitirNFe}" rendered="#{FaturamentoListaControl.pedidoSelecionado.status == 'FATURADO'}" />
+               </p:column>
+            </p:row>
+         </p:panelGrid>
+      </div>
+
+      <div class="contentField">
+
+         <p:panelGrid id="pedidoTitleGrid" styleClass="semBorda" rendered="#{FaturamentoListaControl.pedidoSelecionado.status == 'FINALIZADO'}">
+            <p:row>
+               <p:column>
+                  <h:outputText value="Pedido" styleClass="faturamentoText" />
+               </p:column>
+            </p:row>
+         </p:panelGrid>
+
+         <p:panelGrid id="faturamentoGrid" style="width: 100%;" styleClass="semBorda" rendered="#{FaturamentoListaControl.pedidoSelecionado.status == 'FINALIZADO'}">
+            <p:row>
+               <p:column colspan="2">
+                  <h:outputText value="Vendedor" />
+                  <a:newLine />
+                  <p:inputText id="nomeVendedorInput" value="#{FaturamentoListaControl.pedidoSelecionado.vendedor.pessoa.nome}" disabled="true" style="width: 97%;" />
+               </p:column>
+               <p:column style="width: 30%;">
+                  <h:outputText value="Valor Total" />
+                  <a:newLine />
+                  <p:inputText id="valorTotalInput" disabled="true" value="#{FaturamentoListaControl.pedidoSelecionado.pagamento.valorNegociado}" style="width: 95%;">
+                     <f:convertNumber pattern="###,##0.00" />
+                  </p:inputText>
+               </p:column>
+            </p:row>
+            <p:row>
+               <p:column colspan="2">
+                  <h:outputText value="Cliente" />
+                  <a:newLine />
+                  <p:inputText id="nomeClienteInput" value="#{FaturamentoListaControl.pedidoSelecionado.cliente.nome}" disabled="true" style="width: 97%;" />
+               </p:column>
+               <p:column>
+                  <h:outputText value="Pedido" />
+                  <a:newLine />
+                  <p:inputText value="#{FaturamentoListaControl.pedidoSelecionado.id}" disabled="true" style="width: 95%;" />
+               </p:column>
+            </p:row>
+
+            <p:row rendered="#{FaturamentoListaControl.pedidoSelecionado.status == 'FINALIZADO'}">
+               <p:column>
+                  <a:newLine />
+                  <h:outputText value="Formas de Pagamento" styleClass="faturamentoText" />
+               </p:column>
+            </p:row>
+
+            <p:row rendered="#{FaturamentoListaControl.pedidoSelecionado.status == 'FINALIZADO'}">
+               <p:column colspan="10">
+                  <p:panel id="resumoFormasPagamentoPanel" header="Resumo: Formas de Pagamento" collapsed="true" toggleable="true">
+                     <p:panelGrid id="resumoFormasPagamentoGrid" styleClass="dataTableStyle">
+                        <a:newLine />
+                        <p:row>
+                           <p:column colspan="5">
+
+                              <p:dataTable id="formasPagamentoTable" value="#{FaturamentoListaControl.pedidoSelecionado.pagamento.formasPagamento}" var="formaPagamento" styleClass="dataTableStyle"
+                                 rowIndexVar="rowIndex">
+
+                                 <p:column width="8%" headerText="Nº" styleClass="d">
+                                    <h:outputText value="#{rowIndex + 1}" />
+                                 </p:column>
+
+                                 <p:column headerText="Data Vencimento" sortBy="#{formaPagamento.dataVencimento}" styleClass="d" style="width: 15%;">
+                                    <h:outputText value="#{formaPagamento.dataVencimento}">
+                                       <f:convertDateTime pattern="dd/MM/yy" />
+                                    </h:outputText>
+                                 </p:column>
+
+                                 <p:column headerText="Forma Pagamento">
+                                    <h:outputText value="#{formaPagamento.instrumentoRecebimento.descricao}" />
+                                 </p:column>
+
+                                 <p:column headerText="Valor" styleClass="d" style="width: 15%;">
+                                    <h:outputText value="#{formaPagamento.valor}">
+                                       <f:convertNumber pattern="###,##0.00" />
+                                    </h:outputText>
+                                 </p:column>
+
+                              </p:dataTable>
+
+                           </p:column>
+                        </p:row>
+                     </p:panelGrid>
+                  </p:panel>
+               </p:column>
+            </p:row>
+
+         </p:panelGrid>
+         <p:panelGrid id="faturamentoGridGeral" rendered="#{FaturamentoListaControl.pedidoSelecionado.status == 'FINALIZADO'}">
+
+            <a:newLine />
+            <p:panelGrid id="formasDePagamentoTitleGrid" styleClass="semBorda">
+               <p:row>
+                  <p:column>
+                     <h:outputText value="Dados de Pagamento" styleClass="faturamentoText" />
+                  </p:column>
+               </p:row>
+            </p:panelGrid>
+
+            <p:panelGrid id="formaPagamentoGrid" styleClass="semBorda" style="width: 100%;">
+               <p:row>
+                  <p:column style="width: 100%;">
+                     <p:panel id="dinheiroPanel" header="Dinheiro" collapsed="false" toggleable="true" toggleOrientation="vertical"
+                        rendered="#{FaturamentoListaControl.pedidoSelecionado.pagamento.tipoDinheiro == true}">
+
+                        <p:panelGrid id="dinheiroPanelGrid" styleClass="semBorda">
+                           <p:row>
+                              <p:column colspan="10">
+                                 <h:outputText value="Dinheiro" styleClass="faturamentoText" />
+                              </p:column>
+                           </p:row>
+                           <p:row>
+                              <p:column>
+                                 <h:outputText value="Valor a Pagar" style="font-weight:bold;" />
+                                 <a:newLine />
+                                 <p:inputText id="valorDinheiroInput" value="#{FaturamentoListaControl.pedidoSelecionado.pagamento.APagarDinheiro}" disabled="true">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                 </p:inputText>
+                              </p:column>
+
+                              <p:column>
+                                 <h:outputText value="Troco" style="font-weight:bold;" />
+                                 <a:newLine />
+                                 <p:inputText id="valorTrocoDinheiroInput" value="#{FaturamentoListaControl.troco}" disabled="true">
+                                    <f:convertNumber pattern="###,##0.00" />
+                                 </p:inputText>
+                              </p:column>
+
+                              <p:column>
+                                 <h:outputText value="Valor Pago" style="font-weight:bold;" />
+                                 <a:newLine />
+                                 <p:inputText id="valorPagoDinheiroInput" value="#{FaturamentoListaControl.valorPagoDinheiro}">
+                                    <p:ajax event="keyup" listener="#{FaturamentoListaControl.calcularTroco}" update=":formCorpo:valorTrocoDinheiroInput" />
+                                    <f:convertNumber pattern="###,##0.00" />
+                                 </p:inputText>
+                              </p:column>
+
+                              <p:column>
+                                 <a:newLine />
+                                 <p:commandButton value="Confirmar" icon="ui-icon-disk" actionListener="#{FaturamentoListaControl.salvarPagamento}" />
+                              </p:column>
+                           </p:row>
+                        </p:panelGrid>
+
+                     </p:panel>
+
+                     <p:panel header="Boleto" collapsed="false" toggleable="true" toggleOrientation="vertical" rendered="#{FaturamentoListaControl.pedidoSelecionado.pagamento.tipoBoleto == true}">
+                        <p:panelGrid id="boletoPanelGrid" styleClass="semBorda">
+                           <p:row>
+                              <p:column colspan="10">
+                                 <h:outputText value="Boleto" styleClass="faturamentoText" />
+                              </p:column>
+                           </p:row>
+                        </p:panelGrid>
+
+                        <a:newLine />
+                        <p:dataTable id="boletosDataTable" value="#{FaturamentoListaControl.pedidoSelecionado.pagamento.listaBoletosBancarios}" var="boleto" styleClass="dataTableStyle"
+                           rowIndexVar="rowIndex">
+
+                           <p:column width="8%" headerText="Nº" styleClass="d">
+                              <h:outputText value="#{rowIndex + 1}" />
+                           </p:column>
+
+                           <p:column headerText="Data de Vencimento" sortable="true" sortBy="#{boleto.dataVencimento}" styleClass="d" style="width:15%;">
+                              <h:outputText value="#{boleto.dataVencimento}">
+                                 <f:convertDateTime pattern="dd/MM/yy" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column headerText="Data do Documento" styleClass="d" style="width:15%;">
+                              <h:outputText value="#{boleto.dataDocumento}">
+                                 <f:convertDateTime pattern="dd/MM/yy" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column headerText="Cliente">
+                              <h:outputText value="#{boleto.cliente.nome}" />
+                           </p:column>
+
+                           <p:column headerText="Conta Corrente" styleClass="c" style="width:26%;">
+
+                              <p:autoComplete id="consultarContratoBoletoBancario" dropdown="true" converter="objectConverter" value="#{boleto.contratoBoletoBancario}" var="contratoBoletoBancario"
+                                 itemValue="#{contratoBoletoBancario}" itemLabel="#{contratoBoletoBancario.contaCorrente.banco.nome}"
+                                 completeMethod="#{FaturamentoListaControl.completeContratoBoletoBancario}" placeholder="Contrato Boleto Bancário">
+
+                                 <p:column>
+                                    <p:outputLabel value="Banco: #{contratoBoletoBancario.contaCorrente.banco.nome}" />
+                                    <a:newLine />
+                                    <p:outputLabel value="Agência: #{contratoBoletoBancario.contaCorrente.agencia} | Conta: #{contratoBoletoBancario.contaCorrente.numeroConta} " />
+                                 </p:column>
+
+                              </p:autoComplete>
+
+                           </p:column>
+
+                           <p:column headerText="Valor" styleClass="d">
+                              <h:outputText value="#{boleto.valor}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                        </p:dataTable>
+                     </p:panel>
+
+                     <p:panel id="chequePanel" header="Cheque" collapsed="false" toggleable="true" toggleOrientation="vertical"
+                        rendered="#{FaturamentoListaControl.pedidoSelecionado.pagamento.tipoCheque == true}">
+
+                        <p:panelGrid id="chequePanelGrid">
+                           <p:row>
+                              <p:column colspan="10">
+                                 <h:outputText value="Cheque" styleClass="faturamentoText" />
+                              </p:column>
+                           </p:row>
+                           <p:row>
+                              <p:column>
+                                 <h:outputText value="Banco" />
+                                 <a:newLine />
+                                 <p:autoComplete id="consultarBanco" dropdown="true" converter="objectConverter" value="#{FaturamentoListaControl.chequeSelecionado.banco}" var="banco"
+                                    itemValue="#{banco}" itemLabel="#{banco.nome}" completeMethod="#{FaturamentoListaControl.completeBanco}" placeholder="Adicionar Banco">
+                                    <p:column>
+                                       <p:outputLabel value="#{banco.codigo} - #{banco.nome}" />
+                                    </p:column>
+                                 </p:autoComplete>
+
+                              </p:column>
+
+                              <p:column>
+                                 <h:outputText value="Agência" />
+                                 <a:newLine />
+                                 <p:inputText id="chequeAgencia" value="#{FaturamentoListaControl.chequeSelecionado.agencia}" />
+                              </p:column>
+
+                              <p:column>
+                                 <h:outputText value="Conta" />
+                                 <a:newLine />
+                                 <p:inputText id="chequeNumeroConta" value="#{FaturamentoListaControl.chequeSelecionado.contaCorrente}" />
+                              </p:column>
+
+                              <p:column style="width:60%;">
+                                 <a:newLine />
+                                 <p:commandButton value="Salvar Cheque" icon="ui-icon-disk" actionListener="#{FaturamentoListaControl.salvarPagamento}" update="listaFormaPagamentoCheque" />
+                              </p:column>
+                           </p:row>
+
+                           <p:row>
+
+                              <p:column>
+                                 <h:outputText value="CPF/CNPJ do Emitente" />
+                                 <a:newLine />
+                                 <p:inputText id="chequeCpfCnpjEmitente" value="#{FaturamentoListaControl.chequeSelecionado.cpfCnpjEmitente}" />
+                              </p:column>
+
+                              <p:column>
+                                 <h:outputText value="Data de Depósito" />
+                                 <a:newLine />
+                                 <p:inputText id="chequeDataDeposito" value="#{FaturamentoListaControl.chequeSelecionado.dataDeposito}" disabled="true">
+                                    <f:convertDateTime pattern="dd/MM/yy" />
+                                 </p:inputText>
+                              </p:column>
+
+                              <p:column>
+                                 <h:outputText value="Cheque de Terceiros: " />
+                                 <p:selectBooleanButton id="chequeTerceiros" value="#{FaturamentoListaControl.chequeSelecionado.deTerceiro}" onLabel="Sim" offLabel="Não" disabled="false"
+                                    style="width:148px">
+                                    <p:ajax update="chequePanel" />
+                                 </p:selectBooleanButton>
+                              </p:column>
+
+                           </p:row>
+
+                           <p:row rendered="#{FaturamentoListaControl.chequeSelecionado.deTerceiro == true}">
+
+                              <p:column colspan="3">
+                                 <h:outputText value="Nome do Responsável" />
+                                 <a:newLine />
+                                 <p:inputText id="chequeNomeResponsavel" value="#{FaturamentoListaControl.chequeSelecionado.responsavel.nome}" style="width:98%;" />
+                              </p:column>
+
+                           </p:row>
+
+                           <p:row>
+
+                              <p:column colspan="3">
+                                 <h:outputText value="Nome do Emitente" />
+                                 <a:newLine />
+                                 <p:inputText id="chequeNomeTitular" value="#{FaturamentoListaControl.chequeSelecionado.nomeEmitente}" style="width:98%;" />
+                              </p:column>
+
+                           </p:row>
+
+                        </p:panelGrid>
+
+                        <a:newLine />
+
+                        <p:dataTable id="listaFormaPagamentoCheque" value="#{FaturamentoListaControl.pedidoSelecionado.pagamento.listaCheques}" var="cheque" styleClass="dataTableStyle"
+                           selectionMode="single" selection="#{FaturamentoListaControl.chequeSelecionado}" rowKey="#{cheque.id}" rowIndexVar="rowIndex">
+
+                           <p:ajax event="rowSelect" update=":formCorpo:chequePanel" />
+
+                           <f:facet name="header">
+                              <h:outputText value="Selecione um cheque para preencher" styleClass="faturamentoText" />
+                           </f:facet>
+
+                           <p:column width="8%" headerText="Nº" styleClass="d">
+                              <h:outputText value="#{rowIndex + 1}" />
+                           </p:column>
+
+                           <p:column headerText="Data de Depósito " sortable="true" sortBy="#{cheque.dataDeposito}" style="width:15%;" styleClass="d">
+                              <h:outputText value="#{cheque.dataDeposito}">
+                                 <f:convertDateTime pattern="dd/MM/yy" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column headerText="Emitente" style="width:25%;">
+                              <h:outputText value="#{cheque.nomeEmitente}" />
+                           </p:column>
+
+                           <p:column headerText="Responsável" style="width: 25%;">
+                              <h:outputText value="#{cheque.responsavel}" />
+                           </p:column>
+
+                           <p:column headerText="Cheque de Terceiros" style="width: 15%;" styleClass="c">
+                              <h:outputText value="Sim" rendered="#{cheque.deTerceiro}" />
+                              <h:outputText value="Não" rendered="#{not cheque.deTerceiro}" />
+                           </p:column>
+
+                           <p:column headerText="Valor" styleClass="d">
+                              <h:outputText value="#{cheque.valor}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column style="width:3%;">
+                              <p:rowToggler id="togglerCheque" />
+                           </p:column>
+
+                           <p:rowExpansion>
+                              <p:panelGrid id="chequeBancoGrid" columns="12" columnClasses="label,value">
+                                 <h:outputText value="Banco:" style="font-weight: bold;" />
+                                 <h:outputText value="#{cheque.banco.nome}" />
+
+                                 <h:outputText value="Agencia:" style="font-weight: bold;" />
+                                 <h:outputText value="#{cheque.agencia}" />
+
+                                 <h:outputText value="Conta Corrente:" style="font-weight: bold;" />
+                                 <h:outputText value="#{cheque.contaCorrente}" />
+
+                                 <h:outputText value="CPF/CNPJ Emitente:" style="font-weight: bold;" />
+                                 <h:outputText value="#{cheque.cpfCnpjEmitente}" />
+                              </p:panelGrid>
+
+                           </p:rowExpansion>
+
+                        </p:dataTable>
+                     </p:panel>
+
+                     <p:panel header="Cartão Crédito/Débito" collapsed="false" toggleable="true" toggleOrientation="vertical"
+                        rendered="#{FaturamentoListaControl.pedidoSelecionado.pagamento.tipoCartaoCredito == true or FaturamentoListaControl.pedidoSelecionado.pagamento.tipoCartaoDebito == true}">
+
+                        <p:panelGrid id="cartaoPanelGrid" styleClass="dataTableStyle">
+                           <p:row>
+                              <p:column colspan="10">
+                                 <h:outputText value="Cartão Crédito/Débito" styleClass="faturamentoText" />
+                              </p:column>
+                           </p:row>
+
+                           <p:row>
+                              <p:column style="width: 80%;">
+                                 <a:newLine />
+                                 <p:dataTable id="dadosPagamentoCartaoDataTable" styleClass="dataTableStyle" value="#{FaturamentoListaControl.pedidoSelecionado.pagamento.listaCartoesCredito}"
+                                    var="cartao" rowIndexVar="rowIndex">
+
+                                    <p:column width="8%" headerText="Nº" styleClass="d">
+                                       <h:outputText value="#{rowIndex + 1}" />
+                                    </p:column>
+
+                                    <p:column headerText="Data de Vencimento" styleClass="d" style="width:15%;" sortable="true" sortBy="#{cartao.dataVencimento}">
+                                       <h:outputText value="#{cartao.dataVencimento}">
+                                          <f:convertDateTime pattern="dd/MM/yy" />
+                                       </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Cliente">
+                                       <h:outputText value="#{cartao.cliente}" />
+                                    </p:column>
+
+                                    <p:column headerText="Empresa">
+                                       <h:outputText value="#{cartao.empresa.pessoa.nome}" />
+                                    </p:column>
+
+                                    <p:column headerText="Valor" styleClass="d" style="width:15%;">
+                                       <h:outputText value="#{cartao.valor}">
+                                          <f:convertNumber pattern="###,##0.00" />
+                                       </h:outputText>
+                                    </p:column>
+                                 </p:dataTable>
+                              </p:column>
+                           </p:row>
+                        </p:panelGrid>
+                     </p:panel>
+
+                     <p:panel header="Depósito em Conta" collapsed="false" toggleable="true" toggleOrientation="vertical"
+                        rendered="#{FaturamentoListaControl.pedidoSelecionado.pagamento.tipoDepositoConta == true}">
+
+                        <p:panelGrid id="depositoEmContaPanelGrid" styleClass="semBorda">
+                           <p:row>
+                              <p:column>
+                                 <h:outputText value="Depósito em Conta" styleClass="faturamentoText" />
+                              </p:column>
+                           </p:row>
+                        </p:panelGrid>
+
+                        <a:newLine />
+
+                        <p:dataTable id="depositoEmContaTable" value="#{FaturamentoListaControl.pedidoSelecionado.pagamento.listaDepositosContaCorrente}" var="depositoEmConta"
+                           styleClass="dataTableStyle" rowIndexVar="rowIndex">
+
+                           <p:column width="8%" headerText="Nº" styleClass="d">
+                              <h:outputText value="#{rowIndex + 1}" />
+                           </p:column>
+
+                           <p:column headerText="Data de Depósito" sortable="true" sortBy="#{formaPagamento.dataVencimento}" styleClass="d" style="width:15%;">
+                              <h:outputText value="#{depositoEmConta.dataDeposito}">
+                                 <f:convertDateTime pattern="dd/MM/yy" />
+                              </h:outputText>
+                           </p:column>
+
+                           <p:column headerText="Cliente" style="width:33%;">
+                              <h:outputText value="#{FaturamentoListaControl.pedidoSelecionado.cliente.nome}" />
+                           </p:column>
+
+                           <p:column headerText="Conta Corrente" styleClass="c" style="width:26%;">
+                              <p:autoComplete id="consultarContaCorrente" dropdown="true" converter="objectConverter" value="#{depositoEmConta.contaCorrente}" var="contaCorrente"
+                                 itemValue="#{contaCorrente}" itemLabel="#{contaCorrente.banco.nome}" completeMethod="#{FaturamentoListaControl.completeContaCorrente}" placeholder="Conta Corrente">
+                                 <p:column>
+                                    <p:outputLabel value="Banco: #{contaCorrente.banco.nome}" />
+                                    <a:newLine />
+                                    <p:outputLabel value="Agência: #{contaCorrente.agencia} | Conta: #{contaCorrente.numeroConta} " />
+                                 </p:column>
+                              </p:autoComplete>
+                           </p:column>
+
+                           <p:column headerText="Valor" styleClass="d">
+                              <h:outputText value="#{depositoEmConta.valor}">
+                                 <f:convertNumber pattern="###,##0.00" />
+                              </h:outputText>
+                           </p:column>
+
+                        </p:dataTable>
+
+                     </p:panel>
+                  </p:column>
+               </p:row>
+            </p:panelGrid>
+
+         </p:panelGrid>
+
+         <p:panelGrid rendered="#{FaturamentoListaControl.pedidoSelecionado.status == 'FATURADO'}" style="width:100%; text-align:center;" styleClass="semBorda">
+   
+            <p:row>
+
+               <p:column>
+                  <h:outputText value="Pedido Nº #{FaturamentoListaControl.pedidoSelecionado.id}" styleClass="faturamentoText" />
+                  <a:newLine />
+                  <h:outputText value="Cliente: #{FaturamentoListaControl.pedidoSelecionado.cliente.nome}" styleClass="faturamentoText" />
+                  <a:newLine />
+                  <h:outputText value="Vendedor: #{FaturamentoListaControl.pedidoSelecionado.vendedor.pessoa.nome}" styleClass="faturamentoText" />
+                  <a:newLine />
+                  <a:newLine />
+                  <h:outputText value="Faturado com sucesso!" style="color: green !important;" styleClass="faturamentoText" />
+               </p:column>
+               
+            </p:row>
+            
+            <p:row>
+
+               <p:column>
+                  <p:commandButton value="Voltar" action="faturamentoLista.xhmtl?faces-redirect=true" />
+                  <p:commandButton value="Emitir NFe" actionListener="#{FaturamentoListaControl.emitirNFe}" rendered="#{FaturamentoListaControl.pedidoSelecionado.status == 'FATURADO'}" />
+                  <p:commandButton value="Reenviar Lançamento" actionListener="#{FaturamentoListaControl.montarEEnviarObjetosLancamento}" rendered="#{FaturamentoListaControl.lancamentoEnviado == 'false'}" />
+               </p:column>
+
+            </p:row>
+
+         </p:panelGrid>
+
+      </div>
+
+   </ui:define>
+
+</ui:composition>

@@ -6,8 +6,8 @@
 		<class>br.com.ambientinformatica.corporativo.entidade.Municipio</class>
 		<class>br.com.ambientinformatica.corporativo.entidade.Pessoa</class>
 		<class>br.com.ambientinformatica.corporativo.entidade.Arquivo</class>
-		<class>br.com.ambientinformatica.kyklos.entidade.UnidadeMedida</class>
-		
+		<class>br.com.ambientinformatica.agilize.api.entidade.RegimeEspecial</class>
+		<class>br.com.ambientinformatica.agilize.api.entidade.EnumCRT</class>
 		<properties>
 			<property name="javax.persistence.validation.mode" value="callback" />
 			<property name="javax.persistence.validation.group.pre-update"

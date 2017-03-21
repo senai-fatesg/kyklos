@@ -1,5 +1,6 @@
 package br.com.ambientinformatica.kyklos.controle;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.List;
 
@@ -21,7 +22,9 @@ import br.com.ambientinformatica.util.UtilLog;
 
 @Named
 @Scope("session")
-public class UsuarioLogadoControl {
+public class UsuarioLogadoControl implements Serializable {
+
+   private static final long serialVersionUID = 1L;
 
    @Autowired
    private UsuarioDao usuarioDao;
@@ -72,8 +75,9 @@ public class UsuarioLogadoControl {
    
    public void alterar() throws AmbientException{
       
-      if(!usuario.getNome().equals("")){
+      if(!usuario.getPessoa().getNome().equals("")){
          usuarioDao.alterar(usuario);
+         UtilFaces.addMensagemFaces("Alterações de cadastro realizadas com sucesso!");
       }else{
          UtilFaces.addMensagemFaces("O campo \"Nome\" não pode ser vazio.");
       }
