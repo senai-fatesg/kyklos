@@ -13,7 +13,6 @@ import br.com.ambientinformatica.kyklos.entidade.EmpresaUsuario;
 import br.com.ambientinformatica.kyklos.entidade.Pedido;
 import br.com.ambientinformatica.kyklos.entidade.Vendedor;
 import br.com.ambientinformatica.kyklos.negocio.PedidoNeg;
-import br.com.ambientinformatica.kyklos.persistencia.EstoqueDao;
 import br.com.ambientinformatica.kyklos.persistencia.PedidoDao;
 import br.com.ambientinformatica.kyklos.persistencia.VendedorDao;
 
@@ -32,9 +31,6 @@ public class ImportarPedidoControl {
 
    @Autowired
    private VendedorDao vendedorDao;
-
-   @Autowired
-   private EstoqueDao estoqueDao;
 
    private EmpresaUsuario empresaUsuario;
 

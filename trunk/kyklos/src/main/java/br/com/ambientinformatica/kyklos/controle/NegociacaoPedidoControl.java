@@ -43,7 +43,6 @@ import br.com.ambientinformatica.kyklos.entidade.ItemPedido;
 import br.com.ambientinformatica.kyklos.entidade.MovimentacaoEstoque;
 import br.com.ambientinformatica.kyklos.entidade.NegociacaoPedido;
 import br.com.ambientinformatica.kyklos.entidade.Pagamento;
-import br.com.ambientinformatica.kyklos.entidade.ParametroEmpresa;
 import br.com.ambientinformatica.kyklos.entidade.Pedido;
 import br.com.ambientinformatica.kyklos.entidade.PessoaEmpresa;
 import br.com.ambientinformatica.kyklos.entidade.Produto;
@@ -54,7 +53,6 @@ import br.com.ambientinformatica.kyklos.negocio.CepNeg;
 import br.com.ambientinformatica.kyklos.persistencia.CfopDao;
 import br.com.ambientinformatica.kyklos.persistencia.ContaCorrenteDao;
 import br.com.ambientinformatica.kyklos.persistencia.ContratoBoletoBancarioDao;
-import br.com.ambientinformatica.kyklos.persistencia.EnderecoDao;
 import br.com.ambientinformatica.kyklos.persistencia.EstoqueProdutoDao;
 import br.com.ambientinformatica.kyklos.persistencia.FreteDao;
 import br.com.ambientinformatica.kyklos.persistencia.InstrumentoRecebimentoDao;
@@ -67,7 +65,6 @@ import br.com.ambientinformatica.kyklos.persistencia.PedidoDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
 import br.com.ambientinformatica.kyklos.persistencia.ProdutoDao;
-import br.com.ambientinformatica.kyklos.persistencia.TransportadoraDao;
 import br.com.ambientinformatica.kyklos.persistencia.ValorProdutoDao;
 import br.com.ambientinformatica.kyklos.persistencia.VendedorDao;
 import br.com.ambientinformatica.kyklos.util.KyklosException;
@@ -106,13 +103,7 @@ public class NegociacaoPedidoControl implements Serializable {
    private ContaCorrenteDao contaCorrenteDao;
 
    @Autowired
-   private TransportadoraDao transportadoraDao;
-   
-   @Autowired
    private PagamentoDao pagamentoDao;
-
-   @Autowired
-   private EnderecoDao enderecoDao;
 
    @Autowired
    private MunicipioDao municipioDao;
@@ -629,41 +620,6 @@ public class NegociacaoPedidoControl implements Serializable {
 
    	EmpresaCliente empresaCliente = usuarioLogadoControl.getEmpresaUsuario().getEmpresa();
    	Map<String, String> parametrosEmpresa = parametroEmpresaDao.listarTodosMapsEmpresa(empresaCliente);
-   	/*
-   	 * para caso o CFOP esteja NULL nas propriedades da Empresa,
-   	 * São inseridos estes Parametros Por Default
-   	 */
-   	try{
-   		if(empresaCliente.isRegimeNormal()){
-   			if(parametrosEmpresa.get("cfop-venda-interna") == null){
-   				String chave = "cfop-venda-interna";
-   				Integer cfop = 5101;
-   				parametroEmpresaDao.incluir(new ParametroEmpresa(chave, cfop.toString(), empresaCliente));
-   				UtilLog.getLog().info(String.format("Incluido nas Propriedades da Empresa o Parametro Tipo CFOP de Venda Padrão.\n Empresa: %s, chave: %s, valor: %s", empresaCliente.getPessoa().getNome(), chave, cfop.toString()));
-   			}
-   			if(parametrosEmpresa.get("cfop-venda-externa") == null){
-   				String chave = "cfop-venda-externa";
-   				Integer cfop = 6101;
-   				parametroEmpresaDao.incluir(new ParametroEmpresa(chave, cfop.toString(), empresaCliente));
-   				UtilLog.getLog().info(String.format("Incluido nas Propriedades da Empresa o Parametro Tipo CFOP de Venda Padrão.\n Empresa: %s, chave: %s, valor: %s", empresaCliente.getPessoa().getNome(), chave, cfop.toString()));
-   			}
-   		}else{
-   			if(parametrosEmpresa.get("cfop-venda-interna") == null){
-   				String chave = "cfop-venda-interna";
-   				Integer cfop = 5102;
-   				parametroEmpresaDao.incluir(new ParametroEmpresa(chave, cfop.toString(), empresaCliente));
-   				UtilLog.getLog().info(String.format("Incluido nas Propriedades da Empresa o Parametro Tipo CFOP de Venda Padrão.\n Empresa: %s, chave: %s, valor: %s", empresaCliente.getPessoa().getNome(), chave, cfop.toString()));
-   			}
-   			if(parametrosEmpresa.get("cfop-venda-externa") == null){
-   				String chave = "cfop-venda-externa";
-   				Integer cfop = 6102;
-   				parametroEmpresaDao.incluir(new ParametroEmpresa(chave, cfop.toString(), empresaCliente));
-   				UtilLog.getLog().info(String.format("Incluido nas Propriedades da Empresa o Parametro Tipo CFOP de Venda Padrão.\n Empresa: %s, chave: %s, valor: %s", empresaCliente.getPessoa().getNome(), chave, cfop.toString()));
-   			}
-   		}
-   	} catch(Exception e) {
-   		UtilFaces.addMensagemFaces("Houve uma exceção ao inserir os CFOP's padrões nas propriedades da empresa.");
-   	}
 
    	/*
    	 * Valida se o CFOP existe, caso contrário é setado o CFOP padrão de Venda Interna ou Externa.

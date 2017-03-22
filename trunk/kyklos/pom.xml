@@ -16,26 +16,19 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>br.com.digilabs.jqplot</groupId>
-			<artifactId>jqplot4java</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>br.com.ambientinformatica</groupId>
-			<artifactId>ambient-corporativo</artifactId>
-			<version>1.0.11</version>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.9.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
+		</dependency>
+		<dependency>
+			<groupId>br.com.ambientinformatica</groupId>
+			<artifactId>ambient-corporativo</artifactId>
+			<version>1.0.11</version>
 		</dependency>
 		<dependency>
 			<groupId>br.com.ambientinformatica</groupId>
@@ -65,52 +58,34 @@
 			<version>1.0.11</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.6.0</version>
-		</dependency>
-		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1.3</version>
 		</dependency>
-		
-		<!-- Para integrar com o nfeServer Emissor de Nfe -->
-		<dependency>
-			<groupId>br.com.ambientinformatica</groupId>
-			<artifactId>nfe-client</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<!-- Dependencia para consumir servico do Agilize, em momento da migracao 
-			de vendas -->
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.0</version>
 			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
 			<version>4.2.3</version>
 			<scope>compile</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient-cache</artifactId>
 			<version>4.2.3</version>
 			<scope>compile</scope>
 		</dependency>
-
-		<!--  Dependencia ao Agilize (Projeto Fiscal)-->
+		<dependency>
+			<groupId>br.com.ambientinformatica</groupId>
+			<artifactId>ambient-jsf</artifactId>
+			<version>3.0.5</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>br.com.ambientinformatica.agilize</groupId>
 			<artifactId>agilize-api</artifactId>
@@ -122,50 +97,6 @@
 					<artifactId>utilAmbient</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<!-- Dependencias utilizadas para consumir o Servico do Sistema Financeiro 
-			- ControleFacil -->
-		<dependency>
-			<groupId>br.com.ambientinformatica</groupId>
-			<artifactId>controlefacil-api</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-		<!-- Fim das dependencias do Controle-Facil -->
-		
-		<!-- Ambient JSF -->
-		<dependency>
-			<groupId>br.com.ambientinformatica</groupId>
-			<artifactId>ambient-jsf</artifactId>
-			<version>3.0.5</version>
-			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>net.sf.jasperreports</groupId>
-					<artifactId>jasperreports</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>jasperreports</groupId>
-					<artifactId>barbecue</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<!-- Para o QRCode via JasperStudio -->
-		<dependency>
-			<groupId>net.sf.barcode4j</groupId>
-			<artifactId>barcode4j</artifactId>
-			<version>2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>batik</groupId>
-			<artifactId>batik-bridge</artifactId>
-			<version>1.6-1</version>
-		</dependency>
-		<!-- Para Jasper Reports Versão mais nova-->
-		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports</artifactId>
-			<version>6.1.1</version>
 		</dependency>
 	</dependencies>
 
@@ -229,10 +160,6 @@
 	<reporting>
 		<plugins>
 			<plugin>
-				<!-- mvn site -Ddependency.locations.enabled=false -->
-				<!-- http://www.umlgraph.org/doc/indexw.html -->
-				<!-- http://www.umlgraph.org/doc/ceg-color.html -->
-				<!-- http://www.umlgraph.org/ver.html -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.7</version>
@@ -283,19 +210,6 @@
 		</plugins>
 	</reporting>
 
-	<!-- http://maven.apache.org/pom.html -->
-	<developers>
-		<developer>
-			<id>francisco</id>
-			<name>Francisco Calaça</name>
-			<email>chicocx@gmail.com</email>
-			<roles>
-				<role>Arquiteto</role>
-				<role>Analista</role>
-			</roles>
-		</developer>
-	</developers>
-
 	<distributionManagement>
 		<snapshotRepository>
 			<id>snapshot</id>
@@ -313,7 +227,5 @@
 		<connection>scm:svn:http://a4t.in/svn/repo/trunk/kyklos</connection>
 		<developerConnection>scm:svn:http://a4t.in/svn/repo/trunk/kyklos</developerConnection>
 	</scm>
-
-
 
 </project>

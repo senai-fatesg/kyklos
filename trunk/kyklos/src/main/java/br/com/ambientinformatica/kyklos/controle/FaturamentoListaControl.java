@@ -7,16 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Named;
-import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
 import br.com.ambientinformatica.ambientjsf.util.UtilFaces;
-import br.com.ambientinformatica.controlefacil.api.EnumFormaDePagamento;
-import br.com.ambientinformatica.controlefacil.api.LancamentoDto;
-import br.com.ambientinformatica.controlefacil.api.PessoaCliente;
-import br.com.ambientinformatica.controlefacil.api.util.UtilLancamento;
 import br.com.ambientinformatica.corporativo.entidade.Pessoa;
 import br.com.ambientinformatica.kyklos.entidade.Banco;
 import br.com.ambientinformatica.kyklos.entidade.Cheque;
@@ -26,10 +21,8 @@ import br.com.ambientinformatica.kyklos.entidade.DepositoContaCorrente;
 import br.com.ambientinformatica.kyklos.entidade.EnumStatusPedido;
 import br.com.ambientinformatica.kyklos.entidade.EnumTipoRetornoTroco;
 import br.com.ambientinformatica.kyklos.entidade.FormaPagamento;
-import br.com.ambientinformatica.kyklos.entidade.ItemPedido;
 import br.com.ambientinformatica.kyklos.entidade.Pedido;
 import br.com.ambientinformatica.kyklos.entidade.Vendedor;
-import br.com.ambientinformatica.kyklos.negocio.NotaFiscalEletronicaNeg;
 import br.com.ambientinformatica.kyklos.persistencia.BancoDao;
 import br.com.ambientinformatica.kyklos.persistencia.ContaCorrenteDao;
 import br.com.ambientinformatica.kyklos.persistencia.ContratoBoletoBancarioDao;
@@ -38,7 +31,6 @@ import br.com.ambientinformatica.kyklos.persistencia.PedidoDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.VendedorDao;
 import br.com.ambientinformatica.kyklos.util.KyklosException;
-import br.com.ambientinformatica.nfe.api.NfeRetDto;
 import br.com.ambientinformatica.util.Data;
 
 @Named("FaturamentoListaControl")
@@ -52,9 +44,6 @@ public class FaturamentoListaControl implements Serializable {
 
    @Autowired
    private VendedorDao vendedorDao;
-
-   @Autowired
-   private NotaFiscalEletronicaNeg notaFiscalEletronicaNeg;
 
    @Autowired
    private PedidoDao pedidoDao;
@@ -135,18 +124,6 @@ public class FaturamentoListaControl implements Serializable {
       pedidoSelecionado = pedidoDao.consultarPorNumeroPedido(pedidoSelecionado.getEmpresa(), pedidoSelecionado);
    }
    
-   public void criarNFe() {
-      try {
-         pedidoSelecionado = pedidoDao.consultarPorNumeroPedido(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(), pedidoSelecionado);
-         NfeRetDto nfe = notaFiscalEletronicaNeg.criarNotaFiscalEletronica(pedidoSelecionado, usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
-         System.out.println("XML GERADO:");
-         System.out.println(nfe.getXml());
-         System.out.println("------------");
-      } catch (KyklosException e) {
-         UtilFaces.addMensagemFaces("Erro ao emitir a NF-e." + e.getMessage());
-      }
-   }
-
    @SuppressWarnings("unused")
    public void calcularTroco() {
       if (false) {
@@ -184,92 +161,9 @@ public class FaturamentoListaControl implements Serializable {
       pagamentoDao.alterar(pedidoSelecionado.getPagamento());
    }
 
-   public void montarEEnviarObjetosLancamento(){
-
-      List<LancamentoDto> listaLancamentoDto = new ArrayList<LancamentoDto>();
-
-      for (FormaPagamento formaPagamento : pedidoSelecionado.getPagamento().getFormasPagamento()) {
-         LancamentoDto lancamentoDto = new LancamentoDto();
-         
-         lancamentoDto.setCpfCnpjCliente(pedidoSelecionado.getEmpresa().getPessoa().getCpfCnpj());
-         lancamentoDto.setNumeroDocumento(pedidoSelecionado.getId().toString());
-         lancamentoDto.setPessoaCliente(new PessoaCliente());
-         lancamentoDto.getPessoaCliente().setId(pedidoSelecionado.getCliente().getId());
-         lancamentoDto.getPessoaCliente().setCep(pedidoSelecionado.getCliente().getCep());
-         lancamentoDto.getPessoaCliente().setCodigoIbgeMunicipio(pedidoSelecionado.getCliente().getMunicipio().getCodigoIbge());
-         lancamentoDto.getPessoaCliente().setCpfCnpj(pedidoSelecionado.getCliente().getCpfCnpj());
-         lancamentoDto.getPessoaCliente().setNome(pedidoSelecionado.getCliente().getNome());
-         lancamentoDto.getPessoaCliente().setTelefone(pedidoSelecionado.getCliente().getTelefone());
-         lancamentoDto.getPessoaCliente().setEndereco(pedidoSelecionado.getCliente().getEnderecoCompleto());
-         lancamentoDto.getPessoaCliente().setEmail(pedidoSelecionado.getCliente().getEmail());
-         lancamentoDto.setContacategoria(41001);
-
-         String descricao = "Pedido Nº: " + pedidoSelecionado.getId() + " | Cliente: " + pedidoSelecionado.getCliente().getNome();
-         for(ItemPedido itemPedido : pedidoSelecionado.getItens()){
-            descricao += " | Produto: ";
-            descricao += itemPedido.getProduto().getDescricao();
-            descricao += " - Quantidade: ";
-            descricao += itemPedido.getQuantidade();
-         }
-
-         lancamentoDto.setDescricao(descricao);
-         
-         if(formaPagamento.isBoleto()){
-            lancamentoDto.setFormaPagamento(EnumFormaDePagamento.BOLETOBANCARIO);
-         }
-         
-         if(formaPagamento.isCartaoCredito()){
-            lancamentoDto.setFormaPagamento(EnumFormaDePagamento.CARTAODECREDITO);
-         }
-         
-         if(formaPagamento.isCartaoDebito()){
-            lancamentoDto.setFormaPagamento(EnumFormaDePagamento.DEBITOEMCONTA);
-         }
-         
-         if(formaPagamento.isCheque() || formaPagamento.isChequeTerceiros()){
-            lancamentoDto.setFormaPagamento(EnumFormaDePagamento.CHEQUE);
-         }
-         
-         if(formaPagamento.isDepositoEmConta()){
-            lancamentoDto.setFormaPagamento(EnumFormaDePagamento.DEBITOEMCONTA);
-         }
-         
-         if(formaPagamento.isDinheiro()){
-            lancamentoDto.setFormaPagamento(EnumFormaDePagamento.DINHEIRO);
-         }
-
-         lancamentoDto.setDataVencimento(formaPagamento.getDataVencimento());
-         lancamentoDto.setValor(formaPagamento.getValor());
-         listaLancamentoDto.add(lancamentoDto);
-      }
-
-      for (LancamentoDto lancamento : listaLancamentoDto) {
-
-         Response response = UtilLancamento.criarLancamentoPost("123456", "http://inpai.com.br:8180/controlefacil/", lancamento);
-         
-         if(response.getStatus() != new Integer("201")){
-
-            lancamentoEnviado = false;
-            
-         } else {
-            
-            lancamentoEnviado = true;
-            
-         }
-         
-      }
-      
-      if(lancamentoEnviado == false) {
-
-         UtilFaces.addMensagemFaces("Erro ao enviar Lançamento para o Financeiro! Tente novamente clicando em 'Reenviar Lançamento'");
-         
-      }
-
-   }
 
    public void finalizarFaturamento() {
       salvarPagamento();
-      criarNFe();
    }
 
    public void limparPedidoSelecionado() {
