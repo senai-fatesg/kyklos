@@ -20,9 +20,6 @@ import br.com.ambientinformatica.kyklos.entidade.PessoaEmpresa;
 import br.com.ambientinformatica.kyklos.negocio.CepNeg;
 import br.com.ambientinformatica.kyklos.negocio.PessoaNeg;
 import br.com.ambientinformatica.kyklos.persistencia.MunicipioDao;
-import br.com.ambientinformatica.kyklos.persistencia.ParametroSistemaDao;
-import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
-import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
 import br.com.ambientinformatica.kyklos.util.KyklosException;
 
 @Named("PessoaControl")
@@ -30,12 +27,6 @@ import br.com.ambientinformatica.kyklos.util.KyklosException;
 public class PessoaControl implements Serializable{
 
    private static final long serialVersionUID = 1L;
-
-   @Autowired
-   private PessoaDao pessoaDao;
-
-   @Autowired
-   private PessoaEmpresaDao pessoaEmpresaDao;
 
    @Autowired
    private PessoaNeg pessoaNeg;
@@ -48,9 +39,6 @@ public class PessoaControl implements Serializable{
 
    @Autowired
    private UsuarioLogadoControl usuarioLogadoControl;
-
-   @Autowired
-   private ParametroSistemaDao parametroDao;
 
    private List<Municipio> municipios = new ArrayList<Municipio>();
 

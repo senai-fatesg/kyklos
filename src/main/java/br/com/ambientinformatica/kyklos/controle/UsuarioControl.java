@@ -17,7 +17,6 @@ import br.com.ambientinformatica.kyklos.entidade.EmpresaUsuario;
 import br.com.ambientinformatica.kyklos.entidade.EnumPapelUsuario;
 import br.com.ambientinformatica.kyklos.entidade.Usuario;
 import br.com.ambientinformatica.kyklos.persistencia.EmpresaUsuarioDao;
-import br.com.ambientinformatica.kyklos.persistencia.PapelUsuarioDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.UsuarioDao;
 
@@ -38,9 +37,6 @@ public class UsuarioControl implements Serializable{
 
    @Autowired
    private PessoaDao pessoaDao;
-   
-   @Autowired
-   private PapelUsuarioDao papelUsuarioDao;
    
    private EmpresaUsuario empresaUsuario = new EmpresaUsuario();
 

@@ -20,8 +20,6 @@ import br.com.ambientinformatica.kyklos.entidade.Estoque;
 import br.com.ambientinformatica.kyklos.entidade.PessoaEmpresa;
 import br.com.ambientinformatica.kyklos.negocio.PessoaNeg;
 import br.com.ambientinformatica.kyklos.persistencia.EstoqueDao;
-import br.com.ambientinformatica.kyklos.persistencia.ParametroSistemaDao;
-import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
 import br.com.ambientinformatica.kyklos.util.KyklosException;
 
@@ -41,13 +39,7 @@ public class EstoqueControl implements Serializable{
    private EstoqueDao estoqueDao;
 
    @Autowired
-   private PessoaDao pessoaDao;
-
-   @Autowired
    private PessoaNeg pessoaNeg;
-
-   @Autowired
-   private ParametroSistemaDao parametroDao;
 
    private List<Estoque> listaEstoques = new ArrayList<Estoque>(); 
 

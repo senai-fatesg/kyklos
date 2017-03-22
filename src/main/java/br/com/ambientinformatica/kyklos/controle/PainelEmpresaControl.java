@@ -12,9 +12,6 @@ import javax.inject.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
-import br.com.ambientinformatica.agilize.api.entidade.EnumCRT;
-import br.com.ambientinformatica.agilize.api.entidade.EnumEquiparacaoContribuinte;
-import br.com.ambientinformatica.agilize.api.entidade.EnumRegimeEspecial;
 import br.com.ambientinformatica.ambientjsf.util.UtilFaces;
 import br.com.ambientinformatica.corporativo.entidade.EnumUf;
 import br.com.ambientinformatica.corporativo.entidade.Municipio;
@@ -22,13 +19,10 @@ import br.com.ambientinformatica.kyklos.dto.Cep;
 import br.com.ambientinformatica.kyklos.entidade.EmpresaCliente;
 import br.com.ambientinformatica.kyklos.entidade.ParametroEmpresa;
 import br.com.ambientinformatica.kyklos.negocio.CepNeg;
-import br.com.ambientinformatica.kyklos.negocio.PessoaNeg;
 import br.com.ambientinformatica.kyklos.persistencia.EmpresaClienteDao;
 import br.com.ambientinformatica.kyklos.persistencia.MunicipioDao;
 import br.com.ambientinformatica.kyklos.persistencia.ParametroEmpresaDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
-import br.com.ambientinformatica.kyklos.persistencia.PessoaEmpresaDao;
-import br.com.ambientinformatica.kyklos.util.KyklosException;
 
 @Named("PainelEmpresaControl")
 @Scope("conversation")
@@ -41,12 +35,6 @@ public class PainelEmpresaControl implements Serializable{
 
    @Autowired
    private PessoaDao pessoaDao;
-
-   @Autowired
-   private PessoaEmpresaDao pessoaEmpresaDao;
-
-   @Autowired
-   private PessoaNeg pessoaNeg;
 
    @Autowired
    private CepNeg cepNeg;
@@ -72,23 +60,10 @@ public class PainelEmpresaControl implements Serializable{
 
    private String uf;
    
-   private EnumRegimeEspecial regimeEspecialSelecionado;
-   
    private boolean possuiRegimeEspecial;
    
    @PostConstruct
    public void consultarDadosEmpresa(){
-      try {
-         empresaCliente = empresaClienteDao.consultarEmpresaEParametrosFiscais(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
-         if (empresaCliente.getRegimesEspeciais() != null) {
-            possuiRegimeEspecial = true;
-         } else {
-            possuiRegimeEspecial = false;
-         }
-         
-      } catch (KyklosException e) {
-         UtilFaces.addMensagemFaces("Erro ao consultar dados da empresa!");
-      }
       listarParametrosEmpresa();
    }
    
@@ -153,7 +128,6 @@ public class PainelEmpresaControl implements Serializable{
    
    public void adicionarRegimeEspecial(){
       try {
-         empresaCliente.addRegimeEspecial(regimeEspecialSelecionado);
          empresaClienteDao.alterar(empresaCliente);
          consultarDadosEmpresa();
          UtilFaces.addMensagemFaces("Regime Especial adicionado com sucesso!");
@@ -204,18 +178,6 @@ public class PainelEmpresaControl implements Serializable{
       return new ArrayList<SelectItem>(UtilFaces.getListEnum(EnumUf.values()));
    }
    
-   public List<SelectItem> getRegimesEspeciais() {
-      return new ArrayList<SelectItem>(UtilFaces.getListEnum(EnumRegimeEspecial.values()));
-   }
-   
-   public List<SelectItem> getCRTs() {
-      return new ArrayList<SelectItem>(UtilFaces.getListEnum(EnumCRT.values()));
-   }
-   
-   public List<SelectItem> getEquiparacoesContribuinte() {
-      return new ArrayList<SelectItem>(UtilFaces.getListEnum(EnumEquiparacaoContribuinte.values()));
-   }
-
    public ParametroEmpresa getParametroEmpresa() {
       return parametroEmpresa;
    }
@@ -254,14 +216,6 @@ public class PainelEmpresaControl implements Serializable{
 
    public void setPossuiRegimeEspecial(boolean possuiRegimeEspecial) {
       this.possuiRegimeEspecial = possuiRegimeEspecial;
-   }
-
-   public EnumRegimeEspecial getRegimeEspecialSelecionado() {
-      return regimeEspecialSelecionado;
-   }
-
-   public void setRegimeEspecialSelecionado(EnumRegimeEspecial regimeEspecialSelecionado) {
-      this.regimeEspecialSelecionado = regimeEspecialSelecionado;
    }
 
 }
