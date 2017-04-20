@@ -23,7 +23,8 @@ public class PedidoDaoJpa extends PersistenciaJpa<Pedido> implements PedidoDao {
 
    public Pedido consultarPorNumeroPedidoExterno(EmpresaCliente empresa, Long numeroPedidoExterno) {
       try {
-         Query query = em.createQuery("select p from Pedido p left join fetch p.frete left join fetch p.pagamento where p.numeroPedidoExterno = :numeroPedidoExterno" + " and p.empresa = (:empresa)");
+         Query query = em.createQuery("select p from Pedido p"
+         		+ " left join fetch p.frete left join fetch p.pagamento where p.numeroPedidoExterno = :numeroPedidoExterno" + " and p.empresa = (:empresa)");
          query.setParameter("numeroPedidoExterno", numeroPedidoExterno);
          query.setParameter("empresa", empresa);
          return (Pedido) query.getSingleResult();
