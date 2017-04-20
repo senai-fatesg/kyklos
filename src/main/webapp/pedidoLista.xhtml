@@ -28,7 +28,7 @@
             <p:panelGrid style="width:100%; text-align: center;" styleClass="semBorda">
                <p:row>
                   <p:column colspan="2" style="text-align: right; width:60%">
-                     <p:inputText id="textBox" class="searchBar" placeholder="Pedido (Número)" value="#{NegociacaoPedidoControl.numeroPedidoExternoConsulta}"/>
+                     <p:inputText id="textBox" class="searchBar" placeholder="Pedido (Número)" value="#{NegociacaoPedidoControl.numeroPedido}"/>
                   </p:column>
                   <p:column colspan="2" style="text-align:left;">
                      <p:commandButton class="listaButton" actionListener="#{NegociacaoPedidoControl.listarPedidos}" update="tablePedidos" icon="ui-icon-search" />
@@ -39,17 +39,17 @@
                   <p:column>
                      <p:outputLabel for="dataInicial" value="Período" />
                      <a:newLine />
-                     <p:calendar id="dataInicial" value="#{NegociacaoPedidoControl.dataInicial}" pattern="dd/MM/yyyy" placeholder="Data Inicial" mask="true" />
+                     <p:calendar id="dataInicial" value="#{NegociacaoPedidoControl.dataMinimaVencimento}" pattern="dd/MM/yyyy" placeholder="Data Inicial" mask="true" />
                      <h:outputText value=" - " />
-                     <p:calendar id="dataFinal" value="#{NegociacaoPedidoControl.dataFinal}" pattern="dd/MM/yyyy" placeholder="Data Final" mask="true" />
+                     <p:calendar id="dataFinal" value="#{NegociacaoPedidoControl.dataMinimaVencimento}" ttern="dd/MM/yyyy" placeholder="Data Final" mask="true" />
                   </p:column>
 
                   <p:column>
                      <p:outputLabel for="completeCliente" value="Cliente" />
 							<a:newLine />
-							<p:autoComplete id="completeCliente" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.clienteConsulta}" var="cliente" itemValue="#{cliente}" itemLabel="#{cliente.nome}"
+							<p:autoComplete id="completeCliente" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.cliente}" var="cliente" itemValue="#{cliente}" itemLabel="#{cliente.nome}"
 								completeMethod="#{NegociacaoPedidoControl.completeCliente}" placeholder="Consultar por Cpf ou Cnpj)" minQueryLength="3" style="width: 100% !important;" inputStyle="width: 90% !important; text-align: center;">
-								<p:ajax event="itemSelect" update="formCorpo" />
+								<p:ajax event="itemSelect" update="formCorpo"	 />
 
 								<p:column>
 									<p:outputLabel value="#{cliente.cpfCnpj} - #{cliente.nome}" />
@@ -60,7 +60,7 @@
                   <p:column class="panelGrid">
                     <p:outputLabel for="completeVendedor" value="Vendedor" />
 							<a:newLine />
-							<p:autoComplete id="completeVendedor" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.vendedorConsulta}" var="vendedor" itemValue="#{vendedor}" itemLabel="#{vendedor.pessoa.nome}"
+							<p:autoComplete id="completeVendedor" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.vendedor}" var="vendedor" itemValue="#{vendedor}" itemLabel="#{vendedor.pessoa.nome}"
 								completeMethod="#{NegociacaoPedidoControl.completeVendedor}" placeholder="Consultar por CPF/CNPJ ou Nome" style="width: 100% !important;" inputStyle="width: 90% !important; text-align: center; align: left;">
 								<p:ajax event="itemSelect" update="formCorpo" />
 
@@ -73,8 +73,8 @@
                   <p:column style="border-right: 1px solid #DDDDDD !important;">
                      <p:outputLabel for="menu" value="Status" />
                      <a:newLine />
-                     <p:selectCheckboxMenu id="menu" label="Todos" value="#{NegociacaoPedidoControl.statusPedidoSelecionados}">
-                        <f:selectItems value="#{NegociacaoPedidoControl.statusPedido}" />
+                     <p:selectCheckboxMenu id="menu" label="Todos" value="#{NegociacaoPedidoControl.pedido}">
+                        <f:selectItems value="#{NegociacaoPedidoControl.pedido.status}" />
                      </p:selectCheckboxMenu>
                   </p:column>
 
@@ -83,7 +83,7 @@
             </p:panelGrid>
          </p:panel>
 
-			<p:dataTable var="ped" value="#{NegociacaoPedidoControl.pedidosFiltro}" widgetVar="pedidos" id="tablePedidos" emptyMessage="Nenhum pedido encontrado." filteredValue="#{NegociacaoPedidoControl.pedidosFiltro}">
+			<p:dataTable var="ped" value="#{NegociacaoPedidoControl.pedido}" widgetVar="pedidos" id="tablePedidos" emptyMessage="Nenhum pedido encontrado." filteredValue="#{NegociacaoPedidoControl.pedidosFiltro}">
 
 				<p:column headerText="Número" filterMatchMode="contains" width="10%">
 					<h:outputText value="#{ped.numeroPedidoExterno}" />

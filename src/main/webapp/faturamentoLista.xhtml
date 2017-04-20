@@ -53,7 +53,7 @@
                      <p:outputLabel for="completeVendedor" value="Vendedor" />
                      <a:newLine />
                      <p:autoComplete id="completeVendedor" size="20" dropdown="false" converter="objectConverter" value="#{FaturamentoListaControl.vendedor}" var="vendedor" itemValue="#{vendedor}"
-                        itemLabel="#{vendedor.pessoa.nome}" completeMethod="#{FaturamentoListaControl.completeVendedor}" placeholder="Consultar por CPF/CNPJ ou Nome" style="width: 100% !important;"
+                        itemLabel="#{vendedor.pessoa.nome}" completeMethod="#{FaturamentoListaControl.completeVendedor}" placeholder="Consultar por CPF/CNPJ ou Nome"  onblur="value=value.toUpperCase()" style="width: 100% !important;"
                         inputStyle="width: 90% !important; text-align: center; align: left;">
                         <p:ajax event="itemSelect" update="formCorpo" />
 
