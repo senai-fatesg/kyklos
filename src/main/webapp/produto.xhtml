@@ -124,7 +124,7 @@
                         <p:column>
                            <h:outputLabel value="Código" />
                            <a:newLine />
-                           <p:inputText id="codigoProduto" value="#{ProdutoControl.produto.codigo}" placeholder="Código" rendered="#{ProdutoControl.produto.id == null}" size="15" style="width:120px;" />
+                           <p:inputText id="codigoProduto" value="#{ProdutoControl.produto.codigo}"  required="true" requiredMessage="Informe o Codigo"  placeholder="Código" rendered="#{ProdutoControl.produto.id == null}" size="15" style="width:120px;" />
                            <p:inputText id="codigoProdutoDisabled" value="#{ProdutoControl.produto.codigo}" disabled="true" rendered="#{ProdutoControl.produto.id != null}" size="15"
                               style="width:120px;" />
                         </p:column>
@@ -132,19 +132,19 @@
                         <p:column>
                            <h:outputLabel value="Descrição" />
                            <a:newLine />
-                           <p:inputText id="descricaoProduto" value="#{ProdutoControl.produto.descricao}" placeholder="Descrição" style="width:120px;" />
+                           <p:inputText id="descricaoProduto" value="#{ProdutoControl.produto.descricao}" required="true" requiredMessage="Informe a Descrição"  onblur="value=value.toUpperCase()" placeholder="Descrição" style="width:120px;" />
                         </p:column>
 
                         <p:column>
                            <h:outputLabel value="Bem de consumo?" />
                            <a:newLine />
-                           <p:selectBooleanButton id="bemConsumo" value="#{ProdutoControl.produto.bemDeConsumo}" onLabel="Sim" offLabel="Não" style="width:125px;" />
+                           <p:selectBooleanButton id="bemConsumo" value="#{ProdutoControl.produto.bemDeConsumo}" required="true" requiredMessage="Informe o Bem de Consumo"  onLabel="Sim" offLabel="Não" style="width:125px;" />
                         </p:column>
 
                         <p:column>
                            <h:outputLabel value="Unidade de Medida" />
                            <a:newLine />
-                           <p:autoComplete id="selecionarMedida" dropdown="true" value="#{ProdutoControl.produto.unidadeMedida}" var="medida" completeMethod="#{ProdutoControl.completeUnidadeDeMedida}"
+                           <p:autoComplete id="selecionarMedida" dropdown="true" value="#{ProdutoControl.produto.unidadeMedida}" required="true" requiredMessage="Informe a Unidade de Medida"  var="medida" completeMethod="#{ProdutoControl.completeUnidadeDeMedida}"
                               converter="objectConverter" itemLabel="#{medida.descricao}" itemValue="#{medida}">
                               <p:column>
                                  <p:outputLabel value="#{medida.descricao} - #{medida.sigla}" />
