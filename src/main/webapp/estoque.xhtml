@@ -67,11 +67,11 @@
          <p:panel id="panelEstoque" header="Estoque" style="width:99%">
 
             <a:field label="Descrição" spaceLeft="1%" width="99%">
-               <p:inputText value="#{EstoqueControl.estoque.descricao}" style="width: 99%;" />
+               <p:inputText value="#{EstoqueControl.estoque.descricao}" placeholder="Descrição"  onblur="value=value.toUpperCase()" style="width: 99%;" />
             </a:field>
 
             <a:field label="Endereço" spaceLeft="1%" width="99%">
-               <p:inputText value="#{EstoqueControl.estoque.endereco}" style="width: 99%;" />
+               <p:inputText value="#{EstoqueControl.estoque.endereco}" placeholder="Endereço"  onblur="value=value.toUpperCase()" style="width: 99%;" />
             </a:field>
             <a:newLine />
 
