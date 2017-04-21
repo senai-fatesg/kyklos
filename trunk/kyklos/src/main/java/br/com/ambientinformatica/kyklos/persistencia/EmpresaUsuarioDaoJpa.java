@@ -36,7 +36,7 @@ public class EmpresaUsuarioDaoJpa extends PersistenciaJpa<EmpresaUsuario> implem
    @SuppressWarnings("unchecked")
    public List<EmpresaUsuario> listarPorEmpresaENomeOuLogin(EmpresaCliente empresa, String parametro) {
          Query query = em.createQuery("select eu from EmpresaUsuario eu where eu.empresa = :empresa"
-               + " and (UPPER(eu.usuario.nome) like :nome OR UPPER(eu.usuario.login) like :login)");
+               + " and (UPPER(eu.usuario.pessoa.nome) like :nome OR UPPER(eu.usuario.login) like :login)");
          query.setParameter("empresa", empresa);
          query.setParameter("nome", "%"+parametro.toUpperCase()+"%");
          query.setParameter("login", "%"+parametro.toUpperCase()+"%");

@@ -24,7 +24,7 @@
                      <p:inputText id="txtUsuario" class="searchBar" placeholder="Usuário:" value="#{UsuarioControl.parametro}" />
                   </p:column>
                   <p:column colspan="2" style="text-align:left;">
-                     <p:commandButton class="listaButton" actionListener="#{UsuarioControl.listar}" ajax="false" value="" icon="ui-icon-search" update="@all" />
+                     <p:commandButton class="listaButton" actionListener="#{UsuarioControl.listar}"  ajax="false" value="" icon="ui-icon-search" update="@all" />
                   </p:column>
                </p:row>
 
@@ -54,7 +54,7 @@
                <f:facet name="header">
                   <h:outputText value="Nome" />
                </f:facet>
-               <h:outputText value="#{u.usuario.nome}" />
+               <h:outputText value="#{u.usuario.pessoa.nome}" />
             </p:column>
 
             <p:column width="45%">
@@ -91,11 +91,11 @@
          </div>
 
          <a:field label="Nome">
-            <p:inputText value="#{UsuarioControl.nome}" style="width: 420px;" />
+            <p:inputText value="#{UsuarioControl.pessoa.nome}"  placeholder="Digite o Nome" onblur="value=value.toUpperCase()" style="width: 420px;" />
          </a:field>
          <a:newLine />
          <a:field label="Login">
-            <p:inputText value="#{UsuarioControl.usuario.login}" style="width: 420px;" />
+            <p:inputText value="#{UsuarioControl.usuario.login}" placeholder="Digite o Email"  onblur="value=value.toUpperCase()" style="width: 420px;" />
          </a:field>
          <a:newLine />
          <p:panel header="Papel(eis) do Usuário">
@@ -117,7 +117,7 @@
                <p:column colspan="2">
                   <h:outputText value="Nome:" />
                   <a:newLine />
-                  <p:inputText value="#{UsuarioControl.usuario.pessoa.nome}" style="width:99%" />
+                  <p:inputText value="#{UsuarioControl.pessoa.nome}" style="width:99%" />
                </p:column>
             </p:row>
             <p:row>

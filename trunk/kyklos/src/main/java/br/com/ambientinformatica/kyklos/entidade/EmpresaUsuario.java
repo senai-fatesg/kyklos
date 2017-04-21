@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
+import br.com.ambientinformatica.corporativo.entidade.Pessoa;
+
 @Entity
 public class EmpresaUsuario implements Serializable{
 
@@ -26,6 +28,8 @@ public class EmpresaUsuario implements Serializable{
 
    @ManyToOne(optional=false)
    private Usuario usuario;
+   
+   private Pessoa pessoa;
 
    private boolean principal;
 
@@ -63,6 +67,16 @@ public class EmpresaUsuario implements Serializable{
    public void setPrincipal(boolean principal) {
       this.principal = principal;
    }
+
+public Pessoa getPessoa() {
+	return pessoa;
+}
+
+public void setPessoa(Pessoa pessoa) {
+	this.pessoa = pessoa;
+}
+   
+   
 
 
 }

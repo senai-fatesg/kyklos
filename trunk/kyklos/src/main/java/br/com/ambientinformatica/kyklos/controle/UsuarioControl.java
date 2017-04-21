@@ -19,6 +19,7 @@ import br.com.ambientinformatica.kyklos.entidade.Usuario;
 import br.com.ambientinformatica.kyklos.persistencia.EmpresaUsuarioDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.UsuarioDao;
+import br.com.ambientinformatica.kyklos.persistencia.UsuarioDaoJpa;
 
 @Named("UsuarioControl")
 @Scope("conversation")
@@ -45,6 +46,8 @@ public class UsuarioControl implements Serializable{
    private List<EmpresaUsuario> usuarios = new ArrayList<EmpresaUsuario>();
 
    private Usuario usuario = new Usuario();
+   
+   private Pessoa pessoa = new Pessoa();
 
    private String nome;
 
@@ -84,6 +87,7 @@ public class UsuarioControl implements Serializable{
    public void salvar(){
       try{
       login = usuario.getLogin();
+      nome = pessoa.getNome();
       consultar();
       if(usuario == null){
          Pessoa pessoa = new Pessoa();
@@ -156,5 +160,14 @@ public class UsuarioControl implements Serializable{
    public void setParametro(String parametro) {
       this.parametro = parametro;
    }
+
+public Pessoa getPessoa() {
+	return pessoa;
+}
+
+public void setPessoa(Pessoa pessoa) {
+	this.pessoa = pessoa;
+}
+   
    
 }
