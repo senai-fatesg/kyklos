@@ -90,7 +90,7 @@ public class UsuarioControl implements Serializable{
       nome = pessoa.getNome();
       consultar();
       if(usuario == null){
-         Pessoa pessoa = new Pessoa();
+         //Pessoa pessoa = new Pessoa();
          pessoa.setNome(nome);
          pessoa.setEmail(login);
          pessoaDao.incluir(pessoa);
