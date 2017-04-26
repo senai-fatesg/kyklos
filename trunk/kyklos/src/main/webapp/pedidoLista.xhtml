@@ -49,7 +49,7 @@
 							<a:newLine />
 							<p:autoComplete id="completeCliente" size="20" dropdown="false" converter="objectConverter" value="#{NegociacaoPedidoControl.cliente}" var="cliente" itemValue="#{cliente}" itemLabel="#{cliente.nome}"
 								completeMethod="#{NegociacaoPedidoControl.completeCliente}" placeholder="Consultar por Cpf ou Cnpj)" minQueryLength="3" style="width: 100% !important;" inputStyle="width: 90% !important; text-align: center;">
-								<p:ajax event="itemSelect" update="formCorpo"	 />
+								<p:ajax event="itemSelect" update="formCorpo"/>
 
 								<p:column>
 									<p:outputLabel value="#{cliente.cpfCnpj} - #{cliente.nome}" />
@@ -71,11 +71,6 @@
                   </p:column>
 
                   <p:column style="border-right: 1px solid #DDDDDD !important;">
-                     <p:outputLabel for="menu" value="Status" />
-                     <a:newLine />
-                     <p:selectCheckboxMenu id="menu" label="Todos" value="#{NegociacaoPedidoControl.pedido}">
-                        <f:selectItems value="#{NegociacaoPedidoControl.pedido.status}" />
-                     </p:selectCheckboxMenu>
                   </p:column>
 
                </p:row>
