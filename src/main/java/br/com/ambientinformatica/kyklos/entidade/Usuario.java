@@ -65,6 +65,8 @@ public class Usuario extends Entidade implements Serializable{
    @OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)
    @JoinColumn(name="usuario_id")
    private Set<PapelUsuario> papeis = new HashSet<PapelUsuario>();
+   
+   private String nome;
 
    private boolean ativo;
    
@@ -148,6 +150,14 @@ public class Usuario extends Entidade implements Serializable{
       this.ativo = ativo;
    }
 
+public String getNome() {
+	return nome;
+}
 
+public void setNome(String nome) {
+	this.nome = nome;
+}
+
+   
 
 }

@@ -19,155 +19,153 @@ import br.com.ambientinformatica.kyklos.entidade.Usuario;
 import br.com.ambientinformatica.kyklos.persistencia.EmpresaUsuarioDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
 import br.com.ambientinformatica.kyklos.persistencia.UsuarioDao;
-import br.com.ambientinformatica.kyklos.persistencia.UsuarioDaoJpa;
 
 @Named("UsuarioControl")
 @Scope("conversation")
-public class UsuarioControl implements Serializable{
+public class UsuarioControl implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   @Autowired
-   private EmpresaUsuarioDao empresaUsuarioDao;
+	@Autowired
+	private EmpresaUsuarioDao empresaUsuarioDao;
 
-   @Autowired
-   private UsuarioLogadoControl usuarioLogadoControl;
+	@Autowired
+	private UsuarioLogadoControl usuarioLogadoControl;
 
-   @Autowired
-   private UsuarioDao usuarioDao;
+	@Autowired
+	private UsuarioDao usuarioDao;
 
-   @Autowired
-   private PessoaDao pessoaDao;
-   
-   private EmpresaUsuario empresaUsuario = new EmpresaUsuario();
+	@Autowired
+	private PessoaDao pessoaDao;
 
-   private DualListModel<EnumPapelUsuario> papeisUsuario = new DualListModel<EnumPapelUsuario>();
-   
-   private List<EmpresaUsuario> usuarios = new ArrayList<EmpresaUsuario>();
+	private EmpresaUsuario empresaUsuario = new EmpresaUsuario();
 
-   private Usuario usuario = new Usuario();
-   
-   private Pessoa pessoa = new Pessoa();
+	private DualListModel<EnumPapelUsuario> papeisUsuario = new DualListModel<EnumPapelUsuario>();
 
-   private String nome;
+	private List<EmpresaUsuario> usuarios = new ArrayList<EmpresaUsuario>();
 
-   private String login;
-   
-   private String parametro;
+	private Usuario usuario = new Usuario();
 
-   public void limpar(){
-      papeisUsuario = new DualListModel<EnumPapelUsuario>(getPapeisDisponiveis(), new ArrayList<EnumPapelUsuario>());
-   }
+	private Pessoa pessoa = new Pessoa();
 
-   public List<EnumPapelUsuario> getPapeisDisponiveis() {
-      List<EnumPapelUsuario> papeisUsuario = new ArrayList<EnumPapelUsuario>();
-      for(EnumPapelUsuario papelUsuario : EnumPapelUsuario.values()){
-         papeisUsuario.add(papelUsuario);
-      }
-      return papeisUsuario;
-   }
-   
-   public void alterar(){
-      usuarioDao.alterar(usuario);
-   }
-   
-   public void listar(){
-      usuarios = empresaUsuarioDao.listarPorEmpresaENomeOuLogin(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(), parametro);
-   }
+	private String nome;
 
-   public void consultar(){
-      usuario = usuarioDao.consultarPorLogin(login);
-   }
+	private String login;
 
-   public void desativarUsuario(){
-      usuario.setAtivo(false);
-      usuarioDao.alterar(usuario);
-   }
-   
-   public void salvar(){
-      try{
-      login = usuario.getLogin();
-      nome = pessoa.getNome();
-      consultar();
-      if(usuario == null){
-         //Pessoa pessoa = new Pessoa();
-         pessoa.setNome(nome);
-         pessoa.setEmail(login);
-         pessoaDao.incluir(pessoa);
-         
-         usuario = new Usuario();
-         usuario.setAtivo(true);
-         usuario.setDataAlteracaoSenha(new Date());
-         usuario.setDataCriacao(new Date());
-         usuario.setSenhaNaoCriptografada("123456");
-         usuario.setLogin(login);
-         usuario.setPessoa(pessoa);
-         usuarioDao.incluir(usuario);
-         for(EnumPapelUsuario papelSelecionado : papeisUsuario.getTarget()){
-            usuario.addPapel(papelSelecionado);
-         }
-      }
-      
-      empresaUsuario.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
-      empresaUsuario.setUsuario(usuario);
-      empresaUsuarioDao.incluir(empresaUsuario);
-      UtilFaces.addMensagemFaces("Usuário cadastrado com sucesso!");
-      }catch(Exception e){
-      	UtilFaces.addMensagemFaces("Erro:"+e.getMessage());
-      }
-   }
+	private String parametro;
 
-   public List<EmpresaUsuario> getUsuarios() {
-      return usuarios;
-   }
+	public void limpar() {
+		papeisUsuario = new DualListModel<EnumPapelUsuario>(getPapeisDisponiveis(), new ArrayList<EnumPapelUsuario>());
+	}
 
-   public Usuario getUsuario() {
-      return usuario;
-   }
+	public List<EnumPapelUsuario> getPapeisDisponiveis() {
+		List<EnumPapelUsuario> papeisUsuario = new ArrayList<EnumPapelUsuario>();
+		for (EnumPapelUsuario papelUsuario : EnumPapelUsuario.values()) {
+			papeisUsuario.add(papelUsuario);
+		}
+		return papeisUsuario;
+	}
 
-   public void setUsuario(Usuario usuario) {
-      this.usuario = usuario;
-   }
+	public void alterar() {
+		usuarioDao.alterar(usuario);
+	}
 
-   public DualListModel<EnumPapelUsuario> getPapeisUsuario() {
-      return papeisUsuario;
-   }
+	public void listar() {
+		usuarios = empresaUsuarioDao.listarPorEmpresaENomeOuLogin(usuarioLogadoControl.getEmpresaUsuario().getEmpresa(),
+				parametro);
+	}
 
-   public void setPapeisUsuario(DualListModel<EnumPapelUsuario> papeisUsuario) {
-      this.papeisUsuario = papeisUsuario;
-   }
+	public void consultar() {
+		usuario = usuarioDao.consultarPorLogin(login);
+	}
 
-   public String getNome() {
-      return nome;
-   }
+	public void desativarUsuario() {
+		usuario.setAtivo(false);
+		usuarioDao.alterar(usuario);
+	}
 
-   public void setNome(String nome) {
-      this.nome = nome;
-   }
+	public void salvar() {
+		try {
+			login = usuario.getLogin();
+			nome = pessoa.getNome();
+			consultar();
+			if (usuario == null) {
+				//Pessoa pessoa = new Pessoa();
+				pessoa.setNome(nome);
+				pessoa.setEmail(login);
+				pessoaDao.incluir(pessoa);
+				usuario = new Usuario();
+				usuario.setAtivo(true);
+				usuario.setDataAlteracaoSenha(new Date());
+				usuario.setDataCriacao(new Date());
+				usuario.setSenhaNaoCriptografada("123456");
+				usuario.setLogin(login);
+				usuario.setPessoa(pessoa);
+				usuarioDao.incluir(usuario);
+				for (EnumPapelUsuario papelSelecionado : papeisUsuario.getTarget()) {
+					usuario.addPapel(papelSelecionado);
+				}
+			}
 
-   public String getLogin() {
-      return login;
-   }
+			empresaUsuario.setEmpresa(usuarioLogadoControl.getEmpresaUsuario().getEmpresa());
+			empresaUsuario.setUsuario(usuario);
+			empresaUsuarioDao.incluir(empresaUsuario);
+			UtilFaces.addMensagemFaces("Usuário cadastrado com sucesso!");
+		} catch (Exception e) {
+			UtilFaces.addMensagemFaces("Erro:" + e.getMessage());
+		}
+	}
 
-   public void setLogin(String login) {
-      this.login = login;
-   }
+	public List<EmpresaUsuario> getUsuarios() {
+		return usuarios;
+	}
 
-   public String getParametro() {
-      return parametro;
-   }
+	public Usuario getUsuario() {
+		return usuario;
+	}
 
-   public void setParametro(String parametro) {
-      this.parametro = parametro;
-   }
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 
-public Pessoa getPessoa() {
-	return pessoa;
-}
+	public DualListModel<EnumPapelUsuario> getPapeisUsuario() {
+		return papeisUsuario;
+	}
 
-public void setPessoa(Pessoa pessoa) {
-	this.pessoa = pessoa;
-}
-   
-   
+	public void setPapeisUsuario(DualListModel<EnumPapelUsuario> papeisUsuario) {
+		this.papeisUsuario = papeisUsuario;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getParametro() {
+		return parametro;
+	}
+
+	public void setParametro(String parametro) {
+		this.parametro = parametro;
+	}
+
+	public Pessoa getPessoa() {
+		return pessoa;
+	}
+
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
+	}
+
 }

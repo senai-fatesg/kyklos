@@ -78,7 +78,7 @@
             </p:panelGrid>
          </p:panel>
 
-			<p:dataTable var="ped" value="#{NegociacaoPedidoControl.pedido}" widgetVar="pedidos" id="tablePedidos" emptyMessage="Nenhum pedido encontrado." filteredValue="#{NegociacaoPedidoControl.pedidosFiltro}">
+			<p:dataTable var="ped" value="#{NegociacaoPedidoControl.pedido}" widgetVar="pedidos" id="tablePedidos" emptyMessage="Nenhum pedido encontrado." filteredValue="#{NegociacaoPedidoControl.pedido}">
 
 				<p:column headerText="Número" filterMatchMode="contains" width="10%">
 					<h:outputText value="#{ped.numeroPedidoExterno}" />
