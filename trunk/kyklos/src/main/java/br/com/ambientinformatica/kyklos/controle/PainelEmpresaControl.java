@@ -4,11 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
+import org.omg.PortableInterceptor.SUCCESSFUL;
+import org.springframework.asm.commons.SerialVersionUIDAdder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
@@ -23,6 +24,7 @@ import br.com.ambientinformatica.kyklos.persistencia.EmpresaClienteDao;
 import br.com.ambientinformatica.kyklos.persistencia.MunicipioDao;
 import br.com.ambientinformatica.kyklos.persistencia.ParametroEmpresaDao;
 import br.com.ambientinformatica.kyklos.persistencia.PessoaDao;
+import br.com.ambientinformatica.kyklos.util.KyklosException;
 
 @Named("PainelEmpresaControl")
 @Scope("conversation")
@@ -62,9 +64,31 @@ public class PainelEmpresaControl implements Serializable{
    
    private boolean possuiRegimeEspecial;
    
-   @PostConstruct
-   public void consultarDadosEmpresa(){
-      listarParametrosEmpresa();
+   
+   public EmpresaCliente consultarDadosEmpresa(){
+      try {
+		empresaCliente = empresaClienteDao.consultarPorCnpj(empresaCliente.getPessoa().getCpfCnpj());
+		UtilFaces.addMensagemFaces("Dados Recuperados com Sucesso");
+		
+      } catch (KyklosException e) {
+    	  e.printStackTrace();
+	}
+      
+      return empresaCliente;
+   }
+   
+   
+   public void excluirEmpresa(){
+	   try {
+		   empresaClienteDao.excluirPorId(empresaCliente.getId());
+		   UtilFaces.addMensagemFaces("Registro Excluido com sucesso");
+		   empresaCliente = new EmpresaCliente();
+	} catch (Exception e) {
+		e.printStackTrace();
+		UtilFaces.addMensagemFaces("Não foi possivél Excluir");
+	}
+	   
+	   
    }
    
    public void listarParametrosEmpresa(){
@@ -141,6 +165,10 @@ public class PainelEmpresaControl implements Serializable{
       try {
          empresaClienteDao.alterar(empresaCliente);
          pessoaDao.alterar(empresaCliente.getPessoa());
+         empresaCliente = new EmpresaCliente();
+         
+         UtilFaces.addMensagemFaces("Cadastro Realizado com sucesso");
+         
       } catch (Exception e) {
          UtilFaces.addMensagemFaces("Erro ao salvar dados.");
          UtilFaces.addMensagemFaces(e.getMessage());
