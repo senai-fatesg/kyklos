@@ -7,7 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<artifactId>kyklos</artifactId>
 	<name>kyklos</name>
-	<url>http://a4t.in/projetos/kyklos/0.0.1-SNAPSHOT</url>
+	<url>http://inpai.com.br/projetos/kyklos/0.0.1-SNAPSHOT</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -86,24 +86,15 @@
 			<version>3.0.5</version>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
-			<groupId>br.com.ambientinformatica.agilize</groupId>
-			<artifactId>agilize-api</artifactId>
-			<version>0.0.4-SNAPSHOT</version>
-			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>br.com.ambientinformatica</groupId>
-					<artifactId>utilAmbient</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-compiler-plugin</artifactId>
+        		<version>3.7.0</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>

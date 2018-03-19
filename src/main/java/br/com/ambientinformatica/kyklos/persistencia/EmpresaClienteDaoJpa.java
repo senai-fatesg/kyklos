@@ -90,7 +90,7 @@ public class EmpresaClienteDaoJpa extends PersistenciaJpa<EmpresaCliente> implem
         query.setParameter("cpfCnpj", cpfCnpj);
         return (EmpresaCliente) query.getSingleResult();
        }catch (NoResultException nre){
-          return null;
+    	   throw new KyklosException(String.format("Nada encontrado para o CNPJ/CPF: " + cpfCnpj));
        }
     }
     
@@ -102,7 +102,7 @@ public class EmpresaClienteDaoJpa extends PersistenciaJpa<EmpresaCliente> implem
           query.setParameter("empresaCliente", empresaCliente);
          return (EmpresaCliente) query.getSingleResult();
       } catch (NoResultException nre) {
-         return null;
+    	  throw new KyklosException(String.format("Nada encontrado para o CNPJ/CPF: " + empresaCliente.getPessoa().getCpfCnpj()));
       }
     }
     

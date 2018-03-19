@@ -15,6 +15,11 @@
             <p:row>
                <p:column>
                   <p:commandButton value="Salvar" actionListener="#{PainelEmpresaControl.salvarDadosEmpresa}" icon="ui-icon-disk" update="@all" />
+                  <p:commandButton rendered="#{not empty PainelEmpresaControl.empresaCliente.id}" actionListener="#{PainelEmpresaControl.excluirEmpresa()}"  value="Excluir"  icon="ui-icon-trash" update="@all" >
+                  		 <f:param value="#{PainelEmpresaControl.empresaCliente}">  </f:param>
+                  		 <p:confirm header="Realmete deseja excluir essa empresa ?" message="Essa ação não pode ser desfeita." icon="ui-icon-alert" />
+                  </p:commandButton>
+                
                </p:column>
             </p:row>
          </p:panelGrid>
@@ -30,12 +35,7 @@
                   <a:field label="CNPJ" width="130px">
                      <p:inputText value="#{PainelEmpresaControl.empresaCliente.pessoa.cpfCnpj}" style="width:130px;" />
                   </a:field>
-                  <a:field label="UF" spaceLeft="15px" width="170px">
-                     <p:selectOneMenu value="#{PainelEmpresaControl.empresaCliente.pessoa.municipio.uf}" style="width:170px;">
-                        <f:selectItem itemLabel="" itemValue="" />
-                        <f:selectItems value="#{PainelEmpresaControl.ufs}" />
-                     </p:selectOneMenu>
-                  </a:field>
+               
                   <a:field spaceLeft="15px" width="110px">
                      <p:commandButton id="btnConsultarPessoa" value="Consultar" icon="ui-icon-search" style="margin:0; width:110px" actionListener="#{PainelEmpresaControl.consultarDadosEmpresa}" update="@all" />
                   </a:field>
@@ -79,14 +79,7 @@
                      <p:inputText id="bairro" value="#{PainelEmpresaControl.empresaCliente.pessoa.bairro}" style="width:208px;" />
                   </a:field>
                   <a:newLine />
-                  <a:field label="Municipio" for="consParceiro" width="431px">
-                     <p:autoComplete id="dd" dropdown="true" scrollHeight="180" value="#{PainelEmpresaControl.empresaCliente.pessoa.municipio}" var="m" completeMethod="#{PainelEmpresaControl.completeMunicipio}" converter="objectConverter" itemLabel="#{m.descricao}, #{m.uf}" itemValue="#{m}" placeholder="Goiânia, GO" forceSelection="true">
-                        <p:column>
-                           <h:outputText value="#{m.descricao}, #{m.uf}" />
-                        </p:column>
-                     </p:autoComplete>
-                  </a:field>
-                  <a:newLine />
+                  
                </p:panel>
 
                <p:panel id="panelContato" header="Contato">
@@ -109,48 +102,16 @@
             </p:tab>
 
             <p:tab id="tab2" title="Dados Fiscais">
+              
+        
                <p:panel id="crtPanel">
 
                   <a:field label="CNAE">
                      <p:inputText value="#{PainelEmpresaControl.empresaCliente.cnae}" />
                   </a:field>
-
-                  <a:field label="Equiparação Contribuinte" spaceLeft="15px">
-                     <p:selectOneMenu value="#{PainelEmpresaControl.empresaCliente.equiparacao}" style="width:450px;">
-                        <f:selectItems value="#{PainelEmpresaControl.equiparacoesContribuinte}" />
-                     </p:selectOneMenu>
-                  </a:field>
+                 
                   <a:newLine /><a:newLine />
 
-                  <a:field label="CRT">
-                     <p:selectOneButton value="#{PainelEmpresaControl.empresaCliente.crt}">
-                        <f:selectItems value="#{PainelEmpresaControl.CRTs}" />
-                     </p:selectOneButton>
-                  </a:field>
-                  <a:newLine /><a:newLine />
-
-                  <a:field label="Possui Regime Especial?">
-                     <p:selectBooleanButton id="regimeEspecialBooleanButton" value="#{PainelEmpresaControl.possuiRegimeEspecial}" onLabel="Sim" offLabel="Não" style="width:60px" />
-                  </a:field>
-                  <a:newLine /><a:newLine />
-
-                  <a:field label="Regimes Especiais">
-                     <p:selectOneMenu value="#{PainelEmpresaControl.regimeEspecialSelecionado}" style="width:600px;">
-                        <f:selectItem itemLabel="" itemValue="" />
-                        <f:selectItems value="#{PainelEmpresaControl.regimesEspeciais}" />
-                     </p:selectOneMenu>
-                  </a:field>
-
-                  <a:field spaceLeft="15px">
-                     <p:commandButton value="Adicionar Regime Especial" icon="ui-icon-plusthick" actionListener="#{PainelEmpresaControl.adicionarRegimeEspecial}" update="regimeEspecialTable" />
-                  </a:field>
-                  <a:newLine /><a:newLine />
-                  
-                  <p:dataTable id="regimeEspecialTable" value="#{PainelEmpresaControl.empresaCliente.regimesEspeciais}" var="re" rendered="#{PainelEmpresaControl.possuiRegimeEspecial == true}">
-                     <p:column headerText="Descrição">
-                        <h:outputText value="#{re.regimeEspecial.descricao}" />                  
-                     </p:column>
-                  </p:dataTable>
                </p:panel>
                <a:newLine />
                
@@ -209,15 +170,20 @@
                         <p:commandButton actionListener="#{PainelEmpresaControl.removerParametroEmpresa(parametroEmpresa)}" icon="ui-icon-trash" update="formCorpo:tabviewPainelEmpresa:parametroPanel" />
                      </p:column>
 
-
                   </p:dataTable>
                </p:panel>
 
+  
             </p:tab>
 
          </p:tabView>
-
       </div>
+
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+        <p:commandButton value="SIM" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+        <p:commandButton value="NÃO" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+    </p:confirmDialog>
+
 
    </ui:define>
 </ui:composition>
