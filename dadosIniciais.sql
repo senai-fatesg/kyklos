@@ -25,6 +25,84 @@ INSERT INTO instrumentorecebimento (id, descricao, instrumentorecebimentodisponi
 INSERT INTO instrumentorecebimento (id, descricao, instrumentorecebimentodisponivel) VALUES ((select nextval('gerador_instrumento_recebimento')), 'Crédito', 'CREDITO');
 
 
+/**
+ * SQL DE ESQUEMA DE CORES PADRAO 
+ * 
+ */
+
+INSERT INTO cor(id, codigo, descricao) VALUES (1,1,'Abobora');
+INSERT INTO cor(id, codigo, descricao) VALUES (2,2,'Acafrao');
+INSERT INTO cor(id, codigo, descricao) VALUES (3,3,'Amarelo');
+INSERT INTO cor(id, codigo, descricao) VALUES (4,4,'Ambar');
+INSERT INTO cor(id, codigo, descricao) VALUES (5,5,'Ameixa');
+INSERT INTO cor(id, codigo, descricao) VALUES (6,6,'Amendoa');
+INSERT INTO cor(id, codigo, descricao) VALUES (7,7,'Ametista');
+INSERT INTO cor(id, codigo, descricao) VALUES (8,8,'Anil');
+INSERT INTO cor(id, codigo, descricao) VALUES (9,9,'Azul');
+INSERT INTO cor(id, codigo, descricao) VALUES (10,10,'Bege');
+INSERT INTO cor(id, codigo, descricao) VALUES (11,11,'Bordo');
+INSERT INTO cor(id, codigo, descricao) VALUES (12,12,'Branco');
+INSERT INTO cor(id, codigo, descricao) VALUES (13,13,'Bronze');
+INSERT INTO cor(id, codigo, descricao) VALUES (14,14,'Caqui');
+INSERT INTO cor(id, codigo, descricao) VALUES (15,15,'Caramelo');
+INSERT INTO cor(id, codigo, descricao) VALUES (16,16,'Carmesim');
+INSERT INTO cor(id, codigo, descricao) VALUES (17,17,'Carmim');
+INSERT INTO cor(id, codigo, descricao) VALUES (18,18,'Castanho');
+INSERT INTO cor(id, codigo, descricao) VALUES (19,19,'Cereja');
+INSERT INTO cor(id, codigo, descricao) VALUES (20,20,'Chocolate');
+INSERT INTO cor(id, codigo, descricao) VALUES (21,21,'Ciano ');
+INSERT INTO cor(id, codigo, descricao) VALUES (22,22,'Cinza');
+INSERT INTO cor(id, codigo, descricao) VALUES (23,23,'Cinzento');
+INSERT INTO cor(id, codigo, descricao) VALUES (24,24,'Cobre');
+INSERT INTO cor(id, codigo, descricao) VALUES (25,25,'Coral');
+INSERT INTO cor(id, codigo, descricao) VALUES (26,26,'Creme');
+INSERT INTO cor(id, codigo, descricao) VALUES (27,27,'Damasco');
+INSERT INTO cor(id, codigo, descricao) VALUES (28,28,'Dourado');
+INSERT INTO cor(id, codigo, descricao) VALUES (29,29,'Escarlate');
+INSERT INTO cor(id, codigo, descricao) VALUES (30,30,'Esmeralda');
+INSERT INTO cor(id, codigo, descricao) VALUES (31,31,'Ferrugem');
+INSERT INTO cor(id, codigo, descricao) VALUES (32,32,'Fucsia');
+INSERT INTO cor(id, codigo, descricao) VALUES (33,33,'Gelo');
+INSERT INTO cor(id, codigo, descricao) VALUES (34,34,'Grena');
+INSERT INTO cor(id, codigo, descricao) VALUES (35,35,'Gris');
+INSERT INTO cor(id, codigo, descricao) VALUES (36,36,'Indigo');
+INSERT INTO cor(id, codigo, descricao) VALUES (37,37,'Jade');
+INSERT INTO cor(id, codigo, descricao) VALUES (38,38,'Jambo');
+INSERT INTO cor(id, codigo, descricao) VALUES (39,39,'Laranja');
+INSERT INTO cor(id, codigo, descricao) VALUES (40,40,'Lavanda');
+INSERT INTO cor(id, codigo, descricao) VALUES (41,41,'Lilas ');
+INSERT INTO cor(id, codigo, descricao) VALUES (42,42,'Limao');
+INSERT INTO cor(id, codigo, descricao) VALUES (43,43,'Loiro');
+INSERT INTO cor(id, codigo, descricao) VALUES (44,44,'Magenta');
+INSERT INTO cor(id, codigo, descricao) VALUES (45,45,'Malva');
+INSERT INTO cor(id, codigo, descricao) VALUES (46,46,'Marfim');
+INSERT INTO cor(id, codigo, descricao) VALUES (47,47,'Marrom');
+INSERT INTO cor(id, codigo, descricao) VALUES (48,48,'Mostarda');
+INSERT INTO cor(id, codigo, descricao) VALUES (49,49,'Negro');
+INSERT INTO cor(id, codigo, descricao) VALUES (50,50,'Ocre');
+INSERT INTO cor(id, codigo, descricao) VALUES (51,51,'Oliva');
+INSERT INTO cor(id, codigo, descricao) VALUES (52,52,'Ouro');
+INSERT INTO cor(id, codigo, descricao) VALUES (53,53,'Pessego');
+INSERT INTO cor(id, codigo, descricao) VALUES (54,54,'Prata');
+INSERT INTO cor(id, codigo, descricao) VALUES (55,55,'Preto');
+INSERT INTO cor(id, codigo, descricao) VALUES (56,56,'Purpura');
+INSERT INTO cor(id, codigo, descricao) VALUES (57,57,'Rosa');
+INSERT INTO cor(id, codigo, descricao) VALUES (58,58,'Roxo');
+INSERT INTO cor(id, codigo, descricao) VALUES (59,59,'Rubro');
+INSERT INTO cor(id, codigo, descricao) VALUES (60,60,'Salmao');
+INSERT INTO cor(id, codigo, descricao) VALUES (61,61,'Sepia');
+INSERT INTO cor(id, codigo, descricao) VALUES (62,62,'Terracota');
+INSERT INTO cor(id, codigo, descricao) VALUES (63,63,'Tijolo');
+INSERT INTO cor(id, codigo, descricao) VALUES (64,64,'Turquesa');
+INSERT INTO cor(id, codigo, descricao) VALUES (65,65,'Uva');
+INSERT INTO cor(id, codigo, descricao) VALUES (66,66,'Verde');
+INSERT INTO cor(id, codigo, descricao) VALUES (67,67,'Vermelho');
+INSERT INTO cor(id, codigo, descricao) VALUES (68,68,'Vinho');
+INSERT INTO cor(id, codigo, descricao) VALUES (69,69,'Violeta');
+
+
+
+
 /*
  * Criar SQL para as Unidades de medidas abaixo
  * Unidade
