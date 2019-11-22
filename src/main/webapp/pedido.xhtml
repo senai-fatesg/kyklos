@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ui:composition template="template.xhtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a="http://www.ambientinformatica.com.br/jsf2" xmlns:p="http://primefaces.org/ui">
-   <link href="css/estilo.css" rel="stylesheet" type="text/css" />
+<ui:composition template="template.xhtml" 
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:h="http://java.sun.com/jsf/html" 
+xmlns:f="http://java.sun.com/jsf/core" 
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:a="http://www.ambientinformatica.com.br/jsf2" 
+xmlns:p="http://primefaces.org/ui">
+
+
+<link href="css/estilo.css" rel="stylesheet" type="text/css" />
    
 
    <ui:define name="corpo">
@@ -8,6 +16,9 @@
       <div class="screenHeader">
          <p:panelGrid id="gridTop" styleClass="semBorda">
             <p:row>
+              <p:column styleClass="tituloPage"> 
+              	<h:outputLabel value="Pedidos" />
+              </p:column> 
                <p:column rendered="#{NegociacaoPedidoControl.negociacaoPedido.id != null}">
                   <p:commandButton actionListener="#{NegociacaoPedidoControl.cancelarNegociacao}" value="Cancelar Negociação / Pedido(s)" update="gridTop, panelGridDadosPedido" icon="ui-icon-cancel" />
                </p:column>
@@ -43,7 +54,10 @@
                </p:column>
 
                <p:column styleClass="pedInforLabel">
-                  <p:commandButton styleClass="addButton" id="addClienteButton" onclick="PF('dialogCadastroRapidoCliente').show();" actionListener="#{NegociacaoPedidoControl.limparClienteCadastroRapido}" icon="ui-icon-plusthick" />
+                  <p:commandButton styleClass="addButton" id="addClienteButton" 
+                  onclick="PF('dialogCadastroRapidoCliente').show();" 
+                  actionListener="#{NegociacaoPedidoControl.limparClienteCadastroRapido}" 
+                  icon="ui-icon-plusthick" />
                </p:column>
 
 
@@ -92,7 +106,7 @@
                </p:column>
             </p:row>
             <p:row>
-               <p:column styleClass="d">
+               <p:column styleClass="pedInfoLabel2">
                   <p:outputLabel value="Produto:" style="font-weight: bold;" />
                </p:column>
 

@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:a="http://www.ambientinformatica.com.br/jsf2">
 <h:head>
    <link href="css/estilo.css" rel="stylesheet" type="text/css" />
@@ -16,10 +15,9 @@
          <div id="header">
 
             <div id="headerLeft">
-               <p:autoComplete id="autoCompleteEmpresa" styleClass="autoCompleteEmpresa" size="20" dropdown="true" rendered="#{usuarioLogadoControl.variasEmpresas}" converter="objectConverter" value="#{usuarioLogadoControl.empresaUsuario}" var="e" itemValue="#{e}" itemLabel="Empresa: #{e.empresa.pessoa.nome}" completeMethod="#{usuarioLogadoControl.completeEmpresa}">
-                  <p:ajax event="itemSelect" update="@all" />
-               </p:autoComplete>
-               <p:commandButton styleClass="headerButton" disabled="true" value="Empresa: #{usuarioLogadoControl.empresaUsuario.empresa.pessoa.nome}" rendered="#{!usuarioLogadoControl.variasEmpresas}" />
+            	<!--  Lado esquerdo do cabecalho sem nada a implementar  
+            		  COLOCAR LOGO -->
+            	
             </div>
 
             <div id="headerRight">
@@ -37,34 +35,40 @@
 
          </div>
 
-         <div id="mainMenuDiv">
 
-            <h:form id="menuForm">
-               <p:commandButton id="mainMenuButton" value="Menu" styleClass="mainMenuButton" type="button" />
-               <p:tieredMenu overlay="true" trigger="mainMenuButton" my="left top" at="left bottom">
-                  <p:menuitem value="Início" icon="ui-icon-home" url="./inicio.xhtml" />
-                  <p:separator />
-                  <p:menuitem value="Faturamento" icon="ui-icon-print" url="faturamentoLista.xhtml" />
-                  <p:submenu label="Pedidos" icon="ui-icon-newwin">
-                     <p:menuitem value="Novo Pedido" icon="ui-icon-plus" url="./pedido.xhtml" />
-                     <p:menuitem value="Consultar Pedido" icon="ui-icon-search" url="./pedidoLista.xhtml" />
-                     <p:menuitem value="Importar Pedido" icon="ui-icon-arrowthickstop-1-w" url="./importarPedido.xhtml" />
+		      <div class="screenHeader">
+        		
+        		<p:menubar>
+        			 <p:menuitem value="Inicio" icon="ui-icon-home" url="./inicio.xhtml" />
+        			 
+        			
+        			
+        			<p:submenu label="Pedidos" icon="ui-icon-newwin" style="margin-left:10px;"> 
+        			 	 <p:menuitem value="Novo Pedido" icon="ui-icon-plus" url="./pedido.xhtml" />
+                     	<p:menuitem value="Consultar Pedido" icon="ui-icon-search" url="./pedidoLista.xhtml" />
+                    	 <p:menuitem value="Importar Pedido" icon="ui-icon-arrowthickstop-1-w" url="./importarPedido.xhtml" />
+        			</p:submenu>
+        			
+        			<p:submenu label="Cadastros" icon="ui-icon-note">
+	                     <p:menuitem value="Pessoa" ajax="false" icon="ui-icon-person" url="./pessoa.xhtml" />
+	                     <p:menuitem value="Produto" ajax="false" icon="ui-icon-tag" url="./produto.xhtml" />
+	                     <p:menuitem value="Estoque" ajax="false" icon="ui-icon-clipboard" url="./estoque.xhtml" />
+	                     <p:menuitem value="Conta Corrente" ajax="false" icon="ui-icon-calculator" url="./contaCorrente.xhtml" />
+	                     <p:menuitem value="Transportadora" ajax="false" icon="ui-icon-suitcase" url="./transportadora.xhtml" />
                   </p:submenu>
-                  <p:submenu label="Cadastros" icon="ui-icon-note">
-                     <p:menuitem value="Pessoa" ajax="false" icon="ui-icon-person" url="./pessoa.xhtml" />
-                     <p:menuitem value="Produto" ajax="false" icon="ui-icon-tag" url="./produto.xhtml" />
-                     <p:menuitem value="Estoque" ajax="false" icon="ui-icon-clipboard" url="./estoque.xhtml" />
-                     <p:menuitem value="Conta Corrente" ajax="false" icon="ui-icon-calculator" url="./contaCorrente.xhtml" />
-                     <p:menuitem value="Transportadora" ajax="false" icon="ui-icon-suitcase" url="./transportadora.xhtml" />
-                  </p:submenu>
-                  <p:submenu label="Administração" icon="ui-icon-gear">
-                     <p:menuitem value="Usuário" ajax="false" icon="ui-icon-person" url="./usuario.xhtml" />
-                     <p:menuitem value="Painel da Empresa" ajax="false" icon="ui-icon-gear" url="./painelEmpresa.xhtml" />
-                  </p:submenu>
-               </p:tieredMenu>
-            </h:form>
+                  
+                  
+        			
+        		
+        		</p:menubar>	
+      		</div>
+		
 
-         </div>
+
+
+
+
+
 
          <div id="content">
             <p:growl id="growlSistema" autoUpdate="true" />
@@ -154,6 +158,7 @@
             </p:dialog>
          </div>
       </div>
+      
    </h:form>
 </h:body>
 </html>
